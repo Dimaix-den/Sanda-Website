@@ -41,12 +41,11 @@ export function TrySection() {
         <div className="mb-10 max-w-2xl md:mb-12">
           <div className="eyebrow">Как работает · Попробуй</div>
           <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
-            Поменяй цифры — и посмотри,{' '}
-            <span className="grad-text">сколько можно тратить сегодня</span>
+            Вноси данные и смотри,{' '}
+            <span className="grad-text">твой бюджет на сегодня</span>
           </h2>
           <p className="mt-4 text-text-muted md:mt-5">
-            Заноси баланс, обязательства и цели. Sanda делит остаток на дни до зарплаты и
-            выдаёт цифру. Без категорий, без месяцев разметки.
+            Заноси баланс, обязательства и цели. Sanda учитывай все твои расходы, доходы, планы, обязательства к выплате и цели по сбережениям
           </p>
         </div>
 
@@ -111,16 +110,7 @@ export function TrySection() {
               unit=""
             />
 
-            <div className="grid grid-cols-3 gap-2 pt-2 md:gap-3">
-              <Result label="Доступно" value={formatN(Math.max(available, 0))} unit="₸" />
-              <Result label="Дней" value={String(daysLeft)} unit="" />
-              <Result
-                label="На сегодня"
-                value={formatN(dailyLimit)}
-                unit="₸"
-                highlight
-              />
-            </div>
+ 
           </div>
 
           <div className="order-1 lg:order-2">
@@ -140,25 +130,6 @@ export function TrySection() {
               />
             </div>
           </div>
-        </div>
-
-        {/* Три шага — компактной лентой под калькулятором */}
-        <div className="mt-12 grid gap-3 sm:grid-cols-3 md:mt-16 md:gap-6">
-          <Step
-            num="01"
-            title="Заносишь баланс"
-            text="Сколько сейчас на карте — в одном или нескольких банках."
-          />
-          <Step
-            num="02"
-            title="Добавляешь обязательства и цели"
-            text="Кредиты, рассрочки, подписки. Цели на отпуск, ипотеку, подушку."
-          />
-          <Step
-            num="03"
-            title="Получаешь цифру на сегодня"
-            text="Одно число на главном экране. Внутри — вся твоя математика."
-          />
         </div>
       </div>
     </section>

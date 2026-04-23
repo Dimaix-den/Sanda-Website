@@ -22,7 +22,7 @@ export function HeroSection() {
         }}
       />
 
-      <div className="mx-auto max-w-6xl px-5 pt-14 pb-14 md:pt-28 md:pb-24">
+      <div className="mx-auto max-w-6xl px-5 pt-14 pb-14 md:pt-10 md:pb-24">
         <div className="grid items-center gap-10 lg:grid-cols-[1fr_440px] lg:gap-12">
           <div>
             <div className="eyebrow">
@@ -31,14 +31,16 @@ export function HeroSection() {
             </div>
 
             <h1 className="mt-5 text-[38px] font-black leading-[1.05] tracking-tight sm:text-[44px] md:text-[72px] md:leading-[1.02]">
-              Одна цифра
+              Финансовая грамотность
               <br />
-              <span className="grad-text">вместо таблиц.</span>
+              <span className="grad-text">без ограничений</span>
             </h1>
 
             <p className="mt-5 max-w-xl text-base text-text-muted md:mt-6 md:text-xl">
-              Sanda каждое утро показывает, сколько можно потратить сегодня, чтобы дойти до
-              зарплаты и сохранить накопления. Без категорий. Без разметки. С первого дня.
+              Sanda не покажет, сколько ты потратил на кофе,
+            </p>
+            <p className="max-w-xl text-base text-text-muted md:text-xl">
+              она покажет сколько кофе ты можешь себе позволить
             </p>
 
             <div className="mt-7 flex flex-wrap items-center gap-3 md:mt-8">
@@ -50,9 +52,9 @@ export function HeroSection() {
               </a>
             </div>
 
-            <dl className="mt-8 grid max-w-lg grid-cols-3 gap-4 border-t border-line pt-6 md:mt-10 md:gap-6 md:pt-8">
-              <Stat big="2 сек" small="чтобы понять, можно ли тратить" />
-              <Stat big="0 категорий" small="ничего не нужно размечать" />
+            <dl className="mt-8 grid max-w-lg grid-cols-3 gap-4 border-t border-line pt-6 md:mt-10 md:gap-3 md:pt-8">
+              <Stat big="2 сек" small="чтобы понять, можешь ли потратить" />
+              <Stat big="Цифра" small="Только планы и бюджеты" />
               <Stat big="4,8 ★" small="оценка в App Store" />
             </dl>
           </div>
