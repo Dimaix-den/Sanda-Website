@@ -10,21 +10,19 @@ export function CtaSection() {
             'radial-gradient(ellipse at center, rgba(59,232,176,0.35) 0%, rgba(59,158,255,0.2) 30%, transparent 70%)',
         }}
       />
-      <div
-        className="pointer-events-none absolute inset-0 -z-10 grid-lines opacity-30"
-      />
+      <div className="pointer-events-none absolute inset-0 -z-10 grid-lines opacity-30" />
 
-      <div className="mx-auto max-w-4xl px-5 py-28 text-center">
+      <div className="mx-auto max-w-4xl px-5 py-20 text-center md:py-28">
         <div className="eyebrow mx-auto">Бесплатно · iOS · Android в планах</div>
-        <h2 className="mt-6 text-[44px] font-black leading-[1.05] tracking-tight md:text-[64px]">
+        <h2 className="mt-5 text-[36px] font-black leading-[1.05] tracking-tight sm:text-[44px] md:mt-6 md:text-[64px]">
           Контроль за <span className="grad-text">две секунды в день.</span>
         </h2>
-        <p className="mx-auto mt-6 max-w-xl text-lg text-text-muted">
+        <p className="mx-auto mt-5 max-w-xl text-base text-text-muted md:mt-6 md:text-lg">
           Заноси баланс, обязательства и цели — и получи свою цифру на сегодня. Никакой
           разметки. Никаких упрёков. Никаких таблиц.
         </p>
 
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3 md:mt-10">
           <a href="#" className="btn-primary">
             Скачать в App Store <ArrowRight size={18} />
           </a>
@@ -33,7 +31,7 @@ export function CtaSection() {
           </a>
         </div>
 
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm text-text-muted">
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-text-muted md:mt-12 md:gap-x-8 md:gap-y-4">
           <Check>Ядро бесплатно навсегда</Check>
           <Check>Работает офлайн</Check>
           <Check>Apple Sign-In</Check>

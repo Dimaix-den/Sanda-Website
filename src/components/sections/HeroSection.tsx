@@ -22,52 +22,52 @@ export function HeroSection() {
         }}
       />
 
-      <div className="mx-auto max-w-6xl px-5 pt-20 pb-16 md:pt-28 md:pb-24">
-        <div className="grid items-center gap-12 lg:grid-cols-[1fr_440px]">
+      <div className="mx-auto max-w-6xl px-5 pt-14 pb-14 md:pt-28 md:pb-24">
+        <div className="grid items-center gap-10 lg:grid-cols-[1fr_440px] lg:gap-12">
           <div>
             <div className="eyebrow">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-mint pulse-dot" />
               Версия 3.0 · Апрель 2026
             </div>
 
-            <h1 className="mt-6 text-[44px] font-black leading-[1.02] tracking-tight md:text-[72px]">
+            <h1 className="mt-5 text-[38px] font-black leading-[1.05] tracking-tight sm:text-[44px] md:text-[72px] md:leading-[1.02]">
               Одна цифра
               <br />
               <span className="grad-text">вместо таблиц.</span>
             </h1>
 
-            <p className="mt-6 max-w-xl text-lg text-text-muted md:text-xl">
+            <p className="mt-5 max-w-xl text-base text-text-muted md:mt-6 md:text-xl">
               Sanda каждое утро показывает, сколько можно потратить сегодня, чтобы дойти до
               зарплаты и сохранить накопления. Без категорий. Без разметки. С первого дня.
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-7 flex flex-wrap items-center gap-3 md:mt-8">
               <a href="#cta" className="btn-primary">
                 Скачать для iOS <ArrowRight size={18} />
               </a>
-              <a href="#how" className="btn-ghost">
+              <a href="#try" className="btn-ghost">
                 Как это работает
               </a>
             </div>
 
-            <dl className="mt-10 grid max-w-lg grid-cols-3 gap-6 border-t border-line pt-8">
+            <dl className="mt-8 grid max-w-lg grid-cols-3 gap-4 border-t border-line pt-6 md:mt-10 md:gap-6 md:pt-8">
               <Stat big="2 сек" small="чтобы понять, можно ли тратить" />
-              <Stat big="0 категорий" small="ничего размечать не нужно" />
-              <Stat big="4,8 ★" small="средняя оценка в App Store" />
+              <Stat big="0 категорий" small="ничего не нужно размечать" />
+              <Stat big="4,8 ★" small="оценка в App Store" />
             </dl>
           </div>
 
-          <div className="relative mx-auto w-full max-w-[340px]">
+          <div className="relative mx-auto w-full max-w-[320px] md:max-w-[340px]">
             <HeroGlow />
             <TodayMockup amount={12400} spent={0} zone="safe" streak={14} />
             <FloatingCard
-              className="left-[-48px] top-14 hidden md:block"
+              className="left-[-48px] top-14 hidden md:flex"
               emoji="✅"
               title="Уложился в лимит"
               sub="14 дней подряд"
             />
             <FloatingCard
-              className="right-[-56px] bottom-28 hidden md:block"
+              className="right-[-56px] bottom-28 hidden md:flex"
               emoji="🎯"
               title="Цель на ипотеку"
               sub="39% собрано"
@@ -95,8 +95,14 @@ function HeroGlow() {
 function Stat({ big, small }: { big: string; small: string }) {
   return (
     <div>
-      <dt className="num-display text-2xl font-bold text-text md:text-3xl">{big}</dt>
-      <dd className="mt-1 text-xs text-text-muted">{small}</dd>
+      {/*
+       * whitespace-nowrap keeps "0 категорий" on one line to match
+       * the other two stat values (which are naturally short).
+       */}
+      <dt className="num-display whitespace-nowrap text-xl font-bold text-text md:text-3xl">
+        {big}
+      </dt>
+      <dd className="mt-1 text-[11px] leading-snug text-text-muted md:text-xs">{small}</dd>
     </div>
   )
 }

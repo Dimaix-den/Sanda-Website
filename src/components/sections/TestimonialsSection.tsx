@@ -30,53 +30,57 @@ export function TestimonialsSection() {
   ]
 
   return (
-    <section id="people" className="border-b border-line px-5 py-24">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-12 max-w-2xl">
+    <section id="people" className="border-b border-line py-16 md:py-24">
+      <div className="mx-auto mb-8 max-w-6xl px-5 md:mb-12">
+        <div className="max-w-2xl">
           <div className="eyebrow">Истории</div>
-          <h2 className="mt-5 text-4xl font-bold tracking-tight md:text-5xl">
+          <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
             Люди, которые устали считать в уме
           </h2>
-          <p className="mt-5 text-text-muted">
-            Разные города, разные профессии, разные доходы. Общее у всех — желание контролировать
-            деньги, не превращаясь в домашнего бухгалтера.
+          <p className="mt-4 text-text-muted md:mt-5">
+            Разные города, разные профессии, разные доходы. Общее у всех — желание
+            контролировать деньги, не превращаясь в домашнего бухгалтера.
           </p>
         </div>
+      </div>
 
-        <div className="grid gap-5 md:grid-cols-3">
-          {people.map((p) => (
-            <figure
-              key={p.name}
-              className="group relative flex flex-col overflow-hidden rounded-3xl border border-line bg-white/[0.02] p-6 transition hover:border-line-strong"
-            >
-              <div className="mb-4 flex items-center gap-3">
-                <div
-                  className={`h-11 w-11 rounded-full bg-gradient-to-br ${p.color}`}
-                  aria-hidden
-                />
-                <div>
-                  <p className="font-semibold">{p.name}</p>
-                  <p className="text-xs text-text-muted">
-                    {p.role} · {p.city}
-                  </p>
-                </div>
+      {/*
+       * Horizontal snap carousel for testimonials on every viewport.
+       * On desktop three cards fit comfortably; on mobile the user swipes.
+       */}
+      <div className="hscroll hscroll-bleed mx-auto max-w-6xl">
+        {people.map((p) => (
+          <figure
+            key={p.name}
+            className="group relative flex w-[280px] flex-col overflow-hidden rounded-3xl border border-line bg-white/[0.02] p-5 transition hover:border-line-strong sm:w-[340px] md:w-[380px] md:p-6"
+          >
+            <div className="mb-4 flex items-center gap-3">
+              <div
+                className={`h-11 w-11 rounded-full bg-gradient-to-br ${p.color}`}
+                aria-hidden
+              />
+              <div>
+                <p className="font-semibold">{p.name}</p>
+                <p className="text-xs text-text-muted">
+                  {p.role} · {p.city}
+                </p>
               </div>
-              <blockquote className="text-[15px] leading-relaxed text-text">
-                «{p.quote}»
-              </blockquote>
-              <figcaption className="mt-6 border-t border-line pt-4 text-xs text-text-dim">
-                {p.tag}
-              </figcaption>
-            </figure>
-          ))}
-        </div>
+            </div>
+            <blockquote className="text-[14px] leading-relaxed text-text md:text-[15px]">
+              «{p.quote}»
+            </blockquote>
+            <figcaption className="mt-5 border-t border-line pt-4 text-xs text-text-dim md:mt-6">
+              {p.tag}
+            </figcaption>
+          </figure>
+        ))}
+      </div>
 
-        <div className="mt-12 grid gap-4 md:grid-cols-4">
-          <Metric big="4,8 ★" small="оценка в App Store" />
-          <Metric big="12 дн" small="средний стрик дисциплины" />
-          <Metric big="70%" small="доходят до конца онбординга" />
-          <Metric big="2,5×" small="открытий в день на пользователя" />
-        </div>
+      <div className="mx-auto mt-10 grid max-w-6xl gap-3 px-5 sm:grid-cols-2 md:mt-12 md:grid-cols-4 md:gap-4">
+        <Metric big="4,8 ★" small="оценка в App Store" />
+        <Metric big="12 дн" small="средний стрик дисциплины" />
+        <Metric big="70%" small="доходят до конца онбординга" />
+        <Metric big="2,5×" small="открытий в день на пользователя" />
       </div>
     </section>
   )
@@ -84,8 +88,8 @@ export function TestimonialsSection() {
 
 function Metric({ big, small }: { big: string; small: string }) {
   return (
-    <div className="rounded-2xl border border-line bg-white/[0.02] p-5">
-      <p className="num-display grad-text text-3xl font-bold">{big}</p>
+    <div className="rounded-2xl border border-line bg-white/[0.02] p-4 md:p-5">
+      <p className="num-display grad-text text-2xl font-bold md:text-3xl">{big}</p>
       <p className="mt-1 text-sm text-text-muted">{small}</p>
     </div>
   )

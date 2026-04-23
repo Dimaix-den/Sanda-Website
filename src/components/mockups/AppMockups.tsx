@@ -37,8 +37,8 @@ export function TodayMockup({
   return (
     <PhoneFrame>
       <StatusBar />
-      <div className="flex h-full flex-col px-5 pt-6 pb-3 text-white">
-        <div className="mb-4 flex items-center justify-between">
+      <div className="flex h-full flex-col px-4 pt-5 pb-4 text-white">
+        <div className="mb-3 flex items-center justify-between">
           <div>
             <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">
               Сегодня · 23 апреля
@@ -56,16 +56,16 @@ export function TodayMockup({
           </div>
         </div>
 
-        <div className="flex-1">
+        <div>
           <div className="relative">
-            <div className="num-display text-[58px] font-bold leading-none tracking-tight" style={{ color }}>
+            <div className="num-display text-[48px] font-bold leading-none tracking-tight" style={{ color }}>
               {formatKZT(remaining)}
-              <span className="ml-1 text-[28px] text-white/50">{currency}</span>
+              <span className="ml-1 text-[22px] text-white/50">{currency}</span>
             </div>
-            <p className="mt-2 text-[12px] text-white/50">из {formatKZT(amount)} {currency} на день</p>
+            <p className="mt-1.5 text-[11px] text-white/50">из {formatKZT(amount)} {currency} на день</p>
           </div>
 
-          <div className="mt-5 h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+          <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/5">
             <div
               className="h-full rounded-full transition-all"
               style={{
@@ -75,38 +75,36 @@ export function TodayMockup({
             />
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-2">
+          <div className="mt-3 grid grid-cols-2 gap-1.5">
             <MiniStat label="Баланс" value={`485 200 ${currency}`} />
             <MiniStat label="До зарплаты" value="8 дней" />
             <MiniStat label="Обязательства" value={`142 000 ${currency}`} />
             <MiniStat label="Цели" value={`50 000 ${currency}`} />
           </div>
 
-          <div className="mt-4 rounded-2xl border border-white/5 bg-white/[0.03] p-3">
-            <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">Последнее</p>
-            <div className="mt-2 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-base">
-                  ☕
-                </div>
-                <div>
-                  <p className="text-[13px] font-medium">Starbucks</p>
-                  <p className="text-[11px] text-white/40">12:24</p>
-                </div>
-              </div>
-              <p className="num-display text-[14px] font-semibold text-white/90">−2 100 {currency}</p>
+          <div className="mt-3 rounded-2xl border border-white/5 bg-white/[0.03] p-3">
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">План на месяц</p>
+              <p className="text-[10px] font-semibold text-mint">68% пути</p>
             </div>
+            <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/5">
+              <div
+                className="h-full rounded-full"
+                style={{ width: '68%', background: 'linear-gradient(90deg, #3be8b0 0%, #3b9eff 100%)' }}
+              />
+            </div>
+            <p className="mt-2 text-[11px] text-white/60">Идёшь по плану — до зарплаты спокойно</p>
           </div>
         </div>
 
         <button
-          className="mt-3 flex h-11 w-full items-center justify-center gap-1.5 rounded-full text-[14px] font-semibold text-black"
+          className="mt-auto flex h-10 w-full flex-shrink-0 items-center justify-center gap-1.5 rounded-full text-[13px] font-semibold text-black"
           style={{ background: 'linear-gradient(110deg, #3be8b0 0%, #3b9eff 100%)' }}
         >
-          <span className="text-lg leading-none">＋</span> Добавить расход
+          <span className="text-base leading-none">＋</span> Добавить расход
         </button>
-        <div className="mt-2 flex justify-center">
-          <div className="h-1 w-24 rounded-full bg-white/30" />
+        <div className="mt-2 flex flex-shrink-0 justify-center">
+          <div className="h-1 w-20 rounded-full bg-white/30" />
         </div>
       </div>
     </PhoneFrame>
@@ -115,9 +113,9 @@ export function TodayMockup({
 
 function MiniStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-white/5 bg-white/[0.03] px-3 py-2">
-      <p className="text-[10px] uppercase tracking-[0.14em] text-white/40">{label}</p>
-      <p className="mt-0.5 text-[12px] font-semibold text-white/90">{value}</p>
+    <div className="rounded-xl border border-white/5 bg-white/[0.03] px-2.5 py-1.5">
+      <p className="text-[9px] uppercase tracking-[0.14em] text-white/40">{label}</p>
+      <p className="mt-0.5 text-[11px] font-semibold text-white/90">{value}</p>
     </div>
   )
 }
@@ -141,20 +139,20 @@ export function CapitalMockup() {
   return (
     <PhoneFrame>
       <StatusBar />
-      <div className="flex h-full flex-col px-5 pt-6 pb-3 text-white">
+      <div className="flex h-full flex-col px-4 pt-5 pb-4 text-white">
         <div className="mb-3">
           <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">Капитал</p>
           <div className="mt-1 flex items-baseline gap-2">
-            <span className="num-display text-[36px] font-bold">2 480 500</span>
-            <span className="text-[16px] text-white/50">₸</span>
+            <span className="num-display text-[30px] font-bold">2 480 500</span>
+            <span className="text-[14px] text-white/50">₸</span>
           </div>
-          <div className="mt-1 flex items-center gap-2 text-[12px]">
+          <div className="mt-1 flex items-center gap-2 text-[11px]">
             <span className="text-mint">▲ 12,4%</span>
             <span className="text-white/40">за 6 мес</span>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-3">
+        <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-2.5">
           <svg viewBox={`0 0 ${w} ${h}`} className="w-full" preserveAspectRatio="none">
             <defs>
               <linearGradient id="capGrad" x1="0" x2="0" y1="0" y2="1">
@@ -175,7 +173,7 @@ export function CapitalMockup() {
               fill="#3be8b0"
             />
           </svg>
-          <div className="mt-2 flex justify-between text-[9px] text-white/30">
+          <div className="mt-1.5 flex justify-between text-[9px] text-white/30">
             <span>Ноя</span>
             <span>Дек</span>
             <span>Янв</span>
@@ -185,15 +183,15 @@ export function CapitalMockup() {
           </div>
         </div>
 
-        <div className="mt-3 space-y-2">
+        <div className="mt-3 space-y-1.5">
           <AssetRow icon="🏦" name="Kaspi Gold" value="485 200 ₸" />
           <AssetRow icon="💎" name="Накопления" value="780 000 ₸" />
           <AssetRow icon="🏠" name="Имущество" value="1 500 000 ₸" />
           <AssetRow icon="💳" name="Обязательства" value="−284 700 ₸" negative />
         </div>
 
-        <div className="mt-auto flex justify-center pt-2">
-          <div className="h-1 w-24 rounded-full bg-white/30" />
+        <div className="mt-auto flex flex-shrink-0 justify-center pt-2">
+          <div className="h-1 w-20 rounded-full bg-white/30" />
         </div>
       </div>
     </PhoneFrame>
@@ -212,14 +210,14 @@ function AssetRow({
   negative?: boolean
 }) {
   return (
-    <div className="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.03] px-3 py-2">
-      <div className="flex items-center gap-2.5">
-        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-[13px]">
+    <div className="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.03] px-2.5 py-1.5">
+      <div className="flex items-center gap-2">
+        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white/5 text-[12px]">
           {icon}
         </div>
-        <p className="text-[12px] font-medium">{name}</p>
+        <p className="text-[11px] font-medium">{name}</p>
       </div>
-      <p className={`num-display text-[12px] font-semibold ${negative ? 'text-danger' : 'text-white/90'}`}>
+      <p className={`num-display text-[11px] font-semibold ${negative ? 'text-danger' : 'text-white/90'}`}>
         {value}
       </p>
     </div>
@@ -230,26 +228,26 @@ export function GoalsMockup() {
   return (
     <PhoneFrame>
       <StatusBar />
-      <div className="flex h-full flex-col px-5 pt-6 pb-3 text-white">
-        <div className="mb-4">
+      <div className="flex h-full flex-col px-4 pt-5 pb-4 text-white">
+        <div className="mb-3">
           <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">Цели</p>
-          <p className="mt-1 text-[22px] font-semibold">Прогресс апреля</p>
+          <p className="mt-1 text-[20px] font-semibold">Прогресс апреля</p>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-2">
           <GoalCard name="Ипотека — первый взнос" amount="780 000" target="2 000 000" progress={0.39} emoji="🏠" eta="Ноябрь 2026" />
           <GoalCard name="Отпуск в Турцию" amount="145 000" target="300 000" progress={0.48} emoji="✈️" eta="Июль 2026" />
           <GoalCard name="Новый ноутбук" amount="210 000" target="450 000" progress={0.46} emoji="💻" eta="Сентябрь 2026" />
           <GoalCard name="Подушка безопасности" amount="520 000" target="750 000" progress={0.69} emoji="🛟" eta="Август 2026" />
         </div>
 
-        <div className="mt-4 rounded-2xl border border-white/5 bg-white/[0.03] px-3 py-2.5">
+        <div className="mt-3 rounded-2xl border border-white/5 bg-white/[0.03] px-3 py-2">
           <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">Зарезервировано из бюджета</p>
-          <p className="num-display mt-0.5 text-[18px] font-semibold">50 000 ₸ / мес</p>
+          <p className="num-display mt-0.5 text-[16px] font-semibold">50 000 ₸ / мес</p>
         </div>
 
-        <div className="mt-auto flex justify-center pt-2">
-          <div className="h-1 w-24 rounded-full bg-white/30" />
+        <div className="mt-auto flex flex-shrink-0 justify-center pt-2">
+          <div className="h-1 w-20 rounded-full bg-white/30" />
         </div>
       </div>
     </PhoneFrame>
@@ -272,22 +270,22 @@ function GoalCard({
   eta: string
 }) {
   return (
-    <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-3">
+    <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-2.5">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-[15px]">
+        <div className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-[13px]">
             {emoji}
           </div>
           <div>
-            <p className="text-[12px] font-medium">{name}</p>
-            <p className="text-[10px] text-white/40">к {eta}</p>
+            <p className="text-[11px] font-medium">{name}</p>
+            <p className="text-[9px] text-white/40">к {eta}</p>
           </div>
         </div>
-        <p className="num-display text-[11px] font-semibold text-white/80">
+        <p className="num-display text-[10px] font-semibold text-white/80">
           {amount}<span className="text-white/30"> / {target}</span>
         </p>
       </div>
-      <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/5">
+      <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/5">
         <div
           className="h-full rounded-full"
           style={{
@@ -304,34 +302,34 @@ export function CommitmentsMockup() {
   return (
     <PhoneFrame>
       <StatusBar />
-      <div className="flex h-full flex-col px-5 pt-6 pb-3 text-white">
-        <div className="mb-4">
+      <div className="flex h-full flex-col px-4 pt-5 pb-4 text-white">
+        <div className="mb-3">
           <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">Обязательства</p>
-          <p className="mt-1 text-[22px] font-semibold">142 000 ₸ / мес</p>
-          <p className="mt-0.5 text-[11px] text-white/40">Автоматически вычитаются из лимита</p>
+          <p className="mt-1 text-[20px] font-semibold">142 000 ₸ / мес</p>
+          <p className="mt-0.5 text-[10px] text-white/40">Автоматически вычитаются из лимита</p>
         </div>
 
-        <div className="space-y-2.5">
+        <div className="space-y-2">
           <ObligationCard icon="🏦" name="Ипотека" sum="78 000 ₸" left="4 года 2 мес" progress={0.24} due="до 15 числа" />
           <ObligationCard icon="🚗" name="Авто в рассрочку" sum="42 000 ₸" left="14 мес" progress={0.58} due="до 20 числа" />
           <ObligationCard icon="📱" name="iPhone 15 — рассрочка" sum="18 500 ₸" left="6 мес" progress={0.74} due="до 5 числа" />
           <ObligationCard icon="📺" name="Подписки" sum="3 500 ₸" left="ежемесячно" progress={1} due="—" subscription />
         </div>
 
-        <div className="mt-4 rounded-2xl border border-mint/20 bg-mint/[0.06] p-3">
+        <div className="mt-3 rounded-2xl border border-mint/20 bg-mint/[0.06] p-2.5">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] uppercase tracking-[0.18em] text-mint">Закрыто досрочно</p>
-              <p className="num-display mt-0.5 text-[16px] font-semibold">− 3 месяца</p>
+              <p className="num-display mt-0.5 text-[14px] font-semibold">− 3 месяца</p>
             </div>
-            <button className="rounded-full border border-mint/30 px-3 py-1 text-[11px] font-semibold text-mint">
+            <button className="rounded-full border border-mint/30 px-3 py-1 text-[10px] font-semibold text-mint">
               Погасить
             </button>
           </div>
         </div>
 
-        <div className="mt-auto flex justify-center pt-2">
-          <div className="h-1 w-24 rounded-full bg-white/30" />
+        <div className="mt-auto flex flex-shrink-0 justify-center pt-2">
+          <div className="h-1 w-20 rounded-full bg-white/30" />
         </div>
       </div>
     </PhoneFrame>
@@ -356,27 +354,120 @@ function ObligationCard({
   subscription?: boolean
 }) {
   return (
-    <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-3">
+    <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-2.5">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-[15px]">
+        <div className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-[13px]">
             {icon}
           </div>
           <div>
-            <p className="text-[12px] font-medium">{name}</p>
-            <p className="text-[10px] text-white/40">{subscription ? left : `осталось ${left}`}</p>
+            <p className="text-[11px] font-medium">{name}</p>
+            <p className="text-[9px] text-white/40">{subscription ? left : `осталось ${left}`}</p>
           </div>
         </div>
         <div className="text-right">
-          <p className="num-display text-[12px] font-semibold">{sum}</p>
+          <p className="num-display text-[11px] font-semibold">{sum}</p>
           <p className="text-[9px] text-white/40">{due}</p>
         </div>
       </div>
       {!subscription && (
-        <div className="mt-2 h-0.5 overflow-hidden rounded-full bg-white/5">
+        <div className="mt-1.5 h-0.5 overflow-hidden rounded-full bg-white/5">
           <div className="h-full rounded-full bg-white/40" style={{ width: `${progress * 100}%` }} />
         </div>
       )}
+    </div>
+  )
+}
+
+/**
+ * Budget planning mockup — replaces the "categories" feature card.
+ * Shows monthly budget plan, allocation to goals/obligations, remaining per day.
+ */
+export function PlanMockup() {
+  return (
+    <PhoneFrame>
+      <StatusBar />
+      <div className="flex h-full flex-col px-4 pt-5 pb-4 text-white">
+        <div className="mb-3">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">План на апрель</p>
+          <p className="mt-1 text-[20px] font-semibold">Бюджет разложен</p>
+          <p className="mt-0.5 text-[10px] text-white/40">Куда пойдут твои деньги в этом месяце</p>
+        </div>
+
+        <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-3">
+          <div className="flex items-baseline justify-between">
+            <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">Доход</p>
+            <p className="num-display text-[14px] font-semibold">520 000 ₸</p>
+          </div>
+          <div className="mt-2.5 flex h-2 w-full overflow-hidden rounded-full bg-white/5">
+            <div className="h-full" style={{ width: '27%', background: '#ff5566' }} />
+            <div className="h-full" style={{ width: '10%', background: '#3b9eff' }} />
+            <div className="h-full" style={{ width: '63%', background: '#3be8b0' }} />
+          </div>
+          <div className="mt-2 space-y-1">
+            <LegendRow color="#ff5566" label="Обязательства" value="142 000 ₸" pct="27%" />
+            <LegendRow color="#3b9eff" label="Цели" value="50 000 ₸" pct="10%" />
+            <LegendRow color="#3be8b0" label="На жизнь" value="328 000 ₸" pct="63%" />
+          </div>
+        </div>
+
+        <div className="mt-3 rounded-2xl border border-mint/20 bg-mint/[0.06] p-2.5">
+          <p className="text-[10px] uppercase tracking-[0.18em] text-mint">Дневной лимит</p>
+          <p className="num-display mt-0.5 text-[20px] font-bold">
+            12 400 <span className="text-[14px] text-white/50">₸/день</span>
+          </p>
+          <p className="mt-0.5 text-[10px] text-white/50">по 26 дней до зарплаты</p>
+        </div>
+
+        <div className="mt-3 rounded-2xl border border-white/5 bg-white/[0.03] p-2.5">
+          <p className="text-[10px] uppercase tracking-[0.18em] text-white/40">Сценарии</p>
+          <div className="mt-2 space-y-1.5">
+            <ScenarioRow icon="🎯" label="Добавить цель на отпуск" hint="+30 000 ₸ резерв" />
+            <ScenarioRow icon="⏱" label="Отложить крупную покупку" hint="+2 100 ₸ к лимиту" />
+          </div>
+        </div>
+
+        <div className="mt-auto flex flex-shrink-0 justify-center pt-2">
+          <div className="h-1 w-20 rounded-full bg-white/30" />
+        </div>
+      </div>
+    </PhoneFrame>
+  )
+}
+
+function LegendRow({
+  color,
+  label,
+  value,
+  pct,
+}: {
+  color: string
+  label: string
+  value: string
+  pct: string
+}) {
+  return (
+    <div className="flex items-center justify-between text-[11px]">
+      <div className="flex items-center gap-1.5">
+        <span className="h-1.5 w-1.5 rounded-full" style={{ background: color }} />
+        <span className="text-white/70">{label}</span>
+      </div>
+      <div className="flex items-baseline gap-1.5">
+        <span className="num-display font-semibold text-white/90">{value}</span>
+        <span className="text-[9px] text-white/40">{pct}</span>
+      </div>
+    </div>
+  )
+}
+
+function ScenarioRow({ icon, label, hint }: { icon: string; label: string; hint: string }) {
+  return (
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2">
+        <span className="text-[12px]">{icon}</span>
+        <p className="text-[11px] text-white/80">{label}</p>
+      </div>
+      <p className="text-[10px] text-mint">{hint}</p>
     </div>
   )
 }

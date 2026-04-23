@@ -1,8 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Header, Footer } from '../components/Chrome'
 import { HeroSection } from '../components/sections/HeroSection'
-import { HowItWorksSection } from '../components/sections/HowItWorksSection'
-import { CalculatorSection } from '../components/sections/CalculatorSection'
+import { TrySection } from '../components/sections/TrySection'
 import { FeaturesSection } from '../components/sections/FeaturesSection'
 import { SimulatorSection } from '../components/sections/SimulatorSection'
 import { PhilosophySection } from '../components/sections/PhilosophySection'
@@ -20,8 +19,12 @@ function Home() {
       <Header />
       <main>
         <HeroSection />
-        <HowItWorksSection />
-        <CalculatorSection />
+        {/*
+         * TrySection merges the old "Как работает" and "Попробуй здесь"
+         * blocks into one dense, interactive section to shorten the landing.
+         * The old HowItWorksSection and CalculatorSection are no longer used.
+         */}
+        <TrySection />
         <FeaturesSection />
         <SimulatorSection />
         <PhilosophySection />

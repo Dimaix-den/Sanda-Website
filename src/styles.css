@@ -41,6 +41,7 @@
       radial-gradient(900px 600px at -10% 25%, rgba(59, 158, 255, 0.09), transparent 65%),
       #05070a;
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
   * {
@@ -110,15 +111,23 @@
     border: 1px solid var(--color-line);
   }
 
+  /*
+   * Phone frame — fluid on mobile so the mockup always has enough height
+   * for the content (balance grid + plan card + "Добавить расход" button)
+   * without ever clipping the primary CTA.
+   */
   .phone-frame {
     position: relative;
     border-radius: 44px;
-    padding: 10px;
+    padding: 8px;
     background: linear-gradient(180deg, #1a1f28 0%, #0b0e13 100%);
     box-shadow:
       0 50px 120px -30px rgba(59, 158, 255, 0.25),
       0 30px 60px -20px rgba(0, 0, 0, 0.7),
       inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    width: 100%;
+    max-width: 320px;
+    margin-inline: auto;
   }
 
   .phone-screen {
@@ -126,7 +135,23 @@
     overflow: hidden;
     border-radius: 36px;
     background: #05070a;
+    /*
+     * Use a minimum height rather than a strict aspect ratio so the mockup
+     * can grow slightly if the localized content needs more room. The
+     * default still matches a tall iPhone silhouette.
+     */
     aspect-ratio: 9 / 19.5;
+    min-height: 580px;
+  }
+
+  @media (min-width: 768px) {
+    .phone-frame {
+      padding: 10px;
+      max-width: 340px;
+    }
+    .phone-screen {
+      min-height: 620px;
+    }
   }
 
   .notch {
@@ -150,6 +175,39 @@
 
   .mask-fade-y {
     mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  }
+
+  /*
+   * Horizontal scroll carousel primitives used for the Features mini-cards
+   * and Testimonials on mobile. Snap-mandatory so each card locks into view,
+   * with padding-inline so the first/last card can sit flush with content.
+   */
+  .hscroll {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1.25rem;
+    padding-inline: 1.25rem;
+    padding-bottom: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .hscroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hscroll > * {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+  }
+
+  /* Full-bleed the scroll strip inside a padded section on mobile only. */
+  @media (max-width: 767px) {
+    .hscroll-bleed {
+      margin-inline: calc(-1 * var(--section-px, 1.25rem));
+    }
   }
 }
 

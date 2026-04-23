@@ -13,8 +13,8 @@ const defaultDays: Day[] = [
     date: '21 апр',
     base: 12000,
     purchases: [
-      { name: 'Продукты', amount: 4200 },
-      { name: 'Обед', amount: 2800 },
+      { name: 'Трата дня', amount: 4200 },
+      { name: 'Ещё одна трата', amount: 2800 },
     ],
   },
   {
@@ -22,16 +22,16 @@ const defaultDays: Day[] = [
     date: '22 апр',
     base: 12000,
     purchases: [
-      { name: 'Кофе', amount: 1200 },
-      { name: 'Такси', amount: 2400 },
-      { name: 'Ужин с друзьями', amount: 11200 },
+      { name: 'Небольшая трата', amount: 1200 },
+      { name: 'Поездка', amount: 2400 },
+      { name: 'Крупная трата', amount: 11200 },
     ],
   },
   {
     label: 'Ср',
     date: '23 апр',
     base: 12000,
-    purchases: [{ name: 'Кофе', amount: 1500 }],
+    purchases: [{ name: 'Небольшая трата', amount: 1500 }],
   },
   {
     label: 'Чт',
@@ -85,21 +85,26 @@ export function SimulatorSection() {
   }
 
   return (
-    <section className="border-b border-line px-5 py-24">
+    <section className="border-b border-line px-5 py-16 md:py-24">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-10 max-w-2xl">
+        <div className="mb-8 max-w-2xl md:mb-10">
           <div className="eyebrow">Самобалансирующийся бюджет</div>
-          <h2 className="mt-5 text-4xl font-bold tracking-tight md:text-5xl">
-            Потратил лишнего? <span className="grad-text">Завтра цифра сама уменьшится.</span>
+          <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
+            Потратил лишнего?{' '}
+            <span className="grad-text">Завтра цифра сама уменьшится.</span>
           </h2>
-          <p className="mt-5 text-text-muted">
-            Посмотри, как работает формула. Выбери день, добавь трату — и проследи, как
-            перестраиваются лимиты на ближайшую неделю.
+          <p className="mt-4 text-text-muted md:mt-5">
+            Выбери день, добавь трату — и проследи, как перестраиваются лимиты на ближайшую
+            неделю.
           </p>
         </div>
 
-        <div className="rounded-3xl border border-line bg-white/[0.02] p-5 md:p-8">
-          <div className="grid grid-cols-5 gap-2">
+        <div className="rounded-3xl border border-line bg-white/[0.02] p-3 md:p-8">
+          {/*
+           * Days strip: on mobile we horizontally scroll (5 equal-width cards
+           * would be too narrow under ~380px); on desktop it's a 5-col grid.
+           */}
+          <div className="-mx-1 flex snap-x snap-mandatory gap-2 overflow-x-auto px-1 pb-1 sm:mx-0 sm:grid sm:grid-cols-5 sm:gap-2 sm:overflow-visible sm:px-0 sm:pb-0">
             {computed.map((d, i) => {
               const isActive = i === active
               const zoneColor =
@@ -118,7 +123,7 @@ export function SimulatorSection() {
                 <button
                   key={d.label}
                   onClick={() => setActive(i)}
-                  className={`rounded-2xl border px-3 py-4 text-left transition ${
+                  className={`w-[110px] flex-shrink-0 snap-start rounded-2xl border px-3 py-3 text-left transition sm:w-auto sm:py-4 ${
                     isActive
                       ? 'border-white/20 bg-white/[0.06]'
                       : 'border-line hover:border-line-strong'
@@ -127,15 +132,15 @@ export function SimulatorSection() {
                   <p className="text-[10px] uppercase tracking-[0.2em] text-text-dim">
                     {d.label}
                   </p>
-                  <p className="text-xs text-text-muted">{d.date}</p>
+                  <p className="text-[11px] text-text-muted">{d.date}</p>
                   <p
-                    className="num-display mt-2 text-lg font-bold md:text-xl"
+                    className="num-display mt-2 text-base font-bold md:text-xl"
                     style={{ color: zoneText }}
                   >
                     {formatN(d.adjusted)}
                   </p>
                   <p className="text-[10px] text-text-dim">
-                    потрачено: {formatN(d.spent)}
+                    потр.: {formatN(d.spent)}
                   </p>
                   <div
                     className="mt-2 h-1 rounded-full"
@@ -144,7 +149,10 @@ export function SimulatorSection() {
                     <div
                       className="h-full rounded-full"
                       style={{
-                        width: `${Math.min((d.spent / Math.max(d.adjusted, 1)) * 100, 100)}%`,
+                        width: `${Math.min(
+                          (d.spent / Math.max(d.adjusted, 1)) * 100,
+                          100,
+                        )}%`,
                         background: zoneText,
                       }}
                     />
@@ -154,12 +162,12 @@ export function SimulatorSection() {
             })}
           </div>
 
-          <div className="mt-6 grid gap-5 md:grid-cols-2">
-            <div className="rounded-2xl border border-line bg-white/[0.02] p-5">
+          <div className="mt-5 grid gap-4 md:mt-6 md:grid-cols-2 md:gap-5">
+            <div className="rounded-2xl border border-line bg-white/[0.02] p-4 md:p-5">
               <p className="text-xs uppercase tracking-[0.18em] text-text-dim">
                 {current.label}, {current.date}
               </p>
-              <p className="num-display mt-2 text-4xl font-bold">
+              <p className="num-display mt-2 text-3xl font-bold md:text-4xl">
                 <span
                   style={{
                     color:
@@ -172,7 +180,7 @@ export function SimulatorSection() {
                 >
                   {formatN(current.adjusted)}
                 </span>
-                <span className="ml-2 text-lg text-text-muted">₸</span>
+                <span className="ml-2 text-base text-text-muted md:text-lg">₸</span>
               </p>
               <p className="mt-1 text-sm text-text-muted">
                 базовый лимит {formatN(current.base)} ₸
@@ -180,7 +188,9 @@ export function SimulatorSection() {
                   <>
                     {' '}
                     {computed[active - 1].delta >= 0 ? (
-                      <span className="text-mint">+ {formatN(computed[active - 1].delta)} переноса</span>
+                      <span className="text-mint">
+                        + {formatN(computed[active - 1].delta)} переноса
+                      </span>
                     ) : (
                       <span className="text-danger">
                         − {formatN(Math.abs(computed[active - 1].delta))} перерасхода
@@ -209,28 +219,54 @@ export function SimulatorSection() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-line bg-white/[0.02] p-5">
+            <div className="rounded-2xl border border-line bg-white/[0.02] p-4 md:p-5">
               <p className="text-xs uppercase tracking-[0.18em] text-text-dim">
                 Добавить трату
               </p>
+              {/*
+               * Abstract amounts only — Sanda doesn't have categories. The
+               * point is to feel how the rolling budget reacts to size,
+               * not to pick "coffee" or "taxi".
+               */}
               <div className="mt-3 grid grid-cols-2 gap-2">
-                <QuickBtn label="☕ Кофе" amount={1500} onClick={() => addPurchase(1500, 'Кофе')} />
-                <QuickBtn label="🛒 Продукты" amount={6000} onClick={() => addPurchase(6000, 'Продукты')} />
-                <QuickBtn label="🍽️ Ресторан" amount={12000} onClick={() => addPurchase(12000, 'Ресторан')} />
-                <QuickBtn label="🚕 Такси" amount={2500} onClick={() => addPurchase(2500, 'Такси')} />
-                <QuickBtn label="🛍️ Импульс" amount={18000} onClick={() => addPurchase(18000, 'Покупка')} />
-                <QuickBtn label="🎬 Кино" amount={3500} onClick={() => addPurchase(3500, 'Кино')} />
+                <QuickBtn
+                  label="Небольшая трата"
+                  amount={1500}
+                  onClick={() => addPurchase(1500, 'Небольшая трата')}
+                />
+                <QuickBtn
+                  label="Средняя трата"
+                  amount={6000}
+                  onClick={() => addPurchase(6000, 'Средняя трата')}
+                />
+                <QuickBtn
+                  label="Крупная трата"
+                  amount={12000}
+                  onClick={() => addPurchase(12000, 'Крупная трата')}
+                />
+                <QuickBtn
+                  label="Импульсивная"
+                  amount={18000}
+                  onClick={() => addPurchase(18000, 'Импульсивная трата')}
+                />
               </div>
+
+              <div className="mt-4 rounded-xl border border-mint/20 bg-mint/[0.05] p-3">
+                <p className="text-[11px] uppercase tracking-[0.18em] text-mint">
+                  Планирование вперёд
+                </p>
+                <p className="mt-1 text-xs text-text-muted">
+                  Знаешь, что в пятницу будет крупная покупка? Занеси её заранее — бюджет
+                  пересчитает дни до и отложит сумму.
+                </p>
+              </div>
+
               <button
                 onClick={reset}
                 className="mt-4 w-full rounded-full border border-line py-2 text-sm text-text-muted hover:border-line-strong hover:text-text"
               >
                 Сбросить неделю
               </button>
-              <p className="mt-4 text-xs text-text-dim">
-                Каждая трата меняет не только сегодня, но и бюджет следующих дней. Именно так
-                работает формула в реальном приложении.
-              </p>
             </div>
           </div>
         </div>
@@ -251,10 +287,12 @@ function QuickBtn({
   return (
     <button
       onClick={onClick}
-      className="flex items-center justify-between rounded-xl border border-line bg-white/[0.02] px-3 py-2 text-sm hover:border-line-strong hover:bg-white/[0.04]"
+      className="flex items-center justify-between gap-2 rounded-xl border border-line bg-white/[0.02] px-3 py-2 text-left text-sm hover:border-line-strong hover:bg-white/[0.04]"
     >
-      <span className="text-text">{label}</span>
-      <span className="num-display text-xs text-text-muted">−{formatN(amount)} ₸</span>
+      <span className="min-w-0 truncate text-text">{label}</span>
+      <span className="num-display whitespace-nowrap text-xs text-text-muted">
+        −{formatN(amount)} ₸
+      </span>
     </button>
   )
 }

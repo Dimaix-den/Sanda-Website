@@ -19,7 +19,7 @@ export function PhoneFrame({
 
 export function StatusBar({ time = '9:41' }: { time?: string }) {
   return (
-    <div className="flex items-center justify-between px-6 pt-3 pb-1 text-[11px] font-semibold text-white">
+    <div className="flex flex-shrink-0 items-center justify-between px-5 pt-2.5 pb-1 text-[11px] font-semibold text-white">
       <span>{time}</span>
       <div className="flex items-center gap-1">
         <SignalIcon />

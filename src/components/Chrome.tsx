@@ -29,12 +29,19 @@ export function Header() {
         <Link to="/" className="flex items-center">
           <Logo />
         </Link>
-        <nav className="hidden items-center gap-8 text-sm text-text-muted md:flex">
-          <a href="#how" className="hover:text-text">Как работает</a>
-          <a href="#features" className="hover:text-text">Возможности</a>
-          <a href="#calc" className="hover:text-text">Калькулятор</a>
-          <a href="#people" className="hover:text-text">Истории</a>
-          <a href="#compare" className="hover:text-text">Сравнение</a>
+        <nav className="hidden items-center gap-8 text-sm text-text-muted lg:flex">
+          <a href="#try" className="hover:text-text">
+            Как работает
+          </a>
+          <a href="#features" className="hover:text-text">
+            Возможности
+          </a>
+          <a href="#people" className="hover:text-text">
+            Истории
+          </a>
+          <a href="#compare" className="hover:text-text">
+            Сравнение
+          </a>
         </nav>
         <div className="flex items-center gap-2">
           <a href="#cta" className="btn-primary !px-4 !py-2 text-sm">
@@ -49,7 +56,7 @@ export function Header() {
 export function Footer() {
   return (
     <footer className="border-t border-line">
-      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-10 px-5 py-14 md:grid-cols-4">
+      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-5 py-12 md:grid-cols-4 md:gap-10 md:py-14">
         <div className="col-span-2 md:col-span-1">
           <Logo />
           <p className="mt-4 max-w-xs text-sm text-text-muted">
@@ -62,8 +69,7 @@ export function Footer() {
           title="Продукт"
           items={[
             { label: 'Возможности', href: '#features' },
-            { label: 'Как работает', href: '#how' },
-            { label: 'Калькулятор', href: '#calc' },
+            { label: 'Как работает', href: '#try' },
             { label: 'Сравнение', href: '#compare' },
           ]}
         />
@@ -72,7 +78,6 @@ export function Footer() {
           items={[
             { label: 'Вопросы', href: '/faq' },
             { label: 'Связаться', href: 'mailto:hello@sanda.app' },
-            { label: 'Для прессы', href: '#' },
             { label: 'Telegram-канал', href: '#' },
           ]}
         />

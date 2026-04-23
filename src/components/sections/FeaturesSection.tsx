@@ -66,42 +66,54 @@ export function FeaturesSection() {
   const current = tabs.find((t) => t.key === active)!
 
   return (
-    <section id="features" className="border-b border-line px-5 py-24">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-12 max-w-2xl">
+    <section id="features" className="border-b border-line py-16 md:py-24">
+      <div className="mx-auto max-w-6xl px-5">
+        <div className="mb-8 max-w-2xl md:mb-12">
           <div className="eyebrow">Возможности</div>
-          <h2 className="mt-5 text-4xl font-bold tracking-tight md:text-5xl">
+          <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
             Простота сверху. Глубина снизу.
           </h2>
-          <p className="mt-5 text-text-muted">
-            На главном экране одна цифра и быстрая кнопка. Статистика, капитал, аналитика — в
-            отдельных разделах для тех, кому интересно.
+          <p className="mt-4 text-text-muted md:mt-5">
+            На главном экране одна цифра и быстрая кнопка. Планирование бюджета, капитал и
+            аналитика — в отдельных разделах для тех, кому интересно.
           </p>
         </div>
+      </div>
 
-        <div className="mb-8 flex flex-wrap gap-2">
-          {tabs.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setActive(t.key)}
-              className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
-                active === t.key
-                  ? 'border-mint/40 bg-mint/[0.1] text-mint'
-                  : 'border-line bg-white/[0.02] text-text-muted hover:text-text'
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
+      {/*
+       * Sticky tab bar: on mobile the tabs stick to the top of the viewport
+       * as the user scrolls through the description, so they can jump between
+       * features without losing context.
+       * top-16 matches the 64px sticky Header so we don't cover it.
+       */}
+      <div className="sticky top-16 z-20 -mx-0 mb-8 border-b border-line bg-ink/85 px-5 py-3 backdrop-blur-xl md:static md:mx-auto md:max-w-6xl md:border-0 md:bg-transparent md:px-5 md:py-0 md:backdrop-blur-none">
+        <div className="mx-auto max-w-6xl overflow-x-auto">
+          <div className="flex min-w-max gap-2">
+            {tabs.map((t) => (
+              <button
+                key={t.key}
+                onClick={() => setActive(t.key)}
+                className={`whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium transition ${
+                  active === t.key
+                    ? 'border-mint/40 bg-mint/[0.1] text-mint'
+                    : 'border-line bg-white/[0.02] text-text-muted hover:text-text'
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
         </div>
+      </div>
 
-        <div className="grid items-center gap-12 lg:grid-cols-[1fr_380px]">
+      <div className="mx-auto max-w-6xl px-5">
+        <div className="grid items-center gap-10 lg:grid-cols-[1fr_380px] lg:gap-12">
           <div>
-            <h3 className="text-3xl font-bold tracking-tight md:text-4xl">
+            <h3 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
               {current.title}
             </h3>
             <p className="mt-4 max-w-xl text-text-muted">{current.text}</p>
-            <ul className="mt-6 space-y-3">
+            <ul className="mt-5 space-y-3 md:mt-6">
               {current.bullets.map((b) => (
                 <li key={b} className="flex items-start gap-3">
                   <span className="mt-1.5 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-mint" />
@@ -111,7 +123,7 @@ export function FeaturesSection() {
             </ul>
           </div>
 
-          <div className="relative mx-auto w-full max-w-[320px]">
+          <div className="relative mx-auto w-full max-w-[300px] md:max-w-[340px]">
             <div
               className="pointer-events-none absolute -inset-10 -z-10 rounded-full opacity-40 blur-3xl"
               style={{
@@ -125,12 +137,22 @@ export function FeaturesSection() {
             {active === 'capital' && <CapitalMockup />}
           </div>
         </div>
+      </div>
 
-        <div className="mt-20 grid gap-4 md:grid-cols-3">
+      {/*
+       * Mini-features as a horizontal snap carousel on all viewports.
+       * On mobile the strip bleeds to the viewport edges; on desktop
+       * the scrolling still works but the row is comfortably wide.
+       */}
+      <div className="mt-14 md:mt-20">
+        <div className="mx-auto mb-4 max-w-6xl px-5">
+          <p className="text-sm text-text-dim">И ещё — свайпни ←</p>
+        </div>
+        <div className="hscroll hscroll-bleed mx-auto max-w-6xl" style={{ scrollPaddingInline: '1.25rem' }}>
           <MiniFeature
-            icon="📊"
-            title="Статистика без боли"
-            text="Категории — в отдельном разделе для любителей деталей. Главный экран от них свободен."
+            icon="📅"
+            title="Планирование бюджета"
+            text="Бюджет задаётся заранее и раскладывается по дням до зарплаты. Никаких постфактум-сводок."
           />
           <MiniFeature
             icon="🔥"
@@ -173,7 +195,7 @@ function MiniFeature({
   text: string
 }) {
   return (
-    <div className="rounded-2xl border border-line bg-white/[0.02] p-5">
+    <div className="w-[260px] rounded-2xl border border-line bg-white/[0.02] p-5 md:w-[300px]">
       <div className="mb-3 text-2xl">{icon}</div>
       <p className="font-semibold">{title}</p>
       <p className="mt-1 text-sm text-text-muted">{text}</p>
