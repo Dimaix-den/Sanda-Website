@@ -1,0 +1,59 @@
+import { ArrowRight } from 'lucide-react'
+
+export function CtaSection() {
+  return (
+    <section id="cta" className="relative overflow-hidden border-b border-line">
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 opacity-30"
+        style={{
+          background:
+            'radial-gradient(ellipse at center, rgba(59,232,176,0.35) 0%, rgba(59,158,255,0.2) 30%, transparent 70%)',
+        }}
+      />
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 grid-lines opacity-30"
+      />
+
+      <div className="mx-auto max-w-4xl px-5 py-28 text-center">
+        <div className="eyebrow mx-auto">Бесплатно · iOS · Android в планах</div>
+        <h2 className="mt-6 text-[44px] font-black leading-[1.05] tracking-tight md:text-[64px]">
+          Контроль за <span className="grad-text">две секунды в день.</span>
+        </h2>
+        <p className="mx-auto mt-6 max-w-xl text-lg text-text-muted">
+          Заноси баланс, обязательства и цели — и получи свою цифру на сегодня. Никакой
+          разметки. Никаких упрёков. Никаких таблиц.
+        </p>
+
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          <a href="#" className="btn-primary">
+            Скачать в App Store <ArrowRight size={18} />
+          </a>
+          <a href="#" className="btn-ghost">
+            Google Play (скоро)
+          </a>
+        </div>
+
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm text-text-muted">
+          <Check>Ядро бесплатно навсегда</Check>
+          <Check>Работает офлайн</Check>
+          <Check>Apple Sign-In</Check>
+          <Check>Без рекламы</Check>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Check({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="flex items-center gap-2">
+      <span
+        className="inline-flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold text-ink"
+        style={{ background: 'linear-gradient(110deg, #3be8b0 0%, #3b9eff 100%)' }}
+      >
+        ✓
+      </span>
+      {children}
+    </span>
+  )
+}
