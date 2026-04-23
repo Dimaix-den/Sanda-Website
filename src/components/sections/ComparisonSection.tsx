@@ -43,8 +43,8 @@ export function ComparisonSection() {
         <div className="mb-8 max-w-2xl md:mb-12">
           <div className="eyebrow">Сравнение</div>
           <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
-            Свободная клетка на карте.{' '}
-            <span className="grad-text">Пока никого нет.</span>
+            Преимущества перед{' '}
+            <span className="grad-text">другими системами</span>
           </h2>
           <p className="mt-4 text-text-muted md:mt-5">
             Банки видят только свою долю. Категоризаторы требуют месяцы разметки. YNAB требует

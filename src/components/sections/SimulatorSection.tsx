@@ -13,25 +13,21 @@ const defaultDays: Day[] = [
     date: '21 апр',
     base: 12000,
     purchases: [
-      { name: 'Трата дня', amount: 4200 },
-      { name: 'Ещё одна трата', amount: 2800 },
+      { name: 'Машина', amount: 4200 },
+      { name: 'Расход', amount: 2800 },
     ],
   },
   {
     label: 'Вт',
     date: '22 апр',
     base: 12000,
-    purchases: [
-      { name: 'Небольшая трата', amount: 1200 },
-      { name: 'Поездка', amount: 2400 },
-      { name: 'Крупная трата', amount: 11200 },
-    ],
+    purchases: [],
   },
   {
     label: 'Ср',
     date: '23 апр',
     base: 12000,
-    purchases: [{ name: 'Небольшая трата', amount: 1500 }],
+    purchases: [],
   },
   {
     label: 'Чт',
@@ -230,24 +226,24 @@ export function SimulatorSection() {
                */}
               <div className="mt-3 grid grid-cols-2 gap-2">
                 <QuickBtn
-                  label="Небольшая трата"
+                  label="Кофе"
                   amount={1500}
-                  onClick={() => addPurchase(1500, 'Небольшая трата')}
+                  onClick={() => addPurchase(1500, 'Кофе')}
                 />
                 <QuickBtn
-                  label="Средняя трата"
+                  label="Стрижка"
                   amount={6000}
-                  onClick={() => addPurchase(6000, 'Средняя трата')}
+                  onClick={() => addPurchase(6000, 'Стрижка')}
                 />
                 <QuickBtn
-                  label="Крупная трата"
+                  label="Ужин"
                   amount={12000}
-                  onClick={() => addPurchase(12000, 'Крупная трата')}
+                  onClick={() => addPurchase(12000, 'Ужин')}
                 />
                 <QuickBtn
-                  label="Импульсивная"
+                  label="На себя"
                   amount={18000}
-                  onClick={() => addPurchase(18000, 'Импульсивная трата')}
+                  onClick={() => addPurchase(18000, 'На себя')}
                 />
               </div>
 
@@ -257,7 +253,7 @@ export function SimulatorSection() {
                 </p>
                 <p className="mt-1 text-xs text-text-muted">
                   Знаешь, что в пятницу будет крупная покупка? Занеси её заранее — бюджет
-                  пересчитает дни до и отложит сумму.
+                  пересчитает дни и отложит сумму
                 </p>
               </div>
 

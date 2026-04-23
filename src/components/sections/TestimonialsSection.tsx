@@ -75,13 +75,6 @@ export function TestimonialsSection() {
           </figure>
         ))}
       </div>
-
-      <div className="mx-auto mt-10 grid max-w-6xl gap-3 px-5 sm:grid-cols-2 md:mt-12 md:grid-cols-4 md:gap-4">
-        <Metric big="4,8 ★" small="оценка в App Store" />
-        <Metric big="12 дн" small="средний стрик дисциплины" />
-        <Metric big="70%" small="доходят до конца онбординга" />
-        <Metric big="2,5×" small="открытий в день на пользователя" />
-      </div>
     </section>
   )
 }

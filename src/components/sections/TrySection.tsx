@@ -14,10 +14,6 @@ function formatN(n: number) {
   return new Intl.NumberFormat('ru-RU').format(Math.max(0, Math.round(n)))
 }
 
-/**
- * TrySection = merged "Попробуй здесь" (interactive calculator) + "Как работает"
- * (3 steps + formula chips). Kept as a single, denser section to cut landing length.
- */
 export function TrySection() {
   const [balance, setBalance] = useState(485_000)
   const [obligations, setObligations] = useState(142_000)
@@ -39,29 +35,28 @@ export function TrySection() {
     >
       <div className="mx-auto max-w-6xl">
         <div className="mb-10 max-w-2xl md:mb-12">
-          <div className="eyebrow">Как работает · Попробуй</div>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
-            Вноси данные и смотри,{' '}
-            <span className="grad-text">твой бюджет на сегодня</span>
-          </h2>
-          <p className="mt-4 text-text-muted md:mt-5">
-            Заноси баланс, обязательства и цели. Sanda учитывай все твои расходы, доходы, планы, обязательства к выплате и цели по сбережениям
-          </p>
+         <div className="eyebrow">Как работает · Попробуй</div>
+         <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
+           Вноси данные и смотри,{' '}
+           <span className="grad-text">твой бюджет на сегодня</span>
+         </h2>
+         <p className="mt-4 text-text-muted md:mt-5">
+           Заноси баланс, обязательства и цели. Sanda учитывай все твои расходы, доходы, планы, обязательства к выплате и цели по сбережениям
+         </p>
         </div>
 
-        {/* Формула — лёгкая, без отдельного блока */}
         <div className="mb-8 overflow-x-auto md:mb-10">
-          <div className="flex min-w-max items-center gap-1.5 pb-1">
-            <FormulaChip color="white">Баланс</FormulaChip>
-            <span className="text-text-dim">−</span>
-            <FormulaChip color="danger">Обязательства</FormulaChip>
-            <span className="text-text-dim">−</span>
-            <FormulaChip color="sky">Цели</FormulaChip>
-            <span className="mx-1 text-text-dim">÷</span>
-            <FormulaChip color="mint">Дни до зарплаты</FormulaChip>
-            <span className="mx-1 text-text-dim">=</span>
-            <span className="grad-text text-lg font-bold md:text-xl">Сегодня</span>
-          </div>
+         <div className="flex min-w-max items-center gap-1.5 pb-1">
+           <FormulaChip color="white">Баланс</FormulaChip>
+           <span className="text-text-dim">−</span>
+           <FormulaChip color="danger">Обязательства</FormulaChip>
+           <span className="text-text-dim">−</span>
+           <FormulaChip color="sky">Цели</FormulaChip>
+           <span className="mx-1 text-text-dim">÷</span>
+           <FormulaChip color="mint">Дни до зарплаты</FormulaChip>
+           <span className="mx-1 text-text-dim">=</span>
+           <span className="grad-text text-lg font-bold md:text-xl">Сегодня</span>
+         </div>
         </div>
 
         <div className="grid items-start gap-8 lg:grid-cols-[1fr_380px] lg:gap-12">
@@ -109,12 +104,13 @@ export function TrySection() {
               step={1}
               unit=""
             />
-
- 
           </div>
 
           <div className="order-1 lg:order-2">
-            <div className="relative mx-auto w-full max-w-[300px] md:max-w-[340px]">
+            <div className="relative mx-auto w-full max-w-[300px] h-[380px] overflow-hidden md:h-auto md:max-w-[340px]">
+              {/* Градиентная маска для плавной обрезки снизу на мобильных */}
+              <div className="absolute inset-0 -z-10 md:hidden mask-gradient-fade" />
+              
               <div
                 className="pointer-events-none absolute -inset-10 -z-10 rounded-full opacity-40 blur-3xl"
                 style={{
@@ -136,15 +132,13 @@ export function TrySection() {
   )
 }
 
-function Step({ num, title, text }: { num: string; title: string; text: string }) {
-  return (
-    <div className="rounded-2xl border border-line bg-white/[0.02] p-4 md:p-5">
-      <p className="num-display grad-text text-2xl font-black md:text-3xl">{num}</p>
-      <p className="mt-2 text-base font-semibold md:text-lg">{title}</p>
-      <p className="mt-1 text-sm text-text-muted">{text}</p>
-    </div>
-  )
+// Добавьте этот CSS класс в ваш глобальный stylesheet
+/*
+.mask-gradient-fade {
+  mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
 }
+*/
 
 function FormulaChip({
   children,
@@ -195,8 +189,8 @@ function Slider({
     <div>
       <div className="mb-2 flex items-end justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-sm font-medium text-text">{label}</p>
-          {sub && <p className="text-xs text-text-dim">{sub}</p>}
+         <p className="text-sm font-medium text-text">{label}</p>
+         {sub && <p className="text-xs text-text-dim">{sub}</p>}
         </div>
         <p className="num-display whitespace-nowrap text-lg font-semibold text-text">
           {formatN(value)}

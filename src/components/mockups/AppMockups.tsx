@@ -98,10 +98,10 @@ export function TodayMockup({
         </div>
 
         <button
-          className="mt-auto flex h-10 w-full flex-shrink-0 items-center justify-center gap-1.5 rounded-full text-[13px] font-semibold text-black"
+          className="mt-auto flex h-10 w-full flex-shrink-0 items-center justify-center gap-1.5 rounded-full text-[13px] font-semibold text-black mb-10"
           style={{ background: 'linear-gradient(110deg, #3be8b0 0%, #3b9eff 100%)' }}
         >
-          <span className="text-base leading-none">＋</span> Добавить расход
+          <span className="text-base leading-none">＋</span> Добавить
         </button>
         <div className="mt-2 flex flex-shrink-0 justify-center">
           <div className="h-1 w-20 rounded-full bg-white/30" />

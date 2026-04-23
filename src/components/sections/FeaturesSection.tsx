@@ -134,7 +134,7 @@ export function FeaturesSection() {
        */}
       <div className="mt-14 md:mt-20">
         <div className="mx-auto mb-4 max-w-6xl px-5">
-          <p className="text-sm text-text-dim">И ещё — свайпни ←</p>
+          <p className="text-sm text-text-dim">Дополнительые плюшки</p>
         </div>
         <div className="hscroll hscroll-bleed mx-auto max-w-6xl" style={{ scrollPaddingInline: '1.25rem' }}>
           <MiniFeature

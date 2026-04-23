@@ -13,14 +13,12 @@ export function CtaSection() {
       <div className="pointer-events-none absolute inset-0 -z-10 grid-lines opacity-30" />
 
       <div className="mx-auto max-w-4xl px-5 py-20 text-center md:py-28">
-        <div className="eyebrow mx-auto">Бесплатно · iOS · Android в планах</div>
+        <div className="eyebrow mx-auto">Бесплатно · iOS · Android (скоро)</div>
         <h2 className="mt-5 text-[36px] font-black leading-[1.05] tracking-tight sm:text-[44px] md:mt-6 md:text-[64px]">
-          Контроль за <span className="grad-text">две секунды в день.</span>
+          Попробуй сегодня <span className="grad-text">бесплатно</span>
         </h2>
         <p className="mx-auto mt-5 max-w-xl text-base text-text-muted md:mt-6 md:text-lg">
-          Заноси баланс, обязательства и цели — и получи свою цифру на сегодня. Никакой
-          разметки. Никаких упрёков. Никаких таблиц.
-        </p>
+          Скачай приложение и расчитай свой лимит на день в течение 10 минут.        </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3 md:mt-10">
           <a href="#" className="btn-primary">

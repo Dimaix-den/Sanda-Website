@@ -31,11 +31,11 @@ export function PhilosophySection() {
         <div className="mb-8 max-w-2xl md:mb-12">
           <div className="eyebrow">Философия</div>
           <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
-            Не запрещать, а показывать
+            Не запрещает, а показывает
           </h2>
           <p className="mt-4 text-text-muted md:mt-5">
-            Sanda не делит расходы на правильные и неправильные. Показываем границу
-            безопасных трат, а что внутри неё — решаешь ты.
+            Sanda не делит расходы на правильные и неправильные. Обозначаем границу
+            безопасных трат, а что внутри — решаешь ты.
           </p>
         </div>
         <div className="grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2">

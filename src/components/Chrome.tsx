@@ -84,7 +84,7 @@ export function Footer() {
         <FooterCol
           title="Правовая информация"
           items={[
-            { label: 'Политика конфиденциальности', href: '#' },
+            { label: 'Политика конфиденциальности', href: '/confidential' },
             { label: 'Условия использования', href: '#' },
             { label: 'Безопасность данных', href: '#' },
           ]}

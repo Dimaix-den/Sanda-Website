@@ -38,8 +38,6 @@ export function HeroSection() {
 
             <p className="mt-5 max-w-xl text-base text-text-muted md:mt-6 md:text-xl">
               Sanda не покажет, сколько ты потратил на кофе,
-            </p>
-            <p className="max-w-xl text-base text-text-muted md:text-xl">
               она покажет сколько кофе ты можешь себе позволить
             </p>
 
