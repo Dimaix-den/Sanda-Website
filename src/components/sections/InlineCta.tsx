@@ -96,9 +96,6 @@ export function InlineCta({
               <a href={href} className="btn-primary">
                 {cta} <ArrowRight size={18} />
               </a>
-              <a href="#try" className="btn-ghost">
-                Посчитать сначала
-              </a>
             </div>
           </div>
         </div>

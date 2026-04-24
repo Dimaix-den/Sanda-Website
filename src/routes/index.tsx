@@ -24,7 +24,7 @@ function Home() {
         {/* Inline CTA after the live calculator */}
         <InlineCta
           variant="split"
-          eyebrow="Готов попробовать на своих цифрах?"
+          eyebrow="Готов попробовать?"
           title="Посчитал лимит — теперь пусть Sanda считает каждый день"
           subtitle="Устанавливается за минуту. Не требует доступа к банку."
           cta="Скачать для iOS"
@@ -36,9 +36,9 @@ function Home() {
         {/* Inline CTA after the rolling-budget simulator */}
         <InlineCta
           variant="banner"
-          eyebrow="Лимит, который сам подстраивается"
-          title="Перестань держать бюджет в голове"
-          subtitle="Sanda пересчитывает каждый день. Ты только решаешь — тратить или отложить."
+          eyebrow="Пора жить в балансе"
+          title="Каждая покука теперь просчитана"
+          subtitle="С Sanda тратить импульсивно можно, если ты идешь по плану"
           cta="Установить бесплатно"
         />
 
