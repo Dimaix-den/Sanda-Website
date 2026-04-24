@@ -22,7 +22,7 @@ export function HeroSection() {
         }}
       />
 
-      <div className="mx-auto max-w-6xl px-5 pt-14 pb-14 md:pt-10 md:pb-24">
+      <div className="mx-auto max-w-6xl px-5 pb-14 md:pt-10 md:pb-24">
         <div className="grid items-center gap-10 lg:grid-cols-[1fr_440px] lg:gap-12">
           <div>
             <div className="eyebrow">
