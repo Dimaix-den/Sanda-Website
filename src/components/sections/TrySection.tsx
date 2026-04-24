@@ -53,11 +53,11 @@ export function TrySection() {
           <div className="eyebrow">Как работает · Попробуй</div>
           <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
             Вноси данные и смотри,{' '}
-            <span className="grad-text">твой бюджет на сегодня</span>
+            <span className="grad-text">свой бюджет на сегодня</span>
           </h2>
           <p className="mt-4 text-text-muted md:mt-5">
             Sanda учитывает все твои расходы,
-            доходы, плановые расходы, обязательства и цели по сбережениям.
+            доходы, плановые расходы, обязательства и цели по сбережениям
           </p>
         </div>
 

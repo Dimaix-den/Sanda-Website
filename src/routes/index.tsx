@@ -33,22 +33,13 @@ function Home() {
         <FeaturesSection />
         <SimulatorSection />
 
-        {/* Inline CTA after the rolling-budget simulator */}
-        <InlineCta
-          variant="banner"
-          eyebrow="Пора жить в балансе"
-          title="Каждая покука теперь просчитана"
-          subtitle="С Sanda тратить импульсивно можно, если ты идешь по плану"
-          cta="Установить бесплатно"
-        />
-
         <ComparisonSection />
 
         {/* Inline CTA before the testimonial carousel */}
         <InlineCta
           variant="compact"
-          eyebrow="Готов попробовать?"
-          title="Заведи свой первый дневной лимит за 5 минут"
+          eyebrow="Ценность с первого дня"
+          title=""
           cta="Скачать"
         />
 

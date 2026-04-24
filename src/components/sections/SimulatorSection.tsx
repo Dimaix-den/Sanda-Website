@@ -125,7 +125,7 @@ export function SimulatorSection() {
           </h2>
           <p className="mt-4 text-text-muted md:mt-5">
             Выбери день, добавь трату — и проследи, как перестраиваются лимиты
-            на ближайшую неделю.
+            на ближайшую неделю
           </p>
         </div>
 
