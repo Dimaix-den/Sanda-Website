@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Menu, X } from 'lucide-react'
 
 export function Logo({ size = 28 }: { size?: number }) {
@@ -34,6 +34,26 @@ const navItems = [
 export function Header() {
   const [open, setOpen] = useState(false)
 
+  // Transient translation during a swipe-to-close gesture. Null when
+  // the user isn't dragging — the drawer then uses its CSS transition.
+  const [dragX, setDragX] = useState<number | null>(null)
+  const drawerRef = useRef<HTMLElement | null>(null)
+  const swipe = useRef<{
+    active: boolean
+    startX: number
+    startY: number
+    locked: 'x' | 'y' | null
+    width: number
+    pointerId: number | null
+  }>({
+    active: false,
+    startX: 0,
+    startY: 0,
+    locked: null,
+    width: 320,
+    pointerId: null,
+  })
+
   // Lock body scroll while the drawer is open.
   useEffect(() => {
     if (!open) return
@@ -44,7 +64,7 @@ export function Header() {
     }
   }, [open])
 
-  // Close if the viewport crosses into desktop — avoids an invisible blocker.
+  // Close if the viewport crosses into desktop.
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 1024px)')
     const handler = (e: MediaQueryListEvent) => {
@@ -54,7 +74,7 @@ export function Header() {
     return () => mq.removeEventListener('change', handler)
   }, [])
 
-  // Close on Escape for keyboard users.
+  // Close on Escape.
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
@@ -64,11 +84,82 @@ export function Header() {
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
 
+  // Reset drag state when the drawer closes.
+  useEffect(() => {
+    if (!open) setDragX(null)
+  }, [open])
+
+  /**
+   * Swipe-to-close — the drawer sits on the right side, so a right-going
+   * drag should reveal more of the page and eventually close. We track
+   * horizontal delta and translate the drawer accordingly. Vertical
+   * intent (scrolling the menu itself) locks the gesture to 'y' and
+   * lets native scroll take over.
+   */
+  const onPointerDown = (e: React.PointerEvent<HTMLElement>) => {
+    // Only touch or pen — mouse users will click the backdrop or X.
+    if (e.pointerType === 'mouse') return
+    const el = drawerRef.current
+    if (!el) return
+    swipe.current.active = true
+    swipe.current.startX = e.clientX
+    swipe.current.startY = e.clientY
+    swipe.current.locked = null
+    swipe.current.width = el.offsetWidth || 320
+    swipe.current.pointerId = e.pointerId
+  }
+
+  const onPointerMove = (e: React.PointerEvent<HTMLElement>) => {
+    if (!swipe.current.active) return
+    const dx = e.clientX - swipe.current.startX
+    const dy = e.clientY - swipe.current.startY
+
+    // Decide axis once we have a clear direction.
+    if (swipe.current.locked === null) {
+      const adx = Math.abs(dx)
+      const ady = Math.abs(dy)
+      if (adx < 6 && ady < 6) return
+      swipe.current.locked = adx > ady ? 'x' : 'y'
+    }
+
+    if (swipe.current.locked === 'y') return
+
+    // Only a rightward drag closes the right-side drawer. Left drag
+    // is clamped to 0 so the drawer can't be pulled past its home.
+    const clamped = Math.max(0, dx)
+    setDragX(clamped)
+  }
+
+  const endSwipe = () => {
+    if (!swipe.current.active) return
+    const dx = dragX ?? 0
+    swipe.current.active = false
+    swipe.current.pointerId = null
+
+    // Close if the user dragged more than ~40% of the drawer width.
+    if (dx > swipe.current.width * 0.4) {
+      setOpen(false)
+      // dragX will be reset by the effect that watches `open`.
+    } else {
+      setDragX(null)
+    }
+    swipe.current.locked = null
+  }
+
+  const isDragging = dragX !== null && dragX > 0
+  const backdropOpacity = isDragging
+    ? Math.max(0, 1 - dragX / swipe.current.width)
+    : undefined
+
   return (
     <>
       <header className="sticky top-0 z-50 border-b border-line bg-ink/70 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-          <Link to="/" className="flex items-center" onClick={() => setOpen(false)}>
+          <Link
+            to="/"
+            className="flex items-center"
+            onClick={() => setOpen(false)}
+          >
             <Logo />
           </Link>
 
@@ -81,10 +172,6 @@ export function Header() {
             ))}
           </nav>
 
-          {/*
-           * Right cluster on mobile: "Скачать" button then hamburger.
-           * On desktop the button is the only thing here (hamburger is lg:hidden).
-           */}
           <div className="flex items-center gap-2">
             <a href="#cta" className="btn-primary !px-4 !py-2 text-sm">
               Скачать
@@ -104,37 +191,60 @@ export function Header() {
         </div>
       </header>
 
-      {/*
-       * Mobile overlay — full-screen backdrop (dim + blur), sits BELOW
-       * the drawer but ABOVE the page content. Clicking the backdrop
-       * closes the menu. Covers the header too so the menu reads as
-       * a focused modal layer.
-       */}
+      {/* Backdrop — tap to close, fades as the user swipes. */}
       <div
         aria-hidden={!open}
         onClick={() => setOpen(false)}
+        style={
+          backdropOpacity !== undefined
+            ? { opacity: backdropOpacity, transition: 'none' }
+            : undefined
+        }
         className={`fixed inset-0 z-40 bg-black/55 backdrop-blur-md transition-opacity duration-200 lg:hidden ${
-          open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+          open
+            ? 'pointer-events-auto opacity-100'
+            : 'pointer-events-none opacity-0'
         }`}
       />
 
       {/*
-       * Mobile drawer — slides in from the RIGHT. Sits above the backdrop
-       * (z-50), with its own heavy blur + dark background so text stays
-       * readable over any page content showing through.
-       *
-       * Width is capped at 88% of viewport (max 360px) so the backdrop
-       * is still clearly visible, reinforcing "tap outside to close".
+       * Drawer — swipe-right-to-close on touch. During the drag we
+       * disable the CSS transition (inline style) so the drawer sticks
+       * to the finger; on release it either snaps back or closes.
        */}
       <aside
         id="mobile-nav"
         role="dialog"
         aria-modal="true"
         aria-label="Меню навигации"
+        ref={drawerRef}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endSwipe}
+        onPointerCancel={endSwipe}
+        style={
+          isDragging
+            ? {
+                transform: `translateX(${dragX}px)`,
+                transition: 'none',
+              }
+            : undefined
+        }
         className={`fixed inset-y-0 right-0 z-50 flex w-[88%] max-w-[360px] flex-col border-l border-line bg-ink/95 backdrop-blur-2xl shadow-2xl transition-transform duration-300 ease-out lg:hidden ${
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
+        {/*
+         * Grab handle — a slim vertical bar on the left edge of the
+         * drawer that hints "you can drag me". Purely visual.
+         */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-0 flex w-4 items-center justify-center"
+        >
+          <div className="h-10 w-1 rounded-full bg-white/15" />
+        </div>
+
         <div className="flex h-16 flex-shrink-0 items-center justify-between border-b border-line px-5">
           <span className="text-sm font-semibold uppercase tracking-[0.2em] text-text-dim">
             Меню
@@ -221,7 +331,10 @@ export function Footer() {
       </div>
       <div className="border-t border-line py-5">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-5 text-xs text-text-dim md:flex-row">
-          <p>Sanda — финансовый помощник, не банк. Решения о тратах остаются за тобой.</p>
+          <p>
+            Sanda — финансовый помощник, не банк. Решения о тратах остаются за
+            тобой.
+          </p>
           <p>Сделано в СНГ · с уважением к деньгам и людям</p>
         </div>
       </div>

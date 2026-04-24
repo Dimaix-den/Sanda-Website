@@ -1,3 +1,5 @@
+import { Carousel } from './Carousel'
+
 export function TestimonialsSection() {
   const people = [
     {
@@ -38,17 +40,19 @@ export function TestimonialsSection() {
             Люди, которые устали считать в уме
           </h2>
           <p className="mt-4 text-text-muted md:mt-5">
-            Разные города, разные профессии, разные доходы. Общее у всех — желание
-            контролировать деньги, не превращаясь в домашнего бухгалтера.
+            Разные города, разные профессии, разные доходы. Общее у всех —
+            желание контролировать деньги, не превращаясь в домашнего
+            бухгалтера.
           </p>
         </div>
       </div>
 
       {/*
-       * Horizontal snap carousel for testimonials on every viewport.
-       * On desktop three cards fit comfortably; on mobile the user swipes.
+       * Edge-to-edge carousel — cards bleed to the viewport border on
+       * desktop, first card starts at the content-column gutter. Arrow
+       * buttons and mouse drag included by the Carousel primitive.
        */}
-      <div className="hscroll hscroll-bleed mx-auto max-w-6xl">
+      <Carousel ariaLabel="Отзывы пользователей" padInline={20}>
         {people.map((p) => (
           <figure
             key={p.name}
@@ -74,16 +78,7 @@ export function TestimonialsSection() {
             </figcaption>
           </figure>
         ))}
-      </div>
+      </Carousel>
     </section>
-  )
-}
-
-function Metric({ big, small }: { big: string; small: string }) {
-  return (
-    <div className="rounded-2xl border border-line bg-white/[0.02] p-4 md:p-5">
-      <p className="num-display grad-text text-2xl font-bold md:text-3xl">{big}</p>
-      <p className="mt-1 text-sm text-text-muted">{small}</p>
-    </div>
   )
 }

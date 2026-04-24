@@ -6,7 +6,16 @@ export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      {
+        name: 'viewport',
+        // viewport-fit=cover lets the page paint under the iOS status bar
+        // and home indicator. Without it, iOS Safari sits the page inside
+        // a "safe" letterbox and exposes white strips above/below — which
+        // is what the user saw as "site cut at top and bottom".
+        // Combined with min-height: 100dvh and a dark html bg-color, the
+        // page reaches the real screen edges on every iPhone.
+        content: 'width=device-width, initial-scale=1, viewport-fit=cover',
+      },
       { name: 'theme-color', content: '#05070a' },
       {
         name: 'description',

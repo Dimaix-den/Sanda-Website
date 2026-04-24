@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { ChevronRight } from 'lucide-react'
 import {
   CapitalMockup,
   PlanMockup,
   TodayMockup,
 } from '../mockups/AppMockups'
 import { StatsMockup } from '../mockups/StatsMockup'
+import { Carousel } from './Carousel'
 
 type TabKey = 'today' | 'plans' | 'capital' | 'stats'
 
@@ -19,7 +21,7 @@ const tabs: {
     key: 'today',
     label: 'Сегодня',
     title: 'Главный экран',
-    text: 'Крупное число, стрик и кнопка добавления расхода. Больше ничего не нужно, чтобы принять решение',
+    text: 'Крупное число, стрик и кнопка добавления расхода. Больше ничего не нужно, чтобы принять решение.',
     bullets: [
       'Зелёный — в безопасной зоне',
       'Оранжевый — близко к границе',
@@ -30,7 +32,7 @@ const tabs: {
     key: 'plans',
     label: 'Планы',
     title: 'Календарь трат на месяц вперёд',
-    text: 'Можно запланировать расходы, доходы и выделить бюджет на месяц. Есть ежемесячные и ежегодные статьи — всё разложено по дням',
+    text: 'Можно запланировать расходы, доходы и выделить бюджет на месяц. Есть ежемесячные и ежегодные статьи — всё разложено по дням.',
     bullets: [
       'Регулярные расходы и доходы — раз в месяц или год',
       'Плановые крупные покупки — бюджет подстроится',
@@ -41,7 +43,7 @@ const tabs: {
     key: 'capital',
     label: 'Капитал',
     title: 'Обязательства, сбережения, имущество и счета',
-    text: 'Всё, что у тебя есть и что ты должен. Активные счета, накопления, недвижимость, кредиты — единая картина чистого капитала',
+    text: 'Всё, что у тебя есть и что ты должен. Активные счета, накопления, недвижимость, кредиты — единая картина чистого капитала.',
     bullets: [
       'Все счета и сбережения в одном месте',
       'Имущество и обязательства — как в балансе',
@@ -52,7 +54,7 @@ const tabs: {
     key: 'stats',
     label: 'Статистика',
     title: 'Вся история твоих денег в одном разделе',
-    text: 'Капитал, денежный поток, динамика расходов и доходов, накоплений. За день, неделю, месяц или год',
+    text: 'Капитал, денежный поток, динамика расходов и доходов, накоплений. За день, неделю, месяц или год.',
     bullets: [
       'Тратишь ли ты меньше, чем получаешь',
       'Динамика расходов и доходов за любой период',
@@ -171,17 +173,22 @@ export function FeaturesSection() {
       </div>
 
       {/*
-       * Mini-features horizontal carousel. Scrollbar hidden.
-       * Tightened margin-top so the section doesn't stretch on desktop.
+       * Mini-features carousel — edge-to-edge on desktop with arrow
+       * buttons and mouse-drag, native inertial swipe on mobile.
+       * On mobile a static chevron hint sits in the header row to
+       * tell the user the row scrolls.
        */}
       <div className="mt-12 md:mt-14">
-        <div className="mx-auto mb-3 max-w-6xl px-5">
+        <div className="mx-auto mb-3 flex max-w-6xl items-center justify-between px-5">
           <p className="text-sm text-text-dim">Дополнительные плюшки</p>
+          <span
+            aria-hidden
+            className="swipe-hint text-xs text-text-dim lg:hidden"
+          >
+            листай <ChevronRight size={14} strokeWidth={2.5} />
+          </span>
         </div>
-        <div
-          className="hscroll hscroll-bleed mx-auto max-w-6xl"
-          style={{ scrollPaddingInline: '1.25rem' }}
-        >
+        <Carousel ariaLabel="Дополнительные плюшки" padInline={20}>
           <MiniFeature
             icon="📅"
             title="Планирование бюджета"
@@ -212,7 +219,7 @@ export function FeaturesSection() {
             title="iOS-душа"
             text="SF-шрифт, спокойные анимации, Dynamic Island."
           />
-        </div>
+        </Carousel>
       </div>
     </section>
   )

@@ -53,11 +53,11 @@ export function TrySection() {
           <div className="eyebrow">Как работает · Попробуй</div>
           <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
             Вноси данные и смотри,{' '}
-            <span className="grad-text">свой бюджет на сегодня</span>
+            <span className="grad-text">твой бюджет на сегодня</span>
           </h2>
           <p className="mt-4 text-text-muted md:mt-5">
-            Sanda учитывает все твои расходы,
-            доходы, плановые расходы, обязательства и цели по сбережениям
+            Заноси баланс, обязательства и цели. Sanda учитывает все твои расходы,
+            доходы, планы, обязательства к выплате и цели по сбережениям.
           </p>
         </div>
 
@@ -282,11 +282,23 @@ function SliderCard({
           {unit && <span className="ml-1 text-sm text-text-muted">{unit}</span>}
         </p>
       </div>
-      <div className="relative h-2 rounded-full bg-white/5">
-        <div
-          className="absolute inset-y-0 left-0 rounded-full"
-          style={{ width: `${pct}%`, background: accent }}
-        />
+      {/*
+       * .slider-hitbox extends the <input type="range"> over a 36px tall
+       * area (28px on desktop) while the visible track stays 2px. Thumb
+       * and fill stay at their original positions — only the finger
+       * target gets bigger.
+       */}
+      <div className="slider-hitbox relative my-2">
+        <div className="relative h-2 rounded-full bg-white/5">
+          <div
+            className="absolute inset-y-0 left-0 rounded-full"
+            style={{ width: `${pct}%`, background: accent }}
+          />
+          <div
+            className="pointer-events-none absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-ink bg-white shadow-lg"
+            style={{ left: `${pct}%` }}
+          />
+        </div>
         <input
           type="range"
           min={min}
@@ -294,11 +306,7 @@ function SliderCard({
           step={step}
           value={value}
           onChange={(e) => onChange(Number(e.target.value))}
-          className="absolute inset-0 w-full cursor-pointer opacity-0"
-        />
-        <div
-          className="pointer-events-none absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-ink bg-white shadow-lg"
-          style={{ left: `${pct}%` }}
+          aria-label={label}
         />
       </div>
     </div>
