@@ -18,6 +18,23 @@
 }
 
 @layer base {
+  /*
+   * Smooth anchor scrolling across the whole page — anchor clicks
+   * (e.g. header "Возможности" → #features) glide instead of jumping.
+   * scroll-padding-top compensates for the 64px sticky header so the
+   * section title isn't hidden under it after the scroll lands.
+   */
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 72px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
   html,
   body {
     @apply m-0 bg-ink text-text;
@@ -42,6 +59,14 @@
       #05070a;
     min-height: 100vh;
     overflow-x: hidden;
+  }
+
+  /*
+   * Any section with an id is a scroll target. Add margin-top so the
+   * sticky header doesn't overlap the heading when we land on it.
+   */
+  section[id] {
+    scroll-margin-top: 72px;
   }
 
   * {
@@ -154,6 +179,21 @@
     }
   }
 
+  /*
+   * Smaller phone variant — used in feature cards where the mockup
+   * is decorative rather than the hero subject. Avoids the "same huge
+   * iPhone again" feeling as the user scrolls.
+   */
+  .phone-frame-sm {
+    border-radius: 32px;
+    padding: 6px;
+    max-width: 240px;
+  }
+  .phone-frame-sm .phone-screen {
+    border-radius: 26px;
+    min-height: 440px;
+  }
+
   .notch {
     position: absolute;
     top: 8px;
@@ -177,6 +217,40 @@
     mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
   }
 
+  .mask-gradient-fade {
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  }
+
+  /*
+   * Inline CTA bar — a slim, horizontally-oriented promo strip that
+   * interrupts the flow of long content sections without stealing a
+   * full screen of vertical space like the final CTA does. Two of
+   * these sit between content blocks to combat scroll fatigue.
+   */
+  .cta-inline {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    border: 1px solid var(--color-line);
+    background:
+      linear-gradient(110deg, rgba(59, 232, 176, 0.12) 0%, rgba(59, 158, 255, 0.08) 50%, rgba(10, 13, 18, 0.6) 100%),
+      #0a0d12;
+  }
+
+  .cta-inline::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(ellipse at right, black 0%, transparent 70%);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
   /*
    * Horizontal scroll carousel primitives used for the Features mini-cards
    * and Testimonials on mobile. Snap-mandatory so each card locks into view,
@@ -184,13 +258,11 @@
    */
   .hscroll {
     display: flex;
-    gap: 0.75rem;
+    gap: 16px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    scroll-padding-inline: 1.25rem;
-    padding-inline: 1.25rem;
-    padding-bottom: 0.5rem;
-    -webkit-overflow-scrolling: touch;
+    scroll-padding-inline: 20px;
+    padding-block: 4px;
     scrollbar-width: none;
   }
 
@@ -199,26 +271,27 @@
   }
 
   .hscroll > * {
+    flex-shrink: 0;
     scroll-snap-align: start;
-    flex: 0 0 auto;
   }
 
-  /* Full-bleed the scroll strip inside a padded section on mobile only. */
-  @media (max-width: 767px) {
-    .hscroll-bleed {
-      margin-inline: calc(-1 * var(--section-px, 1.25rem));
+  .hscroll-bleed {
+    padding-inline: 20px;
+  }
+
+  .pulse-dot {
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(1.3);
     }
   }
-}
-
-@keyframes pulse-dot {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 1; }
-}
-
-.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
-
-@keyframes float-y {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
 }
