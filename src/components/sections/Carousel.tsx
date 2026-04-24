@@ -11,36 +11,37 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
  * Horizontal carousel primitive used for mini-features, testimonials,
  * and anywhere a row of cards needs to scroll horizontally.
  *
+ * v7 change: `bleed` now defaults to FALSE. The track obeys its parent
+ * container's max-width and left grid-gutter, so the first card lines
+ * up with the rest of the content. Set `bleed` explicitly to true if
+ * you want the desktop edge-to-edge effect.
+ *
  * Behaviours:
- *   1. Edge-to-edge on desktop — the scrolling track fills the viewport
- *      width, so cards appear to come in from and exit to the real edge
- *      of the screen. Content-column alignment is preserved via an
- *      inset pseudo-padding equal to the user's max-w-6xl gutter.
- *   2. Mouse drag — click and hold anywhere on the track and drag to
- *      scroll. Movement > 5px suppresses the click on child anchors so
- *      a drag doesn't accidentally navigate.
- *   3. Arrow buttons on desktop — previous / next scroll by roughly one
- *      card-width. They auto-hide when there's nothing to scroll in
- *      that direction.
- *   4. Mobile touch — the browser's native inertial swipe is kept.
- *      Drag handlers only fire on pointer-type "mouse".
+ *   - Arrow buttons on desktop — previous / next by ~ one card-width.
+ *     Auto-hide when there's nothing to scroll in that direction.
+ *   - Mouse drag — click and hold anywhere on the track to pan. A drag
+ *     > 5px suppresses the next click to avoid accidental navigation.
+ *   - Mobile touch — native inertial swipe. Drag handlers only bind to
+ *     pointerType === 'mouse'.
  */
 export function Carousel({
   children,
   ariaLabel,
-  bleed = true,
-  padInline = 20,
+  bleed = false,
+  padInline = 0,
   className = '',
 }: {
   children: ReactNode
   ariaLabel?: string
   /**
-   * When true, the track overflows its parent's max-width to reach
-   * the physical viewport edge on desktop. The first card still
-   * aligns to the content column via padInline.
+   * When true, the track overflows its parent's max-width and reaches
+   * the physical viewport edge on desktop. When false (default), the
+   * track lives inside the content column — first card aligns with the
+   * site's left grid line.
    */
   bleed?: boolean
-  /** Inner padding on both sides (keeps first/last card off the edge). */
+  /** Inner padding on both sides. 0 by default so the first card
+   * hugs the parent's gutter naturally. */
   padInline?: number
   className?: string
 }) {
@@ -48,7 +49,6 @@ export function Carousel({
   const [canLeft, setCanLeft] = useState(false)
   const [canRight, setCanRight] = useState(false)
 
-  // Drag state lives in refs — no re-renders per pointer move.
   const drag = useRef<{
     active: boolean
     startX: number
@@ -87,14 +87,12 @@ export function Carousel({
   const scrollBy = (dir: 1 | -1) => {
     const el = trackRef.current
     if (!el) return
-    // Roughly one card + gap. Use first-child width as the unit.
     const first = el.firstElementChild as HTMLElement | null
     const cardW = first ? first.getBoundingClientRect().width : 280
     const gap = 16
     el.scrollBy({ left: dir * (cardW + gap), behavior: 'smooth' })
   }
 
-  // Drag handlers — mouse only. Touch uses native swipe.
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType !== 'mouse') return
     const el = trackRef.current
@@ -126,15 +124,13 @@ export function Carousel({
       try {
         el.releasePointerCapture(drag.current.pointerId)
       } catch {
-        // noop — pointer may already be released
+        // noop
       }
       el.style.cursor = ''
       el.style.userSelect = ''
     }
     drag.current.pointerId = null
 
-    // If we dragged more than a few pixels, swallow the next click
-    // so child links don't fire from the drag.
     if (drag.current.moved > 5) {
       const block = (ev: Event) => {
         ev.preventDefault()
@@ -152,9 +148,7 @@ export function Carousel({
         className="hscroll-track"
         style={{
           paddingInline: padInline,
-          // Bleed-to-edge on desktop: negative margin pulls the track
-          // out of its parent's max-width. Calculated at runtime via
-          // a CSS variable so the rule stays tidy.
+          // Bleed mode only: break out of the parent's max-width.
           ...(bleed
             ? ({
                 marginInline: 'calc((100vw - 100%) / -2)',
@@ -174,7 +168,6 @@ export function Carousel({
         {children}
       </div>
 
-      {/* Arrow controls — hidden on touch-only viewports (mobile) */}
       <CarouselArrow
         direction="left"
         disabled={!canLeft}
@@ -199,14 +192,13 @@ function CarouselArrow({
   onClick: () => void
 }) {
   const Icon = direction === 'left' ? ChevronLeft : ChevronRight
-  const side = direction === 'left' ? 'left-4' : 'right-4'
+  const side = direction === 'left' ? 'left-2' : 'right-2'
   return (
     <button
       type="button"
       onClick={onClick}
       aria-label={direction === 'left' ? 'Назад' : 'Вперёд'}
       disabled={disabled}
-      // Hidden on touch (lg:) so it doesn't overlay the carousel on mobile
       className={`absolute top-1/2 ${side} z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-ink/80 text-text shadow-xl backdrop-blur-xl transition lg:flex ${
         disabled
           ? 'pointer-events-none opacity-0'

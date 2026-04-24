@@ -33,8 +33,8 @@ export function TestimonialsSection() {
 
   return (
     <section id="people" className="border-b border-line py-16 md:py-24">
-      <div className="mx-auto mb-8 max-w-6xl px-5 md:mb-12">
-        <div className="max-w-2xl">
+      <div className="mx-auto max-w-6xl px-5">
+        <div className="mb-8 max-w-2xl md:mb-12">
           <div className="eyebrow">Истории</div>
           <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
             Люди, которые устали считать в уме
@@ -45,40 +45,41 @@ export function TestimonialsSection() {
             бухгалтера.
           </p>
         </div>
-      </div>
 
-      {/*
-       * Edge-to-edge carousel — cards bleed to the viewport border on
-       * desktop, first card starts at the content-column gutter. Arrow
-       * buttons and mouse drag included by the Carousel primitive.
-       */}
-      <Carousel ariaLabel="Отзывы пользователей" padInline={20}>
-        {people.map((p) => (
-          <figure
-            key={p.name}
-            className="group relative flex w-[280px] flex-col overflow-hidden rounded-3xl border border-line bg-white/[0.02] p-5 transition hover:border-line-strong sm:w-[340px] md:w-[380px] md:p-6"
-          >
-            <div className="mb-4 flex items-center gap-3">
-              <div
-                className={`h-11 w-11 rounded-full bg-gradient-to-br ${p.color}`}
-                aria-hidden
-              />
-              <div>
-                <p className="font-semibold">{p.name}</p>
-                <p className="text-xs text-text-muted">
-                  {p.role} · {p.city}
-                </p>
+        {/*
+         * Carousel sits inside the same content column as the heading —
+         * first card aligns with the site's grid gutter on every
+         * breakpoint. Arrows + mouse drag come from the Carousel
+         * primitive; mobile uses native swipe.
+         */}
+        <Carousel ariaLabel="Отзывы пользователей">
+          {people.map((p) => (
+            <figure
+              key={p.name}
+              className="group relative flex w-[280px] flex-col overflow-hidden rounded-3xl border border-line bg-white/[0.02] p-5 transition hover:border-line-strong sm:w-[340px] md:w-[380px] md:p-6"
+            >
+              <div className="mb-4 flex items-center gap-3">
+                <div
+                  className={`h-11 w-11 rounded-full bg-gradient-to-br ${p.color}`}
+                  aria-hidden
+                />
+                <div>
+                  <p className="font-semibold">{p.name}</p>
+                  <p className="text-xs text-text-muted">
+                    {p.role} · {p.city}
+                  </p>
+                </div>
               </div>
-            </div>
-            <blockquote className="text-[14px] leading-relaxed text-text md:text-[15px]">
-              «{p.quote}»
-            </blockquote>
-            <figcaption className="mt-5 border-t border-line pt-4 text-xs text-text-dim md:mt-6">
-              {p.tag}
-            </figcaption>
-          </figure>
-        ))}
-      </Carousel>
+              <blockquote className="text-[14px] leading-relaxed text-text md:text-[15px]">
+                «{p.quote}»
+              </blockquote>
+              <figcaption className="mt-5 border-t border-line pt-4 text-xs text-text-dim md:mt-6">
+                {p.tag}
+              </figcaption>
+            </figure>
+          ))}
+        </Carousel>
+      </div>
     </section>
   )
 }

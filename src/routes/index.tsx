@@ -24,9 +24,9 @@ function Home() {
         {/* Inline CTA after the live calculator */}
         <InlineCta
           variant="split"
-          eyebrow="Готов попробовать?"
-          title="Посчитал лимит — теперь пусть Sanda считает каждый день"
-          subtitle="Устанавливается за минуту. Не требует доступа к банку."
+          eyebrow="Посчитал лимит?"
+          title="Теперь доверь это Sanda на каждый день"
+          subtitle="Устанавливается за минуту. Дает ценность сразу после внесения данных."
           cta="Скачать для iOS"
         />
 
@@ -34,14 +34,6 @@ function Home() {
         <SimulatorSection />
 
         <ComparisonSection />
-
-        {/* Inline CTA before the testimonial carousel */}
-        <InlineCta
-          variant="compact"
-          eyebrow="Ценность с первого дня"
-          title=""
-          cta="Скачать"
-        />
 
         <TestimonialsSection />
         <CtaSection />

@@ -165,8 +165,13 @@ export function FeaturesSection() {
             </div>
           </div>
 
-          {/* RIGHT: per-tab companion card — different metaphor per tab */}
-          <div className="order-3 md:order-3">
+          {/*
+           * RIGHT: per-tab companion card — different metaphor per tab.
+           * Hidden on mobile to reduce vertical clutter; the phone
+           * mockup (cut in half with gradient fade) already conveys
+           * the feature, the bullets list provides the details.
+           */}
+          <div className="order-3 hidden md:order-3 md:block">
             <CompanionCard tab={current.key} />
           </div>
         </div>
@@ -183,12 +188,18 @@ export function FeaturesSection() {
           <p className="text-sm text-text-dim">Дополнительные плюшки</p>
           <span
             aria-hidden
-            className="swipe-hint text-xs text-text-dim lg:hidden"
+            className="swipe-hint text-text-dim lg:hidden"
           >
-            листай <ChevronRight size={14} strokeWidth={2.5} />
+            <ChevronRight size={18} strokeWidth={2.5} />
           </span>
         </div>
-        <Carousel ariaLabel="Дополнительные плюшки" padInline={20}>
+        {/*
+         * Carousel sits inside the content column (max-w-6xl). No bleed,
+         * no padInline — first card aligns with the site's left gutter,
+         * matching the rest of the page grid.
+         */}
+        <div className="mx-auto max-w-6xl px-5">
+          <Carousel ariaLabel="Дополнительные плюшки">
           <MiniFeature
             icon="📅"
             title="Планирование бюджета"
@@ -220,6 +231,7 @@ export function FeaturesSection() {
             text="SF-шрифт, спокойные анимации, Dynamic Island."
           />
         </Carousel>
+        </div>
       </div>
     </section>
   )

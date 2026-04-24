@@ -97,21 +97,61 @@
   }
 
   /*
+   * When the mobile drawer is open, we freeze body scroll. On iOS
+   * Safari using just `overflow: hidden` on body reveals a white
+   * strip at the bottom (the URL-bar re-expanding area), because the
+   * page is no longer tall enough to cover the dvh viewport.
+   *
+   * Pinning body to `position: fixed` with full width/height locks
+   * everything to the visible viewport, so no white/black band can
+   * appear. The scroll position is preserved via a CSS var set from
+   * Chrome.tsx just before the lock, and restored on close.
+   */
+  body.menu-open {
+    position: fixed;
+    top: calc(var(--menu-scroll-y, 0px) * -1);
+    left: 0;
+    right: 0;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /*
    * Safe-area padding on UI chrome.
    * After viewport-fit=cover the page paints under the iOS status bar
-   * and home indicator — which is what we want for the *background*,
-   * but any fixed/sticky element whose content would otherwise sit
-   * under the notch or indicator needs a little extra padding so the
-   * text/buttons stay readable.
+   * and home indicator — the page background shows there. Floating UI
+   * that would otherwise collide with those hardware strips needs a
+   * little extra padding.
    *
-   *   - header: push the logo/nav below the status bar
-   *   - footer: keep the bottom hairline above the home indicator
-   *   - mobile drawer: same treatment as the header + safe bottom
-   *   - sticky feature tab bar: inherits header's safe top via
-   *     scroll-padding (already on html), no extra rule needed
+   * v7: the mobile header is a floating *capsule* (not a full-width
+   * sticky bar). It sits below the iOS status bar with a small gap
+   * on both sides. Desktop is still a classic sticky bar.
    */
-  header.sticky {
-    padding-top: env(safe-area-inset-top);
+  .mobile-header {
+    /*
+     * Mobile: capsule floats BELOW the iOS status bar, offset by the
+     * top safe-area inset + an 8px breathing gap. At lg:+ this class
+     * is layout-neutral because lg:static kicks in from Chrome.tsx.
+     */
+    top: calc(env(safe-area-inset-top) + 8px);
+  }
+
+  /*
+   * Spacer to reserve the vertical room that the fixed mobile capsule
+   * would otherwise take, so the first section doesn't sit under the
+   * header on initial paint. Height = capsule (56px) + top safe-area +
+   * 8px top gap + 8px bottom gap.
+   */
+  .mobile-header-spacer {
+    height: calc(56px + env(safe-area-inset-top) + 16px);
+  }
+
+  @media (min-width: 1024px) {
+    /* Desktop header returns to full-width sticky — cancel the capsule
+     * offset so the browser doesn't still try to top-offset it. */
+    .mobile-header {
+      top: 0;
+    }
   }
 
   footer {
@@ -119,9 +159,9 @@
   }
 
   /*
-   * Mobile nav drawer (see Chrome.tsx) — it's fixed inset-y-0, so it
-   * needs insets on BOTH ends. The selector matches the drawer <aside>
-   * by its id without coupling to Tailwind utility class names.
+   * Mobile nav drawer — fixed inset-y-0, so it needs insets on BOTH
+   * ends. Matches capsule header treatment so the drawer's header
+   * lines up with it visually.
    */
   #mobile-nav {
     padding-top: env(safe-area-inset-top);

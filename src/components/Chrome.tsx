@@ -31,11 +31,18 @@ const navItems = [
   { label: 'Сравнение', href: '#compare' },
 ]
 
+/**
+ * Header — on desktop a classic full-width bar, on mobile a floating
+ * pill that hovers under the iOS status bar (safe-area aware). The
+ * previous version left a dark band above and below on iPhone when
+ * viewport-fit=cover painted under the notch/home-indicator; that was
+ * caused by the sticky bar having opaque sides. A capsule with margin
+ * lets the page background show through, so there are no stripes.
+ */
 export function Header() {
   const [open, setOpen] = useState(false)
 
-  // Transient translation during a swipe-to-close gesture. Null when
-  // the user isn't dragging — the drawer then uses its CSS transition.
+  // Transient translation during swipe-to-close.
   const [dragX, setDragX] = useState<number | null>(null)
   const drawerRef = useRef<HTMLElement | null>(null)
   const swipe = useRef<{
@@ -55,12 +62,22 @@ export function Header() {
   })
 
   // Lock body scroll while the drawer is open.
+  // On iOS Safari simply toggling `overflow: hidden` on body creates
+  // a visible strip at the bottom when the URL bar re-expands. Using
+  // `position: fixed` with the preserved scroll offset (stored in a
+  // CSS var) pins the page to the visible viewport — no strips appear
+  // above or below the drawer. On close we restore the scroll
+  // position so the page doesn't jump to the top.
   useEffect(() => {
     if (!open) return
-    const prev = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
+    const scrollY = window.scrollY
+    document.body.style.setProperty('--menu-scroll-y', `${scrollY}px`)
+    document.body.classList.add('menu-open')
     return () => {
-      document.body.style.overflow = prev
+      document.body.classList.remove('menu-open')
+      document.body.style.removeProperty('--menu-scroll-y')
+      // Restore scroll without animation so the page stays where it was.
+      window.scrollTo(0, scrollY)
     }
   }, [open])
 
@@ -74,7 +91,7 @@ export function Header() {
     return () => mq.removeEventListener('change', handler)
   }, [])
 
-  // Close on Escape.
+  // Escape closes the drawer.
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
@@ -84,20 +101,11 @@ export function Header() {
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
 
-  // Reset drag state when the drawer closes.
   useEffect(() => {
     if (!open) setDragX(null)
   }, [open])
 
-  /**
-   * Swipe-to-close — the drawer sits on the right side, so a right-going
-   * drag should reveal more of the page and eventually close. We track
-   * horizontal delta and translate the drawer accordingly. Vertical
-   * intent (scrolling the menu itself) locks the gesture to 'y' and
-   * lets native scroll take over.
-   */
   const onPointerDown = (e: React.PointerEvent<HTMLElement>) => {
-    // Only touch or pen — mouse users will click the backdrop or X.
     if (e.pointerType === 'mouse') return
     const el = drawerRef.current
     if (!el) return
@@ -114,7 +122,6 @@ export function Header() {
     const dx = e.clientX - swipe.current.startX
     const dy = e.clientY - swipe.current.startY
 
-    // Decide axis once we have a clear direction.
     if (swipe.current.locked === null) {
       const adx = Math.abs(dx)
       const ady = Math.abs(dy)
@@ -124,8 +131,6 @@ export function Header() {
 
     if (swipe.current.locked === 'y') return
 
-    // Only a rightward drag closes the right-side drawer. Left drag
-    // is clamped to 0 so the drawer can't be pulled past its home.
     const clamped = Math.max(0, dx)
     setDragX(clamped)
   }
@@ -136,10 +141,8 @@ export function Header() {
     swipe.current.active = false
     swipe.current.pointerId = null
 
-    // Close if the user dragged more than ~40% of the drawer width.
     if (dx > swipe.current.width * 0.4) {
       setOpen(false)
-      // dragX will be reset by the effect that watches `open`.
     } else {
       setDragX(null)
     }
@@ -153,45 +156,77 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-line bg-ink/70 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-          <Link
-            to="/"
-            className="flex items-center"
-            onClick={() => setOpen(false)}
-          >
-            <Logo />
-          </Link>
-
-          {/* Desktop nav */}
-          <nav className="hidden items-center gap-8 text-sm text-text-muted lg:flex">
-            {navItems.map((it) => (
-              <a key={it.href} href={it.href} className="hover:text-text">
-                {it.label}
-              </a>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <a href="#cta" className="btn-primary !px-4 !py-2 text-sm">
-              Скачать
-            </a>
-
-            <button
-              type="button"
-              aria-label={open ? 'Закрыть меню' : 'Открыть меню'}
-              aria-expanded={open}
-              aria-controls="mobile-nav"
-              onClick={() => setOpen((v) => !v)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-line bg-white/[0.02] text-text transition hover:border-line-strong lg:hidden"
+      {/*
+       * MOBILE: floating capsule header
+       * - position: fixed so it scrolls-over the page
+       * - inset-x-3 + top via safe-area CSS var (see styles.css .mobile-header)
+       * - rounded-full for the capsule shape
+       * - background with backdrop-blur, no full-width edge lines
+       *
+       * DESKTOP (lg:): classic bar — the lg:* utilities override everything
+       * back to a full-width sticky surface.
+       */}
+      <header
+        className="mobile-header fixed inset-x-3 z-50 rounded-full border border-line bg-ink/75 backdrop-blur-xl lg:static lg:inset-x-auto lg:rounded-none lg:border-x-0 lg:border-b lg:border-t-0 lg:bg-ink/70"
+      >
+        {/*
+         * Desktop sticky wrapper — only kicks in at lg:. On mobile the
+         * parent <header> is already fixed-positioned so we don't need
+         * sticky here.
+         */}
+        <div className="lg:sticky lg:top-0 lg:z-50">
+          <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-3 md:h-16 md:px-5">
+            <Link
+              to="/"
+              className="flex items-center"
+              onClick={() => setOpen(false)}
             >
-              {open ? <X size={18} /> : <Menu size={18} />}
-            </button>
+              <Logo />
+            </Link>
+
+            {/* Desktop nav */}
+            <nav className="hidden items-center gap-8 text-sm text-text-muted lg:flex">
+              {navItems.map((it) => (
+                <a key={it.href} href={it.href} className="hover:text-text">
+                  {it.label}
+                </a>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-2">
+              <a
+                href="#cta"
+                className="btn-primary !px-4 !py-2 text-sm"
+              >
+                Скачать
+              </a>
+
+              <button
+                type="button"
+                aria-label={open ? 'Закрыть меню' : 'Открыть меню'}
+                aria-expanded={open}
+                aria-controls="mobile-nav"
+                onClick={() => setOpen((v) => !v)}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-line bg-white/[0.02] text-text transition hover:border-line-strong lg:hidden"
+              >
+                {open ? <X size={16} /> : <Menu size={16} />}
+              </button>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Backdrop — tap to close, fades as the user swipes. */}
+      {/*
+       * Spacer — because the mobile header is fixed, the first section
+       * would otherwise slide under it on initial paint. Reserve space
+       * equal to capsule height + top safe-area + a small gap. Only on
+       * mobile; desktop header participates in layout normally.
+       */}
+      <div className="mobile-header-spacer lg:hidden" aria-hidden />
+
+      {/*
+       * Backdrop — tap to close. Opacity fades with swipe.
+       */}
       <div
         aria-hidden={!open}
         onClick={() => setOpen(false)}
@@ -208,9 +243,13 @@ export function Header() {
       />
 
       {/*
-       * Drawer — swipe-right-to-close on touch. During the drag we
-       * disable the CSS transition (inline style) so the drawer sticks
-       * to the finger; on release it either snaps back or closes.
+       * Drawer. Full-height right-side sheet. safe-area handled in CSS via
+       * #mobile-nav rule so that:
+       *   - the top bar of the drawer clears the iOS status bar
+       *   - the bottom padding clears the home indicator
+       * Without these insets the user saw a black band appear at the
+       * bottom of the page when the drawer was open — the body
+       * scroll-lock revealed the layer below the viewport. Covered now.
        */}
       <aside
         id="mobile-nav"
@@ -234,10 +273,7 @@ export function Header() {
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        {/*
-         * Grab handle — a slim vertical bar on the left edge of the
-         * drawer that hints "you can drag me". Purely visual.
-         */}
+        {/* Grab handle hint */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-y-0 left-0 flex w-4 items-center justify-center"

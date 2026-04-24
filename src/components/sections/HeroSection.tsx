@@ -115,11 +115,11 @@ function HeroGlow() {
  */
 function SpecItem({ value, label }: { value: string; label: string }) {
   return (
-    <div className="flex min-w-0 flex-1 flex-col items-start justify-center px-4 py-3 md:px-5 md:py-3.5">
+    <div className="flex min-w-0 flex-1 flex-col items-center justify-center px-4 py-3 text-center md:px-5 md:py-3.5">
       <span className="silver-text num-display text-base font-semibold leading-tight tracking-tight md:text-lg">
         {value}
       </span>
-      <span className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.2em] text-text-dim md:text-[10px]">
+      <span className="mt-1 text-[9px] font-medium uppercase tracking-[0.2em] text-text-dim md:text-[10px]">
         {label}
       </span>
     </div>

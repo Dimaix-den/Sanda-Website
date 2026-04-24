@@ -121,7 +121,7 @@ export function SimulatorSection() {
           <div className="eyebrow">Самобалансирующийся бюджет</div>
           <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
             Потратил лишнего?{' '}
-            <span className="grad-text">Завтра будет новый лимит</span>
+            <span className="grad-text">Завтра твой лимит снизится</span>
           </h2>
           <p className="mt-4 text-text-muted md:mt-5">
             Выбери день, добавь трату — и проследи, как перестраиваются лимиты
