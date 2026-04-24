@@ -41,7 +41,7 @@ const tabs: {
     key: 'capital',
     label: 'Капитал',
     title: 'Обязательства, сбережения, имущество и счета',
-    text: 'Здесь ты ведёшь всё, что у тебя есть и что ты должен. Активные счета, накопления, недвижимость, кредиты — единая картина чистого капитала.',
+    text: 'Всё, что у тебя есть и что ты должен. Активные счета, накопления, недвижимость, кредиты — единая картина чистого капитала.',
     bullets: [
       'Все счета и сбережения в одном месте',
       'Имущество и обязательства — как в балансе',
@@ -52,9 +52,9 @@ const tabs: {
     key: 'stats',
     label: 'Статистика',
     title: 'Вся история твоих денег в одном разделе',
-    text: 'Капитал, денежный поток, динамика расходов и доходов, накоплений и прочее — за день, неделю, месяц или год. Данные собираются автоматически из твоих счетов.',
+    text: 'Капитал, денежный поток, динамика расходов и доходов, накоплений. За день, неделю, месяц или год.',
     bullets: [
-      'Тратишь ли ты меньше, чем получаешь — одним числом',
+      'Тратишь ли ты меньше, чем получаешь',
       'Динамика расходов и доходов за любой период',
       'Рост капитала и накоплений от месяца к месяцу',
     ],
@@ -62,85 +62,90 @@ const tabs: {
 ]
 
 /**
- * FeaturesSection — three-column stage (bullets | phone | companion).
+ * FeaturesSection (compact) — single-viewport stage on desktop.
  *
- * Mobile tweak: the phone is clipped to ~50% height with a bottom gradient
- * fade so the mockup reads as a peek, not a full-height billboard that
- * blows out the scroll.
+ * Desktop silhouette (≥ md):
+ *   [ eyebrow + tabs row ]
+ *   [ text+bullets col | phone | companion col ]
+ *   [ mini-features horizontal scroll ]
+ *
+ * All three columns sit on ONE row, not stacked, so the section fits in
+ * a viewport without the user scrolling mid-section. Intro text and
+ * bullets live in the left column instead of their own row above.
+ *
+ * Mobile: phone → bullets+text → companion, phone clipped with fade.
  */
 export function FeaturesSection() {
   const [active, setActive] = useState<TabKey>('today')
   const current = tabs.find((t) => t.key === active)!
 
   return (
-    <section id="features" className="border-b border-line py-20 md:py-24">
+    <section id="features" className="border-b border-line py-16 md:py-20">
       {/*
-       * Sticky tab bar — on mobile sticks under the 64px header so the
-       * user can swap tabs without losing context. Scroll track hidden.
+       * Section header: eyebrow + tabs on one compact row on desktop,
+       * stacked and sticky on mobile. No separate title row before the
+       * stage — the per-tab title moves into the left column below.
        */}
-      <div className="sticky top-16 z-20 -mx-0 mb-10 border-b border-line bg-ink/85 px-5 py-3 backdrop-blur-xl md:static md:mx-auto md:max-w-6xl md:border-0 md:bg-transparent md:px-5 md:py-0 md:backdrop-blur-none">
-        <div className="mx-auto max-w-6xl overflow-x-auto no-scrollbar">
-          <div className="flex min-w-max gap-2">
-            {tabs.map((t) => (
-              <button
-                key={t.key}
-                onClick={() => setActive(t.key)}
-                className={`whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium transition ${
-                  active === t.key
-                    ? 'border-mint/40 bg-mint/[0.1] text-mint'
-                    : 'border-line bg-white/[0.02] text-text-muted hover:text-text'
-                }`}
-              >
-                {t.label}
-              </button>
-            ))}
+      <div className="sticky top-16 z-20 mb-6 border-b border-line bg-ink/85 px-5 py-3 backdrop-blur-xl md:static md:mx-auto md:mb-8 md:max-w-6xl md:border-0 md:bg-transparent md:px-5 md:py-0 md:backdrop-blur-none">
+        <div className="mx-auto flex max-w-6xl items-center gap-4 md:justify-between">
+          <div className="hidden md:block">
+            <div className="eyebrow">Возможности</div>
+          </div>
+          <div className="overflow-x-auto no-scrollbar md:flex-shrink-0">
+            <div className="flex min-w-max gap-2">
+              {tabs.map((t) => (
+                <button
+                  key={t.key}
+                  onClick={() => setActive(t.key)}
+                  className={`whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium transition ${
+                    active === t.key
+                      ? 'border-mint/40 bg-mint/[0.1] text-mint'
+                      : 'border-line bg-white/[0.02] text-text-muted hover:text-text'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
       <div className="mx-auto max-w-6xl px-5">
-        {/* Intro block — full width above the stage */}
-        <div className="mb-8 max-w-3xl md:mb-12">
-          <div className="eyebrow">Возможности</div>
-          <h3 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl md:mt-5 md:text-4xl">
-            {current.title}
-          </h3>
-          <p className="mt-3 max-w-xl text-text-muted md:mt-4">{current.text}</p>
-        </div>
-
         {/*
-         * Three-column stage: bullets | phone | companion card.
-         * Mobile: phone → bullets → companion. Phone gets clipped with a
-         * fade-out mask on mobile so it reads as a preview.
+         * Three-column stage on desktop. Columns share vertical space with
+         * the phone so no column forces the row to stretch.
+         *
+         * Column sizing chosen to let the phone hold its ~320px width
+         * while the text columns get the rest of the 6xl (~1200px) grid:
+         *   [1fr] [320px] [1fr]  on md+
          */}
-        <div className="grid gap-8 md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-10">
-          {/* Bullets — order-2 on mobile so the phone appears first */}
+        <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_320px_minmax(0,1fr)] md:items-center md:gap-10">
+          {/* LEFT: title + description + bullets, all in one column on desktop */}
           <div className="order-2 md:order-1">
-            <p className="text-[10px] uppercase tracking-[0.2em] text-mint">
-              Что внутри
+            <h3 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-[28px] md:leading-tight">
+              {current.title}
+            </h3>
+            <p className="mt-3 text-sm text-text-muted md:mt-3 md:text-[15px]">
+              {current.text}
             </p>
-            <ul className="mt-4 space-y-3.5">
+            <ul className="mt-5 space-y-2.5 md:mt-5">
               {current.bullets.map((b) => (
                 <li
                   key={b}
-                  className="flex items-start gap-3 rounded-2xl border border-line bg-white/[0.02] px-3.5 py-3 transition hover:border-line-strong"
+                  className="flex items-start gap-3 rounded-xl border border-line bg-white/[0.02] px-3.5 py-2.5 transition hover:border-line-strong"
                 >
                   <span
                     className="mt-1.5 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-mint"
                     aria-hidden
                   />
-                  <span className="text-sm text-text md:text-[15px]">{b}</span>
+                  <span className="text-sm text-text">{b}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/*
-           * Phone wrapper:
-           *   mobile → .phone-cut-half (fixed visual height ~ half the phone,
-           *            gradient mask fades to transparent at the bottom)
-           *   desktop → unclipped, .md:phone-cut-none resets it
-           */}
+          {/* CENTER: phone. Mobile: clipped + faded. Desktop: full. */}
           <div className="relative order-1 mx-auto w-full max-w-[300px] md:order-2 md:max-w-[320px]">
             <div
               className="pointer-events-none absolute -inset-12 -z-10 rounded-full opacity-50 blur-3xl"
@@ -158,10 +163,7 @@ export function FeaturesSection() {
             </div>
           </div>
 
-          {/*
-           * Companion card — different content per tab to avoid another
-           * list of bullets on the right.
-           */}
+          {/* RIGHT: per-tab companion card — different metaphor per tab */}
           <div className="order-3 md:order-3">
             <CompanionCard tab={current.key} />
           </div>
@@ -169,11 +171,11 @@ export function FeaturesSection() {
       </div>
 
       {/*
-       * Mini-features horizontal carousel. Scrollbar hidden via .no-scrollbar
-       * (handled by .hscroll itself, but we keep it explicit on mobile).
+       * Mini-features horizontal carousel. Scrollbar hidden.
+       * Tightened margin-top so the section doesn't stretch on desktop.
        */}
-      <div className="mt-16 md:mt-20">
-        <div className="mx-auto mb-4 max-w-6xl px-5">
+      <div className="mt-12 md:mt-14">
+        <div className="mx-auto mb-3 max-w-6xl px-5">
           <p className="text-sm text-text-dim">Дополнительные плюшки</p>
         </div>
         <div
@@ -183,32 +185,32 @@ export function FeaturesSection() {
           <MiniFeature
             icon="📅"
             title="Планирование бюджета"
-            text="Бюджет задаётся заранее и раскладывается по дням до зарплаты. Никаких постфактум-сводок."
+            text="Бюджет задаётся заранее и раскладывается по дням до зарплаты."
           />
           <MiniFeature
             icon="🔥"
             title="Стрики дисциплины"
-            text="Счётчик дней подряд в лимите. Геймификация без упрёков — только мотивация продолжать."
+            text="Счётчик дней подряд в лимите. Геймификация без упрёков."
           />
           <MiniFeature
             icon="🌍"
             title="Мультивалютность"
-            text="Тенге, рубли, доллары, евро. Кастомный период бюджета — от зарплаты до зарплаты."
+            text="Тенге, рубли, доллары, евро. Кастомный период бюджета."
           />
           <MiniFeature
             icon="📱"
             title="Виджеты и Apple Watch"
-            text="Дневной лимит на экране блокировки и на запястье. Быстрый взгляд — и дальше жить."
+            text="Дневной лимит на экране блокировки и на запястье."
           />
           <MiniFeature
             icon="🔒"
             title="Приватность как принцип"
-            text="Вход через Apple ID, гостевой режим с данными только на устройстве, полное удаление."
+            text="Apple ID, гостевой режим, полное удаление данных."
           />
           <MiniFeature
             icon="🌙"
-            title="Тёмная тема и iOS-душа"
-            text="Крупные цифры, SF-шрифт, спокойные анимации, Dynamic Island — как у родных приложений."
+            title="iOS-душа"
+            text="SF-шрифт, спокойные анимации, Dynamic Island."
           />
         </div>
       </div>
@@ -225,8 +227,8 @@ function CompanionCard({ tab }: { tab: TabKey }) {
         </p>
         <div className="mt-3 space-y-2">
           <ZoneRow color="#3be8b0" label="Зелёный" hint="Можешь тратить свободно" />
-          <ZoneRow color="#f5a623" label="Оранжевый" hint="Притормози — сегодня ещё хватит" />
-          <ZoneRow color="#ff5566" label="Красный" hint="Завтра лимит будет меньше" />
+          <ZoneRow color="#f5a623" label="Оранжевый" hint="Притормози — ещё хватит" />
+          <ZoneRow color="#ff5566" label="Красный" hint="Завтра лимит уменьшится" />
         </div>
       </div>
     )
@@ -270,9 +272,7 @@ function CompanionCard({ tab }: { tab: TabKey }) {
   // stats
   return (
     <div className="rounded-3xl border border-line bg-white/[0.02] p-5">
-      <p className="text-[10px] uppercase tracking-[0.2em] text-text-dim">
-        За апрель
-      </p>
+      <p className="text-[10px] uppercase tracking-[0.2em] text-text-dim">За апрель</p>
       <div className="mt-3 grid grid-cols-2 gap-2">
         <MiniStat big="+186к" label="Сальдо" accent="#3be8b0" />
         <MiniStat big="▲ 14%" label="К прошлому" accent="#3be8b0" />
@@ -362,10 +362,10 @@ function MiniFeature({
   text: string
 }) {
   return (
-    <div className="w-[260px] rounded-2xl border border-line bg-white/[0.02] p-5 md:w-[300px]">
-      <div className="mb-3 text-2xl">{icon}</div>
-      <p className="font-semibold">{title}</p>
-      <p className="mt-1 text-sm text-text-muted">{text}</p>
+    <div className="w-[240px] rounded-2xl border border-line bg-white/[0.02] p-4 md:w-[280px] md:p-5">
+      <div className="mb-2 text-2xl">{icon}</div>
+      <p className="text-sm font-semibold md:text-base">{title}</p>
+      <p className="mt-1 text-xs text-text-muted md:text-sm">{text}</p>
     </div>
   )
 }

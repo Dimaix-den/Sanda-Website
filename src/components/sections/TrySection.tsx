@@ -105,11 +105,6 @@ export function TrySection() {
                 />
                 {zoneLabel}
               </div>
-              <p className="mt-4 max-w-sm text-sm text-text-muted">
-                До зарплаты <span className="text-text">{daysLeft} дн</span>.
-                Свободно на период —{' '}
-                <span className="text-text">{formatN(Math.max(available, 0))} ₸</span>.
-              </p>
             </div>
 
             {/*

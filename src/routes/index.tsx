@@ -4,7 +4,6 @@ import { HeroSection } from '../components/sections/HeroSection'
 import { TrySection } from '../components/sections/TrySection'
 import { FeaturesSection } from '../components/sections/FeaturesSection'
 import { SimulatorSection } from '../components/sections/SimulatorSection'
-import { PhilosophySection } from '../components/sections/PhilosophySection'
 import { ComparisonSection } from '../components/sections/ComparisonSection'
 import { TestimonialsSection } from '../components/sections/TestimonialsSection'
 import { CtaSection } from '../components/sections/CtaSection'
@@ -20,19 +19,9 @@ function Home() {
       <Header />
       <main>
         <HeroSection />
-        {/*
-         * TrySection merges the old "Как работает" and "Попробуй здесь"
-         * blocks into one dense, interactive section to shorten the landing.
-         * The old HowItWorksSection and CalculatorSection are no longer used.
-         */}
         <TrySection />
 
-        {/*
-         * First inline CTA — right after the user has played with the
-         * calculator. The "split" variant is compact and carries a small
-         * gradient tile instead of a phone mockup, so it reads as a totally
-         * different block shape from the surrounding sections.
-         */}
+        {/* Inline CTA after the live calculator */}
         <InlineCta
           variant="split"
           eyebrow="Готов попробовать на своих цифрах?"
@@ -44,11 +33,7 @@ function Home() {
         <FeaturesSection />
         <SimulatorSection />
 
-        {/*
-         * Second inline CTA — after the simulator shows "rolling budget"
-         * in action. Uses the banner variant (centred, taller) for a
-         * different silhouette than the first CTA strip.
-         */}
+        {/* Inline CTA after the rolling-budget simulator */}
         <InlineCta
           variant="banner"
           eyebrow="Лимит, который сам подстраивается"
@@ -57,13 +42,9 @@ function Home() {
           cta="Установить бесплатно"
         />
 
-        <PhilosophySection />
         <ComparisonSection />
 
-        {/*
-         * Third inline CTA — compact, right before the testimonial
-         * carousel. Short reminder before social proof.
-         */}
+        {/* Inline CTA before the testimonial carousel */}
         <InlineCta
           variant="compact"
           eyebrow="Готов попробовать?"

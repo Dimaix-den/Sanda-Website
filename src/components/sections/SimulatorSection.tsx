@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { X } from 'lucide-react'
 
 type Day = {
   label: string
@@ -17,36 +18,26 @@ const defaultDays: Day[] = [
       { name: 'Расход', amount: 2800 },
     ],
   },
-  {
-    label: 'Вт',
-    date: '22 апр',
-    base: 12000,
-    purchases: [],
-  },
-  {
-    label: 'Ср',
-    date: '23 апр',
-    base: 12000,
-    purchases: [],
-  },
-  {
-    label: 'Чт',
-    date: '24 апр',
-    base: 12000,
-    purchases: [],
-  },
-  {
-    label: 'Пт',
-    date: '25 апр',
-    base: 12000,
-    purchases: [],
-  },
+  { label: 'Вт', date: '22 апр', base: 12000, purchases: [] },
+  { label: 'Ср', date: '23 апр', base: 12000, purchases: [] },
+  { label: 'Чт', date: '24 апр', base: 12000, purchases: [] },
+  { label: 'Пт', date: '25 апр', base: 12000, purchases: [] },
 ]
 
 function formatN(n: number) {
   return new Intl.NumberFormat('ru-RU').format(Math.max(0, Math.round(n)))
 }
 
+/**
+ * SimulatorSection — rolling budget playground.
+ *
+ * Changes vs previous version:
+ *   1. Each added purchase has an X button to remove it individually.
+ *   2. Section has a distinct background (darker ink-3 base + layered
+ *      gradient glows + diagonal "graph paper" overlay) so the block
+ *      visually stands apart from the grey-on-ink sections above and
+ *      below. Keeps the mint/sky palette so it still reads as Sanda.
+ */
 export function SimulatorSection() {
   const [days, setDays] = useState<Day[]>(defaultDays)
   const [active, setActive] = useState(1)
@@ -75,14 +66,57 @@ export function SimulatorSection() {
     })
   }
 
+  function removePurchase(idx: number) {
+    setDays((prev) => {
+      const next = [...prev]
+      next[active] = {
+        ...next[active],
+        purchases: next[active].purchases.filter((_, i) => i !== idx),
+      }
+      return next
+    })
+  }
+
   function reset() {
     setDays(defaultDays)
     setActive(1)
   }
 
   return (
-    <section className="border-b border-line px-5 py-16 md:py-24">
-      <div className="mx-auto max-w-6xl">
+    <section className="relative overflow-hidden border-b border-line px-5 py-16 md:py-24">
+      {/*
+       * Distinct section background — darker than the rest of the page
+       * with layered Sanda-themed glows and a subtle "graph paper" grid.
+       * Breaks scroll blindness while staying on-brand.
+       */}
+      <div
+        className="pointer-events-none absolute inset-0 -z-20"
+        style={{ background: 'var(--color-ink-3)' }}
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 opacity-50"
+        style={{
+          backgroundImage:
+            'radial-gradient(700px 400px at 88% 10%, rgba(59, 232, 176, 0.14) 0%, transparent 60%), radial-gradient(600px 360px at 5% 90%, rgba(59, 158, 255, 0.12) 0%, transparent 60%)',
+        }}
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 grid-lines opacity-[0.18]"
+        aria-hidden
+      />
+      {/* Faint top/bottom hairline glow to underline the section break */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-px -z-10"
+        style={{
+          background:
+            'linear-gradient(90deg, transparent, rgba(59,232,176,0.4), rgba(59,158,255,0.4), transparent)',
+        }}
+        aria-hidden
+      />
+
+      <div className="relative mx-auto max-w-6xl">
         <div className="mb-8 max-w-2xl md:mb-10">
           <div className="eyebrow">Самобалансирующийся бюджет</div>
           <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
@@ -90,20 +124,17 @@ export function SimulatorSection() {
             <span className="grad-text">Завтра цифра сама уменьшится.</span>
           </h2>
           <p className="mt-4 text-text-muted md:mt-5">
-            Выбери день, добавь трату — и проследи, как перестраиваются лимиты на ближайшую
-            неделю.
+            Выбери день, добавь трату — и проследи, как перестраиваются лимиты
+            на ближайшую неделю.
           </p>
         </div>
 
-        <div className="rounded-3xl border border-line bg-white/[0.02] p-3 md:p-8">
-          {/*
-           * Days strip: on mobile we horizontally scroll (5 equal-width cards
-           * would be too narrow under ~380px); on desktop it's a 5-col grid.
-           */}
-          <div className="-mx-1 flex snap-x snap-mandatory gap-2 overflow-x-auto px-1 pb-1 sm:mx-0 sm:grid sm:grid-cols-5 sm:gap-2 sm:overflow-visible sm:px-0 sm:pb-0">
+        <div className="rounded-3xl border border-line-strong bg-ink-2/80 p-3 backdrop-blur-sm md:p-8">
+          {/* Days strip */}
+          <div className="-mx-1 flex snap-x snap-mandatory gap-2 overflow-x-auto no-scrollbar px-1 pb-1 sm:mx-0 sm:grid sm:grid-cols-5 sm:gap-2 sm:overflow-visible sm:px-0 sm:pb-0">
             {computed.map((d, i) => {
               const isActive = i === active
-              const zoneColor =
+              const zoneBg =
                 d.zone === 'safe'
                   ? 'rgba(59,232,176,0.15)'
                   : d.zone === 'warn'
@@ -140,7 +171,7 @@ export function SimulatorSection() {
                   </p>
                   <div
                     className="mt-2 h-1 rounded-full"
-                    style={{ background: zoneColor }}
+                    style={{ background: zoneBg }}
                   >
                     <div
                       className="h-full rounded-full"
@@ -159,6 +190,7 @@ export function SimulatorSection() {
           </div>
 
           <div className="mt-5 grid gap-4 md:mt-6 md:grid-cols-2 md:gap-5">
+            {/* LEFT: day detail + purchase list with per-row remove buttons */}
             <div className="rounded-2xl border border-line bg-white/[0.02] p-4 md:p-5">
               <p className="text-xs uppercase tracking-[0.18em] text-text-dim">
                 {current.label}, {current.date}
@@ -203,27 +235,35 @@ export function SimulatorSection() {
                   current.purchases.map((p, i) => (
                     <div
                       key={i}
-                      className="flex items-center justify-between rounded-xl border border-line bg-white/[0.02] px-3 py-2 text-sm"
+                      className="group flex items-center justify-between gap-2 rounded-xl border border-line bg-white/[0.02] px-3 py-2 text-sm"
                     >
-                      <span className="text-text">{p.name}</span>
-                      <span className="num-display text-text-muted">
-                        −{formatN(p.amount)} ₸
-                      </span>
+                      <span className="min-w-0 truncate text-text">{p.name}</span>
+                      <div className="flex flex-shrink-0 items-center gap-2">
+                        <span className="num-display text-text-muted">
+                          −{formatN(p.amount)} ₸
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => removePurchase(i)}
+                          aria-label={`Удалить «${p.name}»`}
+                          title="Удалить"
+                          className="flex h-6 w-6 items-center justify-center rounded-full border border-line text-text-dim transition hover:border-danger/40 hover:bg-danger/10 hover:text-danger"
+                        >
+                          <X size={12} strokeWidth={2.5} />
+                        </button>
+                      </div>
                     </div>
                   ))
                 )}
               </div>
             </div>
 
+            {/* RIGHT: quick-add buttons + planning hint + reset */}
             <div className="rounded-2xl border border-line bg-white/[0.02] p-4 md:p-5">
               <p className="text-xs uppercase tracking-[0.18em] text-text-dim">
                 Добавить трату
               </p>
-              {/*
-               * Abstract amounts only — Sanda doesn't have categories. The
-               * point is to feel how the rolling budget reacts to size,
-               * not to pick "coffee" or "taxi".
-               */}
+
               <div className="mt-3 grid grid-cols-2 gap-2">
                 <QuickBtn
                   label="Кофе"
@@ -252,8 +292,8 @@ export function SimulatorSection() {
                   Планирование вперёд
                 </p>
                 <p className="mt-1 text-xs text-text-muted">
-                  Знаешь, что в пятницу будет крупная покупка? Занеси её заранее — бюджет
-                  пересчитает дни и отложит сумму
+                  Знаешь, что в пятницу будет крупная покупка? Занеси её заранее —
+                  бюджет пересчитает дни и отложит сумму.
                 </p>
               </div>
 

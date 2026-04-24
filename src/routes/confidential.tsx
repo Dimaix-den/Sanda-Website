@@ -1,165 +1,255 @@
-// confidential.tsx
 import { createFileRoute } from '@tanstack/react-router'
-import { Fragment } from 'react'
 import { Header, Footer } from '../components/Chrome'
 
 export const Route = createFileRoute('/confidential')({
   component: Confidential,
 })
 
+/**
+ * Privacy page, rebuilt in the site's design language.
+ *
+ * Changes:
+ *   - uses the site's palette (mint/sky, ink tones) instead of a one-off #00A676
+ *   - responsive typography (scales down cleanly on small screens)
+ *   - two-column table of contents on desktop, single flow on mobile
+ *   - card styling matches the rest of the site (rounded-3xl, border-line)
+ *   - uses the shared eyebrow component for section headers
+ *   - contact and header blocks scale with viewport
+ */
 export function Confidential() {
   return (
     <>
       <Header />
-      <div className="container mx-auto max-w-[680px] px-6 pt-[64px] pb-[120px] md:px-8 lg:px-12">
+      <main className="relative overflow-hidden">
+        {/* Ambient glows, matching the rest of the site */}
+        <div
+          className="pointer-events-none absolute -top-40 right-[-10%] -z-10 h-[460px] w-[460px] rounded-full opacity-40 blur-3xl"
+          style={{
+            background:
+              'radial-gradient(circle, rgba(59,232,176,0.3) 0%, transparent 70%)',
+          }}
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute inset-0 -z-10 grid-lines mask-fade-y opacity-30"
+          aria-hidden
+        />
 
-        <h1 className="mb-[12px] text-[36px] font-black leading-[1.15] tracking-[-0.8px] md:text-[40px]">
-          Политика конфиденциальности
-        </h1>
-        <p className="updated mb-12 text-[14px] text-white/40">
-          Последнее обновление: 23 апреля 2026 г.
-        </p>
+        <div className="mx-auto max-w-3xl px-5 pb-20 pt-10 md:pb-28 md:pt-16">
+          {/* HERO */}
+          <div className="eyebrow">Правовая информация</div>
+          <h1 className="mt-4 text-3xl font-black leading-[1.1] tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
+            Политика <span className="grad-text">конфиденциальности</span>
+          </h1>
+          <p className="mt-3 text-sm text-text-dim md:mt-4">
+            Последнее обновление: 23 апреля 2026 г.
+          </p>
 
-        <div className="intro mb-12 rounded-r-[10px] border-l-[3px] border-[#00A676] bg-[#00A676]/7 px-6 py-5 text-[17px] text-white/70">
-          Sanda — личный финансовый помощник. Мы серьёзно относимся к защите ваших данных и собираем только то, что необходимо для работы приложения.
-        </div>
-
-        <div className="space-y-[44px]">
-          <section>
-            <h2 className="relative mb-[14px] inline-block text-[20px] font-black tracking-[-0.3px] text-white before:absolute before:left-[-16px] before:top-[-1px] before:h-[6px] before:w-[6px] before:rounded-full before:bg-[#00A676]">
-              Какие данные мы собираем
-            </h2>
-            <div className="card bg-[rgba(28,28,30,0.8)] border border-white/6 rounded-[14px] p-5 md:p-6">
-              <ul className="list-none p-0 space-y-0">
-                <li className="li relative border-b border-white/5 py-[8px] pl-[20px] text-white/65 before:absolute before:left-0 before:text-[#00A676] before:text-[13px] before:content-['→'] last:border-b-0">
-                  Имя и email — при входе через Google/Apple
-                </li>
-                <li className="li relative border-b border-white/5 py-[8px] pl-[20px] text-white/65 before:absolute before:left-0 before:text-[#00A676] before:text-[13px] before:content-['→'] last:border-b-0">
-                  Аватар профиля — из вашего аккаунта
-                </li>
-                <li className="li relative border-b border-white/5 py-[8px] pl-[20px] text-white/65 before:absolute before:left-0 before:text-[#00A676] before:text-[13px] before:content-['→'] last:border-b-0">
-                  Финансовые данные — транзакции, счета, цели (ручной ввод)
-                </li>
-                <li className="li relative border-b border-white/5 py-[8px] pl-[20px] text-white/65 before:absolute before:left-0 before:text-[#00A676] before:text-[13px] before:content-['→'] last:border-b-0">
-                  Настройки — валюта, периоды, параметры
-                </li>
-              </ul>
-            </div>
-          </section>
-
-          <section>
-            <h2 className="relative mb-[14px] inline-block text-[20px] font-black tracking-[-0.3px] text-white before:absolute before:left-[-16px] before:top-[-1px] before:h-[6px] before:w-[6px] before:rounded-full before:bg-[#00A676]">
-              Как мы используем данные
-            </h2>
-            <div className="card bg-[rgba(28,28,30,0.8)] border border-white/6 rounded-[14px] p-5 md:p-6">
-              <ul className="list-none p-0 space-y-0">
-                <li className="li relative border-b border-white/5 py-[8px] pl-[20px] text-white/65 before:absolute before:left-0 before:text-[#00A676] before:text-[13px] before:content-['→'] last:border-b-0">
-                  Идентификация и синхронизация между устройствами
-                </li>
-                <li className="li relative border-b border-white/5 py-[8px] pl-[20px] text-white/65 before:absolute before:left-0 before:text-[#00A676] before:text-[13px] before:content-['→'] last:border-b-0">
-                  Расчёт лимитов и статистики
-                </li>
-                <li className="li relative border-b border-white/5 py-[8px] pl-[20px] text-white/65 before:absolute before:left-0 before:text-[#00A676] before:text-[13px] before:content-['→'] last:border-b-0">
-                  Восстановление данных при переустановке
-                </li>
-              </ul>
-            </div>
-          </section>
-
-          <section>
-            <h2 className="relative mb-[14px] inline-block text-[20px] font-black tracking-[-0.3px] text-white before:absolute before:left-[-16px] before:top-[-1px] before:h-[6px] before:w-[6px] before:rounded-full before:bg-[#00A676]">
-              Где хранятся данные
-            </h2>
-            <p className="mb-[12px] text-white/65">
-              Все данные в <strong className="text-white">Google Firebase Firestore</strong> — облаке Google. Данные защищены UID и недоступны другим пользователям.
+          {/* Intro callout */}
+          <div className="mt-8 overflow-hidden rounded-3xl border border-mint/25 bg-mint/[0.05] p-5 md:mt-10 md:p-6">
+            <p className="text-[15px] leading-relaxed text-text md:text-base">
+              Sanda — личный финансовый помощник. Мы серьёзно относимся к защите
+              ваших данных и собираем только то, что необходимо для работы
+              приложения.
             </p>
-            <p className="mb-[12px] text-[14px] text-white/65">
-              Firebase соответствует GDPR, SOC 2, ISO 27001.
-            </p>
-          </section>
+          </div>
 
-          <section>
-            <h2 className="relative mb-[14px] inline-block text-[20px] font-black tracking-[-0.3px] text-white before:absolute before:left-[-16px] before:top-[-1px] before:h-[6px] before:w-[6px] before:rounded-full before:bg-[#00A676]">
-              Передача третьим лицам
-            </h2>
-            <p className="mb-4 text-white/65">
-              Мы <strong className="text-white">не продаём данные</strong>. Доступ только у:
+          {/* Table of contents — 2 columns on desktop, 1 on mobile */}
+          <nav
+            aria-label="Разделы политики"
+            className="mt-8 rounded-3xl border border-line bg-white/[0.02] p-5 md:mt-10 md:p-6"
+          >
+            <p className="text-[11px] uppercase tracking-[0.2em] text-text-dim">
+              Содержание
             </p>
-            <div className="card bg-[rgba(28,28,30,0.8)] border border-white/6 rounded-[14px] p-5 md:p-6">
-              <ul className="list-none p-0 space-y-0">
-                <li className="li relative border-b border-white/5 py-[8px] pl-[20px] text-white/65 before:absolute before:left-0 before:text-[#00A676] before:text-[13px] before:content-['→'] last:border-b-0">
-                  <strong className="text-white">Google Firebase</strong> — хранение и авторизация
+            <ul className="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 text-sm md:grid-cols-2">
+              {sections.map((s, i) => (
+                <li key={s.id}>
+                  <a
+                    href={`#${s.id}`}
+                    className="flex items-baseline gap-2 text-text-muted transition hover:text-text"
+                  >
+                    <span className="num-display w-6 flex-shrink-0 text-text-dim">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span>{s.title}</span>
+                  </a>
                 </li>
-                <li className="li relative border-b border-white/5 py-[8px] pl-[20px] text-white/65 before:absolute before:left-0 before:text-[#00A676] before:text-[13px] before:content-['→'] last:border-b-0">
-                  <strong className="text-white">Google/Apple Sign-In</strong> — только авторизация
-                </li>
-              </ul>
-            </div>
-          </section>
+              ))}
+            </ul>
+          </nav>
 
-          <section>
-            <h2 className="relative mb-[14px] inline-block text-[20px] font-black tracking-[-0.3px] text-white before:absolute before:left-[-16px] before:top-[-1px] before:h-[6px] before:w-[6px] before:rounded-full before:bg-[#00A676]">
-              Гостевой режим
-            </h2>
-            <p className="mb-[12px] text-white/65">
-              Можно использовать без аккаунта. Данные только на устройстве, без облачной синхронизации.
-            </p>
-          </section>
+          {/* Sections */}
+          <div className="mt-10 space-y-10 md:mt-12 md:space-y-12">
+            <Section id="collect" num={1} title="Какие данные мы собираем">
+              <CardList
+                items={[
+                  'Имя и email — при входе через Google или Apple',
+                  'Аватар профиля — из вашего аккаунта',
+                  'Финансовые данные — транзакции, счета, цели (ручной ввод)',
+                  'Настройки — валюта, периоды, параметры',
+                ]}
+              />
+            </Section>
 
-          <section>
-            <h2 className="relative mb-[14px] inline-block text-[20px] font-black tracking-[-0.3px] text-white before:absolute before:left-[-16px] before:top-[-1px] before:h-[6px] before:w-[6px] before:rounded-full before:bg-[#00A676]">
-              Удаление данных
-            </h2>
-            <div className="card bg-[rgba(28,28,30,0.8)] border border-white/6 rounded-[14px] p-5 md:p-6">
-              <ul className="list-none p-0 space-y-0">
-                <li className="li relative border-b border-white/5 py-[8px] pl-[20px] text-white/65 before:absolute before:left-0 before:text-[#00A676] before:text-[13px] before:content-['→'] last:border-b-0">
-                  Настройки → <strong className="text-white">Удалить аккаунт</strong>
-                </li>
-                <li className="li relative border-b border-white/5 py-[8px] pl-[20px] text-white/65 before:absolute before:left-0 before:text-[#00A676] before:text-[13px] before:content-['→'] last:border-b-0">
-                  Все данные безвозвратно удаляются из Firebase
-                </li>
-              </ul>
-            </div>
-          </section>
+            <Section id="use" num={2} title="Как мы используем данные">
+              <CardList
+                items={[
+                  'Идентификация и синхронизация между устройствами',
+                  'Расчёт лимитов и статистики',
+                  'Восстановление данных при переустановке',
+                ]}
+              />
+            </Section>
 
-          <section>
-            <h2 className="relative mb-[14px] inline-block text-[20px] font-black tracking-[-0.3px] text-white before:absolute before:left-[-16px] before:top-[-1px] before:h-[6px] before:w-[6px] before:rounded-full before:bg-[#00A676]">
-              Безопасность
-            </h2>
-            <p className="mb-[12px] text-white/65">
-              Доступ по правилам Firebase Security Rules. Только владелец данных может читать/изменять. HTTPS.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="relative mb-[14px] inline-block text-[20px] font-black tracking-[-0.3px] text-white before:absolute before:left-[-16px] before:top-[-1px] before:h-[6px] before:w-[6px] before:rounded-full before:bg-[#00A676]">
-              Дети
-            </h2>
-            <p className="mb-[12px] text-white/65">
-              Приложение не для детей младше 16 лет. Мы не собираем данные детей.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="relative mb-[14px] inline-block text-[20px] font-black tracking-[-0.3px] text-white before:absolute before:left-[-16px] before:top-[-1px] before:h-[6px] before:w-[6px] before:rounded-full before:bg-[#00A676]">
-              Контакты
-            </h2>
-            <div className="card bg-[rgba(28,28,30,0.8)] border border-white/6 rounded-[14px] p-5 md:p-6">
-              <p className="m-0 font-semibold">
-                📧 <a href="mailto:support@sanda.app" className="text-[#00A676] no-underline hover:underline">support@sanda.app</a>
+            <Section id="storage" num={3} title="Где хранятся данные">
+              <p className="text-[15px] leading-relaxed text-text-muted md:text-base">
+                Все данные в{' '}
+                <strong className="text-text">Google Firebase Firestore</strong>{' '}
+                — облаке Google. Данные защищены UID и недоступны другим
+                пользователям.
               </p>
-            </div>
-          </section>
-        </div>
+              <p className="mt-3 text-sm text-text-dim md:text-[15px]">
+                Firebase соответствует GDPR, SOC 2, ISO 27001.
+              </p>
+            </Section>
 
-        <div className="divider h-[1px] bg-white/6 my-[44px]" />
-        
-        <div className="footer mt-[64px] flex flex-wrap items-center justify-between gap-[8px] pt-[32px] border-t border-white/6 text-[13px] text-white/30">
-          <span>© 2026 Sanda. Все права защищены.</span>
-          <span>app.sanda.finance</span>
+            <Section id="third-parties" num={4} title="Передача третьим лицам">
+              <p className="text-[15px] leading-relaxed text-text-muted md:text-base">
+                Мы <strong className="text-text">не продаём данные</strong>.
+                Доступ только у:
+              </p>
+              <div className="mt-3">
+                <CardList
+                  items={[
+                    <>
+                      <strong className="text-text">Google Firebase</strong> —
+                      хранение и авторизация
+                    </>,
+                    <>
+                      <strong className="text-text">Google / Apple Sign-In</strong>{' '}
+                      — только авторизация
+                    </>,
+                  ]}
+                />
+              </div>
+            </Section>
+
+            <Section id="guest" num={5} title="Гостевой режим">
+              <p className="text-[15px] leading-relaxed text-text-muted md:text-base">
+                Можно использовать без аккаунта. Данные только на устройстве, без
+                облачной синхронизации.
+              </p>
+            </Section>
+
+            <Section id="delete" num={6} title="Удаление данных">
+              <CardList
+                items={[
+                  <>
+                    Настройки →{' '}
+                    <strong className="text-text">Удалить аккаунт</strong>
+                  </>,
+                  'Все данные безвозвратно удаляются из Firebase',
+                ]}
+              />
+            </Section>
+
+            <Section id="security" num={7} title="Безопасность">
+              <p className="text-[15px] leading-relaxed text-text-muted md:text-base">
+                Доступ по правилам Firebase Security Rules. Только владелец данных
+                может читать или изменять. Весь трафик — по HTTPS.
+              </p>
+            </Section>
+
+            <Section id="children" num={8} title="Дети">
+              <p className="text-[15px] leading-relaxed text-text-muted md:text-base">
+                Приложение не для детей младше 16 лет. Мы не собираем данные
+                детей.
+              </p>
+            </Section>
+
+            <Section id="contacts" num={9} title="Контакты">
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+                <a
+                  href="mailto:support@sanda.app"
+                  className="inline-flex items-center gap-2 rounded-full border border-mint/30 bg-mint/[0.08] px-4 py-2 text-sm font-semibold text-mint transition hover:bg-mint/[0.12]"
+                >
+                  <span aria-hidden>✉</span>
+                  support@sanda.app
+                </a>
+                <p className="text-sm text-text-muted">
+                  Ответим в течение двух рабочих дней.
+                </p>
+              </div>
+            </Section>
+          </div>
+
+          {/* Footer strip of the document */}
+          <div className="mt-16 flex flex-wrap items-center justify-between gap-2 border-t border-line pt-6 text-xs text-text-dim md:mt-20">
+            <span>© 2026 Sanda. Все права защищены.</span>
+            <span>app.sanda.finance</span>
+          </div>
         </div>
-      </div>
+      </main>
       <Footer />
     </>
+  )
+}
+
+// --- helpers -----------------------------------------------------------------
+
+const sections = [
+  { id: 'collect', title: 'Какие данные мы собираем' },
+  { id: 'use', title: 'Как мы используем данные' },
+  { id: 'storage', title: 'Где хранятся данные' },
+  { id: 'third-parties', title: 'Передача третьим лицам' },
+  { id: 'guest', title: 'Гостевой режим' },
+  { id: 'delete', title: 'Удаление данных' },
+  { id: 'security', title: 'Безопасность' },
+  { id: 'children', title: 'Дети' },
+  { id: 'contacts', title: 'Контакты' },
+]
+
+function Section({
+  id,
+  num,
+  title,
+  children,
+}: {
+  id: string
+  num: number
+  title: string
+  children: React.ReactNode
+}) {
+  return (
+    <section id={id} className="scroll-mt-24">
+      <div className="flex items-baseline gap-3">
+        <span className="num-display text-xs font-semibold text-mint md:text-sm">
+          {String(num).padStart(2, '0')}
+        </span>
+        <h2 className="text-xl font-bold tracking-tight md:text-2xl">{title}</h2>
+      </div>
+      <div className="mt-3 md:mt-4">{children}</div>
+    </section>
+  )
+}
+
+function CardList({ items }: { items: React.ReactNode[] }) {
+  return (
+    <ul className="overflow-hidden rounded-2xl border border-line bg-white/[0.02]">
+      {items.map((item, i) => (
+        <li
+          key={i}
+          className={`flex items-start gap-3 px-4 py-3 text-[14px] text-text-muted md:px-5 md:py-3.5 md:text-[15px] ${
+            i !== items.length - 1 ? 'border-b border-line' : ''
+          }`}
+        >
+          <span aria-hidden className="mt-[2px] flex-shrink-0 text-mint">
+            →
+          </span>
+          <span className="min-w-0">{item}</span>
+        </li>
+      ))}
+    </ul>
   )
 }
