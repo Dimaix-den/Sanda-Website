@@ -19,10 +19,9 @@
 
 @layer base {
   /*
-   * Smooth anchor scrolling across the whole page — anchor clicks
-   * (e.g. header "Возможности" → #features) glide instead of jumping.
-   * scroll-padding-top compensates for the 64px sticky header so the
-   * section title isn't hidden under it after the scroll lands.
+   * Smooth anchor scrolling. scroll-padding-top compensates for the
+   * 64px sticky header so the target section's title isn't hidden
+   * under it after the scroll lands.
    */
   html {
     scroll-behavior: smooth;
@@ -62,8 +61,8 @@
   }
 
   /*
-   * Any section with an id is a scroll target. Add margin-top so the
-   * sticky header doesn't overlap the heading when we land on it.
+   * Any section with an id becomes a scroll target. scroll-margin-top
+   * keeps the sticky header from overlapping the section heading.
    */
   section[id] {
     scroll-margin-top: 72px;
@@ -160,11 +159,6 @@
     overflow: hidden;
     border-radius: 36px;
     background: #05070a;
-    /*
-     * Use a minimum height rather than a strict aspect ratio so the mockup
-     * can grow slightly if the localized content needs more room. The
-     * default still matches a tall iPhone silhouette.
-     */
     aspect-ratio: 9 / 19.5;
     min-height: 580px;
   }
@@ -180,18 +174,58 @@
   }
 
   /*
-   * Smaller phone variant — used in feature cards where the mockup
-   * is decorative rather than the hero subject. Avoids the "same huge
-   * iPhone again" feeling as the user scrolls.
+   * .phone-cut-half — wraps the phone frame on mobile inside the
+   * Features section. Crops the lower half and fades to transparent,
+   * so the mockup reads as a peek rather than eating a full screen.
+   *
+   * Implementation:
+   *   - max-height clips to 50% of the natural mockup height
+   *   - overflow-hidden prevents layout leaks
+   *   - mask-image gradient fades the lower portion to transparent,
+   *     starting ~30% down so the content at the top reads sharply
+   *     and the fade takes up most of the visible area
+   *   - negative margin-bottom pulls the next block upward so the
+   *     masked empty space doesn't become "ghost padding"
+   *
+   * .phone-cut-none resets everything for desktop.
    */
-  .phone-frame-sm {
-    border-radius: 32px;
-    padding: 6px;
-    max-width: 240px;
+  .phone-cut-half {
+    position: relative;
+    max-height: 340px;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      black 0%,
+      black 55%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      black 0%,
+      black 55%,
+      transparent 100%
+    );
+    /* Eat some of the visually-empty masked area so the next block
+     * doesn't sit in a big vacuum below. Tuned to keep the fade
+     * visible but not floaty. */
+    margin-bottom: -64px;
   }
-  .phone-frame-sm .phone-screen {
-    border-radius: 26px;
-    min-height: 440px;
+
+  .phone-cut-none {
+    max-height: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+    margin-bottom: 0;
+  }
+
+  /* On desktop the md:phone-cut-none utility needs to kick in. */
+  @media (min-width: 768px) {
+    .md\:phone-cut-none {
+      max-height: none;
+      -webkit-mask-image: none;
+      mask-image: none;
+      margin-bottom: 0;
+    }
   }
 
   .notch {
@@ -223,10 +257,8 @@
   }
 
   /*
-   * Inline CTA bar — a slim, horizontally-oriented promo strip that
-   * interrupts the flow of long content sections without stealing a
-   * full screen of vertical space like the final CTA does. Two of
-   * these sit between content blocks to combat scroll fatigue.
+   * Inline CTA bar — slim horizontally-oriented promo strip that
+   * interrupts the flow without hijacking a full viewport.
    */
   .cta-inline {
     position: relative;
@@ -252,9 +284,24 @@
   }
 
   /*
-   * Horizontal scroll carousel primitives used for the Features mini-cards
-   * and Testimonials on mobile. Snap-mandatory so each card locks into view,
-   * with padding-inline so the first/last card can sit flush with content.
+   * .no-scrollbar — utility to hide scrollbars on any overflow-x
+   * container. Applied to the sticky tabs bar, any horizontal tab
+   * strips, and other scrolling tracks where the bar would be ugly
+   * on mobile. Scroll still works, just no visible track.
+   */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /*
+   * Horizontal scroll carousel primitive. Snap-mandatory so each card
+   * locks into view. Scrollbar always hidden here.
    */
   .hscroll {
     display: flex;
@@ -264,10 +311,13 @@
     scroll-padding-inline: 20px;
     padding-block: 4px;
     scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
   .hscroll::-webkit-scrollbar {
     display: none;
+    width: 0;
+    height: 0;
   }
 
   .hscroll > * {
@@ -277,6 +327,44 @@
 
   .hscroll-bleed {
     padding-inline: 20px;
+  }
+
+  /*
+   * Global fallback — hide scrollbars for any horizontal overflow
+   * container on mobile-sized viewports. Some containers (the
+   * comparison table, the simulator days strip) use overflow-x-auto
+   * directly via Tailwind and don't have the .hscroll class. This
+   * rule keeps them tidy without touching each call site.
+   */
+  @media (max-width: 1023px) {
+    [class*="overflow-x-auto"] {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    [class*="overflow-x-auto"]::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+  }
+
+  /*
+   * Mobile breathing room between sections. On desktop each section
+   * already has py-24 (96px) which is fine. On mobile the previous
+   * py-16 (64px) felt tight when reading on a small screen, so we
+   * bump every direct section under <main> to at least 96px vertical
+   * padding. Sections that already set their own larger padding win.
+   */
+  @media (max-width: 767px) {
+    main > section {
+      padding-top: 5rem;
+      padding-bottom: 5rem;
+    }
+    /* Hero keeps a slightly smaller top since the sticky header sits
+     * right above it — avoids a double-padding gap on first paint. */
+    main > section:first-child {
+      padding-top: 3.5rem;
+    }
   }
 
   .pulse-dot {

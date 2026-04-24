@@ -1,4 +1,6 @@
 import { Link } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
+import { Menu, X } from 'lucide-react'
 
 export function Logo({ size = 28 }: { size?: number }) {
   return (
@@ -22,32 +24,114 @@ export function Logo({ size = 28 }: { size?: number }) {
   )
 }
 
+const navItems = [
+  { label: 'Как работает', href: '#try' },
+  { label: 'Возможности', href: '#features' },
+  { label: 'Истории', href: '#people' },
+  { label: 'Сравнение', href: '#compare' },
+]
+
 export function Header() {
+  const [open, setOpen] = useState(false)
+
+  // Lock body scroll while the drawer is open so the page underneath
+  // doesn't scroll with the user's finger on iOS.
+  useEffect(() => {
+    if (!open) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = prev
+    }
+  }, [open])
+
+  // Close the drawer when the viewport crosses into desktop (lg) so it
+  // doesn't linger as an invisible blocker.
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)')
+    const handler = (e: MediaQueryListEvent) => {
+      if (e.matches) setOpen(false)
+    }
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-ink/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-        <Link to="/" className="flex items-center">
+        <Link to="/" className="flex items-center" onClick={() => setOpen(false)}>
           <Logo />
         </Link>
+
+        {/* Desktop nav */}
         <nav className="hidden items-center gap-8 text-sm text-text-muted lg:flex">
-          <a href="#try" className="hover:text-text">
-            Как работает
-          </a>
-          <a href="#features" className="hover:text-text">
-            Возможности
-          </a>
-          <a href="#people" className="hover:text-text">
-            Истории
-          </a>
-          <a href="#compare" className="hover:text-text">
-            Сравнение
-          </a>
+          {navItems.map((it) => (
+            <a key={it.href} href={it.href} className="hover:text-text">
+              {it.label}
+            </a>
+          ))}
         </nav>
+
         <div className="flex items-center gap-2">
-          <a href="#cta" className="btn-primary !px-4 !py-2 text-sm">
+          <a
+            href="#cta"
+            className="btn-primary hidden !px-4 !py-2 text-sm sm:inline-flex"
+          >
             Скачать
           </a>
+
+          {/*
+           * Mobile hamburger — only visible below lg. Swaps to an X while
+           * the drawer is open, and toggles the drawer on tap.
+           */}
+          <button
+            type="button"
+            aria-label={open ? 'Закрыть меню' : 'Открыть меню'}
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            onClick={() => setOpen((v) => !v)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-line bg-white/[0.02] text-text transition hover:border-line-strong lg:hidden"
+          >
+            {open ? <X size={18} /> : <Menu size={18} />}
+          </button>
         </div>
+      </div>
+
+      {/*
+       * Mobile drawer — sits just below the header bar, fills the rest
+       * of the viewport. Backdrop-blur mirrors the header so it feels
+       * like the same surface expanded downward.
+       */}
+      <div
+        id="mobile-nav"
+        className={`fixed inset-x-0 top-16 z-40 origin-top border-b border-line bg-ink/95 backdrop-blur-xl transition-all duration-200 lg:hidden ${
+          open
+            ? 'pointer-events-auto opacity-100 translate-y-0'
+            : 'pointer-events-none -translate-y-2 opacity-0'
+        }`}
+        role="dialog"
+        aria-modal="true"
+      >
+        <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-5 py-4">
+          {navItems.map((it) => (
+            <a
+              key={it.href}
+              href={it.href}
+              onClick={() => setOpen(false)}
+              className="flex items-center justify-between rounded-2xl border border-line bg-white/[0.02] px-4 py-3 text-base font-medium text-text transition hover:border-line-strong"
+            >
+              <span>{it.label}</span>
+              <span aria-hidden className="text-text-dim">→</span>
+            </a>
+          ))}
+          <a
+            href="#cta"
+            onClick={() => setOpen(false)}
+            className="btn-primary mt-3 w-full"
+          >
+            Скачать для iOS
+          </a>
+        </nav>
       </div>
     </header>
   )

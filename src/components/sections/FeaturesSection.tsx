@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import {
   CapitalMockup,
-  CommitmentsMockup,
-  GoalsMockup,
+  PlanMockup,
   TodayMockup,
 } from '../mockups/AppMockups'
+import { StatsMockup } from '../mockups/StatsMockup'
 
-type TabKey = 'today' | 'commit' | 'goals' | 'capital'
+type TabKey = 'today' | 'plans' | 'capital' | 'stats'
 
 const tabs: {
   key: TabKey
@@ -23,71 +23,63 @@ const tabs: {
     bullets: [
       'Зелёный — в безопасной зоне',
       'Оранжевый — близко к границе',
-      'Красный — вышел за лимит, пересчет лимита',
+      'Красный — вышел за лимит, пересчёт лимита',
     ],
   },
   {
-    key: 'commit',
-    label: 'Обязательства',
-    title: 'Кредиты, рассрочки, подписки — в одном месте',
-    text: 'Сумма вычитается из бюджета автоматически. Остаток после обязательств — это твои реальные деньги, разложенные по дням.',
+    key: 'plans',
+    label: 'Планы',
+    title: 'Календарь трат на месяц вперёд',
+    text: 'Можно запланировать расходы, доходы и выделить бюджет на месяц. Есть ежемесячные и ежегодные статьи — всё разложено по дням.',
     bullets: [
-      'График погашения и дата платежа',
-      'Досрочное погашение одним действием',
-      'Подписки не теряются в общем балансе',
-    ],
-  },
-  {
-    key: 'goals',
-    label: 'Цели и плановые расходы',
-    title: 'Запланируй свой месяц и живи без неожиданностей',
-    text: 'Купить шторы, заказать цветы, записаться на Beauty-процедуры — просто запиши сразу, Sanda всё запомнит и напомнит.',
-    bullets: [
-      'Любое количество параллельных целей',
-      'Автоматическая бронь из бюджета',
-      'Прогресс по каждой цели в моменте',
+      'Регулярные расходы и доходы — раз в месяц или год',
+      'Плановые крупные покупки — бюджет подстроится',
+      'По сути календарь трат, а не список транзакций',
     ],
   },
   {
     key: 'capital',
     label: 'Капитал',
-    title: 'Вся твоя картина за квартал и за год',
-    text: 'Счета, сбережения, имущество и обязательства. Чистый капитал и динамика за выбранный период — чтобы видеть, растёшь ли ты финансово.',
+    title: 'Обязательства, сбережения, имущество и счета',
+    text: 'Здесь ты ведёшь всё, что у тебя есть и что ты должен. Активные счета, накопления, недвижимость, кредиты — единая картина чистого капитала.',
     bullets: [
-      'График капитала с касанием для точных значений',
-      'Drill-down по активам и обязательствам',
-      'Честная метрика успеха: не «сколько на кофе», а «вырос ли я»',
+      'Все счета и сбережения в одном месте',
+      'Имущество и обязательства — как в балансе',
+      'Чистый капитал и его динамика в моменте',
+    ],
+  },
+  {
+    key: 'stats',
+    label: 'Статистика',
+    title: 'Вся история твоих денег в одном разделе',
+    text: 'Капитал, денежный поток, динамика расходов и доходов, накоплений и прочее — за день, неделю, месяц или год. Данные собираются автоматически из твоих счетов.',
+    bullets: [
+      'Тратишь ли ты меньше, чем получаешь — одним числом',
+      'Динамика расходов и доходов за любой период',
+      'Рост капитала и накоплений от месяца к месяцу',
     ],
   },
 ]
 
 /**
- * FeaturesSection — restructured to avoid the "text left / phone right"
- * silhouette that Hero owns.
+ * FeaturesSection — three-column stage (bullets | phone | companion).
  *
- * Layout (desktop):
- *   [ eyebrow + title + description ]        <- full-width intro
- *   [  bullets  |  phone  |  stats strip  ]  <- three-column stage
- *   [ horizontal mini-features scroll ]      <- unchanged
- *
- * Layout (mobile):
- *   intro → phone → bullets → stats
- * so the phone is centred and the columns wrap around it.
+ * Mobile tweak: the phone is clipped to ~50% height with a bottom gradient
+ * fade so the mockup reads as a peek, not a full-height billboard that
+ * blows out the scroll.
  */
 export function FeaturesSection() {
   const [active, setActive] = useState<TabKey>('today')
   const current = tabs.find((t) => t.key === active)!
 
   return (
-    <section id="features" className="border-b border-line py-16 md:py-24">
+    <section id="features" className="border-b border-line py-20 md:py-24">
       {/*
-       * Sticky tab bar: on mobile the tabs stick to the top of the viewport
-       * as the user scrolls through the description, so they can jump between
-       * features without losing context.
-       * top-16 matches the 64px sticky Header so we don't cover it.
+       * Sticky tab bar — on mobile sticks under the 64px header so the
+       * user can swap tabs without losing context. Scroll track hidden.
        */}
       <div className="sticky top-16 z-20 -mx-0 mb-10 border-b border-line bg-ink/85 px-5 py-3 backdrop-blur-xl md:static md:mx-auto md:max-w-6xl md:border-0 md:bg-transparent md:px-5 md:py-0 md:backdrop-blur-none">
-        <div className="mx-auto max-w-6xl overflow-x-auto">
+        <div className="mx-auto max-w-6xl overflow-x-auto no-scrollbar">
           <div className="flex min-w-max gap-2">
             {tabs.map((t) => (
               <button
@@ -107,7 +99,7 @@ export function FeaturesSection() {
       </div>
 
       <div className="mx-auto max-w-6xl px-5">
-        {/* Intro block — sits above the stage, full width */}
+        {/* Intro block — full width above the stage */}
         <div className="mb-8 max-w-3xl md:mb-12">
           <div className="eyebrow">Возможности</div>
           <h3 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl md:mt-5 md:text-4xl">
@@ -118,11 +110,11 @@ export function FeaturesSection() {
 
         {/*
          * Three-column stage: bullets | phone | companion card.
-         * The phone is centred, which instantly reads as a different layout
-         * from Hero and Try. On mobile we stack phone → bullets → companion.
+         * Mobile: phone → bullets → companion. Phone gets clipped with a
+         * fade-out mask on mobile so it reads as a preview.
          */}
         <div className="grid gap-8 md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-10">
-          {/* Bullets — order-2 on mobile so phone stays above them */}
+          {/* Bullets — order-2 on mobile so the phone appears first */}
           <div className="order-2 md:order-1">
             <p className="text-[10px] uppercase tracking-[0.2em] text-mint">
               Что внутри
@@ -143,7 +135,12 @@ export function FeaturesSection() {
             </ul>
           </div>
 
-          {/* Phone — centre stage, decorative glow */}
+          {/*
+           * Phone wrapper:
+           *   mobile → .phone-cut-half (fixed visual height ~ half the phone,
+           *            gradient mask fades to transparent at the bottom)
+           *   desktop → unclipped, .md:phone-cut-none resets it
+           */}
           <div className="relative order-1 mx-auto w-full max-w-[300px] md:order-2 md:max-w-[320px]">
             <div
               className="pointer-events-none absolute -inset-12 -z-10 rounded-full opacity-50 blur-3xl"
@@ -153,16 +150,17 @@ export function FeaturesSection() {
               }}
               aria-hidden
             />
-            {active === 'today' && <TodayMockup zone="safe" amount={12400} />}
-            {active === 'commit' && <CommitmentsMockup />}
-            {active === 'goals' && <GoalsMockup />}
-            {active === 'capital' && <CapitalMockup />}
+            <div className="phone-cut-half md:phone-cut-none">
+              {active === 'today' && <TodayMockup zone="safe" amount={12400} />}
+              {active === 'plans' && <PlanMockup />}
+              {active === 'capital' && <CapitalMockup />}
+              {active === 'stats' && <StatsMockup />}
+            </div>
           </div>
 
           {/*
-           * Companion card — different content per tab to match the feature
-           * being shown. Keeps the right side from being empty without
-           * repeating "another list of bullets".
+           * Companion card — different content per tab to avoid another
+           * list of bullets on the right.
            */}
           <div className="order-3 md:order-3">
             <CompanionCard tab={current.key} />
@@ -171,11 +169,10 @@ export function FeaturesSection() {
       </div>
 
       {/*
-       * Mini-features as a horizontal snap carousel on all viewports.
-       * On mobile the strip bleeds to the viewport edges; on desktop
-       * the scrolling still works but the row is comfortably wide.
+       * Mini-features horizontal carousel. Scrollbar hidden via .no-scrollbar
+       * (handled by .hscroll itself, but we keep it explicit on mobile).
        */}
-      <div className="mt-14 md:mt-20">
+      <div className="mt-16 md:mt-20">
         <div className="mx-auto mb-4 max-w-6xl px-5">
           <p className="text-sm text-text-dim">Дополнительные плюшки</p>
         </div>
@@ -219,16 +216,12 @@ export function FeaturesSection() {
   )
 }
 
-/**
- * Per-tab companion card. Each variant picks a different metaphor so the
- * right-hand column doesn't feel like filler.
- */
 function CompanionCard({ tab }: { tab: TabKey }) {
   if (tab === 'today') {
     return (
       <div className="rounded-3xl border border-line bg-white/[0.02] p-5">
         <p className="text-[10px] uppercase tracking-[0.2em] text-text-dim">
-          Пример цвета
+          Цветовые зоны
         </p>
         <div className="mt-3 space-y-2">
           <ZoneRow color="#3be8b0" label="Зелёный" hint="Можешь тратить свободно" />
@@ -238,62 +231,57 @@ function CompanionCard({ tab }: { tab: TabKey }) {
       </div>
     )
   }
-  if (tab === 'commit') {
+  if (tab === 'plans') {
     return (
       <div className="rounded-3xl border border-line bg-white/[0.02] p-5">
         <p className="text-[10px] uppercase tracking-[0.2em] text-text-dim">
-          Экономия за год
+          Типы событий
         </p>
-        <p className="num-display mt-2 text-4xl font-black grad-text">
-          ~84 000 ₸
-        </p>
-        <p className="mt-2 text-xs text-text-muted">
-          Средняя сумма, которую пользователи досрочно гасят в рассрочках за
-          первые 12 месяцев с Sanda.
-        </p>
-        <div className="mt-4 h-1 overflow-hidden rounded-full bg-white/5">
-          <div
-            className="h-full w-[68%] rounded-full"
-            style={{
-              background: 'linear-gradient(90deg, #3be8b0 0%, #3b9eff 100%)',
-            }}
-          />
+        <div className="mt-3 space-y-2">
+          <PlanRow emoji="🔁" label="Каждый месяц" hint="Аренда, интернет, подписки" />
+          <PlanRow emoji="📆" label="Раз в год" hint="ОСАГО, абонемент, налоги" />
+          <PlanRow emoji="🎯" label="Разовая покупка" hint="Подарок, крупный чек" />
+          <PlanRow emoji="💼" label="Доход" hint="Зарплата, бонус, фриланс" />
         </div>
       </div>
     )
   }
-  if (tab === 'goals') {
+  if (tab === 'capital') {
     return (
       <div className="rounded-3xl border border-line bg-white/[0.02] p-5">
         <p className="text-[10px] uppercase tracking-[0.2em] text-text-dim">
-          Активные цели
+          Чистый капитал
         </p>
-        <div className="mt-3 space-y-3">
-          <GoalBar emoji="🏠" label="Первый взнос" pct={39} />
-          <GoalBar emoji="✈️" label="Отпуск" pct={48} />
-          <GoalBar emoji="🛟" label="Подушка" pct={69} />
+        <p className="num-display mt-2 text-3xl font-black">2 480 500 ₸</p>
+        <p className="mt-1 text-xs text-mint">▲ 12,4% за 6 мес</p>
+        <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
+          <div className="rounded-xl border border-line bg-white/[0.02] px-2.5 py-2">
+            <p className="text-text-dim">Активы</p>
+            <p className="num-display mt-0.5 font-semibold">2,77 млн</p>
+          </div>
+          <div className="rounded-xl border border-line bg-white/[0.02] px-2.5 py-2">
+            <p className="text-text-dim">Обязательства</p>
+            <p className="num-display mt-0.5 font-semibold text-danger">−285 тыс</p>
+          </div>
         </div>
       </div>
     )
   }
-  // capital
+  // stats
   return (
     <div className="rounded-3xl border border-line bg-white/[0.02] p-5">
       <p className="text-[10px] uppercase tracking-[0.2em] text-text-dim">
-        Чистый капитал
+        За апрель
       </p>
-      <p className="num-display mt-2 text-3xl font-black">2 480 500 ₸</p>
-      <p className="mt-1 text-xs text-mint">▲ 12,4% за 6 мес</p>
-      <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
-        <div className="rounded-xl border border-line bg-white/[0.02] px-2.5 py-2">
-          <p className="text-text-dim">Активы</p>
-          <p className="num-display mt-0.5 font-semibold">2,77 млн</p>
-        </div>
-        <div className="rounded-xl border border-line bg-white/[0.02] px-2.5 py-2">
-          <p className="text-text-dim">Обязательства</p>
-          <p className="num-display mt-0.5 font-semibold text-danger">−285 тыс</p>
-        </div>
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <MiniStat big="+186к" label="Сальдо" accent="#3be8b0" />
+        <MiniStat big="▲ 14%" label="К прошлому" accent="#3be8b0" />
+        <MiniStat big="328к" label="Расходы" />
+        <MiniStat big="514к" label="Доходы" />
       </div>
+      <p className="mt-3 text-[11px] text-text-muted">
+        Четыре периода: день, неделя, месяц, год.
+      </p>
     </div>
   )
 }
@@ -323,33 +311,43 @@ function ZoneRow({
   )
 }
 
-function GoalBar({
+function PlanRow({
   emoji,
   label,
-  pct,
+  hint,
 }: {
   emoji: string
   label: string
-  pct: number
+  hint: string
 }) {
   return (
-    <div>
-      <div className="flex items-center justify-between text-xs">
-        <span className="flex items-center gap-2">
-          <span>{emoji}</span>
-          <span className="text-text">{label}</span>
-        </span>
-        <span className="num-display text-text-muted">{pct}%</span>
+    <div className="flex items-center gap-3 rounded-xl border border-line bg-white/[0.02] px-3 py-2">
+      <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-white/5 text-sm">
+        {emoji}
+      </span>
+      <div className="min-w-0">
+        <p className="text-xs font-semibold text-text">{label}</p>
+        <p className="truncate text-[11px] text-text-muted">{hint}</p>
       </div>
-      <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/5">
-        <div
-          className="h-full rounded-full"
-          style={{
-            width: `${pct}%`,
-            background: 'linear-gradient(90deg, #3be8b0 0%, #3b9eff 100%)',
-          }}
-        />
-      </div>
+    </div>
+  )
+}
+
+function MiniStat({
+  big,
+  label,
+  accent,
+}: {
+  big: string
+  label: string
+  accent?: string
+}) {
+  return (
+    <div className="rounded-xl border border-line bg-white/[0.02] px-2.5 py-2">
+      <p className="num-display text-base font-bold" style={{ color: accent }}>
+        {big}
+      </p>
+      <p className="mt-0.5 text-[10px] text-text-muted">{label}</p>
     </div>
   )
 }
