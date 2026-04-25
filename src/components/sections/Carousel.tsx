@@ -116,7 +116,7 @@ export function Carousel({
     el.scrollLeft = drag.current.startScroll - dx
   }
 
-  const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+  const endDrag = () => {
     if (!drag.current.active) return
     const el = trackRef.current
     drag.current.active = false

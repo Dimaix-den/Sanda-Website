@@ -1,16 +1,25 @@
 import { type ReactNode } from 'react'
 
+/**
+ * Physical phone frame + screen area. Rounded dark bezel, fluid width.
+ *
+ * noNotch: when the inner mockup renders its own dynamic-island /
+ * notch pill inside its status bar (as our v8 ported screens do),
+ * we skip the default .notch element here to avoid stacking two.
+ */
 export function PhoneFrame({
   children,
   className = '',
+  noNotch = true,
 }: {
   children: ReactNode
   className?: string
+  noNotch?: boolean
 }) {
   return (
     <div className={`phone-frame ${className}`}>
       <div className="phone-screen">
-        <div className="notch" />
+        {!noNotch && <div className="notch" />}
         {children}
       </div>
     </div>

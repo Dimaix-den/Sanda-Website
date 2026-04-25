@@ -140,13 +140,17 @@ export function Header() {
     const dx = dragX ?? 0
     swipe.current.active = false
     swipe.current.pointerId = null
+    swipe.current.locked = null
 
+    // Clear drag translation first so the CSS transition to
+    // translate-x-full can run on the next paint. If we left dragX set
+    // while calling setOpen(false), inline style (transition: 'none')
+    // would lock the drawer in the half-swiped position until the
+    // cleanup useEffect cleared it — creating a one-frame jump.
+    setDragX(null)
     if (dx > swipe.current.width * 0.4) {
       setOpen(false)
-    } else {
-      setDragX(null)
     }
-    swipe.current.locked = null
   }
 
   const isDragging = dragX !== null && dragX > 0

@@ -471,7 +471,10 @@
   }
   .hscroll-track img {
     -webkit-user-drag: none;
-    pointer-events: none;
+    /* don't disable pointer-events here — that would block clicks on
+     * any future image-bearing cards. -webkit-user-drag: none alone is
+     * enough to stop the browser's native image drag from hijacking
+     * our mouse-drag gesture. */
   }
 
   /*

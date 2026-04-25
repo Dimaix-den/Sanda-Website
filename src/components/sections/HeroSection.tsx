@@ -72,17 +72,30 @@ export function HeroSection() {
             </div>
           </div>
 
-          <div className="relative mx-auto w-full max-w-[320px] md:max-w-[340px]">
+          {/*
+           * Phone wrapper. `isolation: isolate` is the key fix here —
+           * the ported mockup contains its own z-index stack (status
+           * bar 5, bottom nav 30, home bar 40, dynamic-island pill 50),
+           * which used to escape into this wrapper's stacking context
+           * and float above the FloatingCards even though the cards
+           * sit later in DOM order. Isolating the phone caps all those
+           * indices to its own subtree, so the cards (rendered as
+           * siblings) reliably win.
+           */}
+          <div
+            className="relative mx-auto w-full max-w-[320px] md:max-w-[340px]"
+            style={{ isolation: 'isolate' }}
+          >
             <HeroGlow />
             <TodayMockup amount={12400} spent={0} zone="safe" streak={14} />
             <FloatingCard
-              className="left-[-48px] top-14 hidden md:flex"
+              className="left-[-48px] top-14 z-10 hidden md:flex"
               emoji="✅"
               title="Уложился в лимит"
               sub="14 дней подряд"
             />
             <FloatingCard
-              className="right-[-56px] bottom-28 hidden md:flex"
+              className="right-[-56px] bottom-28 z-10 hidden md:flex"
               emoji="🎯"
               title="Цель на ипотеку"
               sub="39% собрано"
