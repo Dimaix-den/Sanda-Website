@@ -688,6 +688,7 @@ export function TodayMockup({
             }}
           >
             <span
+              className="num-rise"
               style={{
                 fontSize: 38,
                 fontWeight: 800,
@@ -695,6 +696,7 @@ export function TodayMockup({
                 color,
                 lineHeight: 1,
                 fontVariantNumeric: 'tabular-nums',
+                animationDelay: '180ms',
               }}
             >
               {available < 0 ? '−' : ''}
@@ -720,6 +722,7 @@ export function TodayMockup({
             }}
           >
             <div
+              className="bar-grow"
               style={{
                 height: '100%',
                 borderRadius: 99,
@@ -841,10 +844,15 @@ export function TodayMockup({
                   }}
                 >
                   <div
+                    className="bar-grow"
                     style={{
                       height: '100%',
                       borderRadius: 99,
                       width: `${Math.min(pct * 100, 100)}%`,
+                      // Stagger by ~80ms × index so the bars unfurl in
+                      // sequence rather than all at once. Only fires
+                      // once on first mount (CSS animation, not transition).
+                      animationDelay: `${250 + i * 80}ms`,
                       background:
                         b.spent === 0
                           ? 'rgba(255,255,255,0.08)'
@@ -1087,6 +1095,7 @@ export function PlanMockup() {
                 Доход
               </p>
               <p
+                className="num-rise"
                 style={{
                   fontSize: 18,
                   fontWeight: 800,
@@ -1094,6 +1103,7 @@ export function PlanMockup() {
                   color: C.mint,
                   fontVariantNumeric: 'tabular-nums',
                   lineHeight: 1,
+                  animationDelay: '120ms',
                 }}
               >
                 +150 000
@@ -1119,6 +1129,7 @@ export function PlanMockup() {
                 Расход
               </p>
               <p
+                className="num-rise"
                 style={{
                   fontSize: 18,
                   fontWeight: 800,
@@ -1126,6 +1137,7 @@ export function PlanMockup() {
                   color: C.warn,
                   fontVariantNumeric: 'tabular-nums',
                   lineHeight: 1,
+                  animationDelay: '200ms',
                 }}
               >
                 −190 000
@@ -1206,10 +1218,12 @@ export function PlanMockup() {
                     }}
                   >
                     <div
+                      className="bar-grow"
                       style={{
                         height: '100%',
                         borderRadius: 99,
                         width: `${Math.min(pct * 100, 100)}%`,
+                        animationDelay: `${250 + i * 80}ms`,
                         background: over
                           ? `linear-gradient(90deg,${C.danger},${C.danger}88)`
                           : bc === C.mint
@@ -1562,10 +1576,12 @@ export function CapitalMockup() {
                 }}
               >
                 <div
+                  className="bar-grow"
                   style={{
                     height: '100%',
                     borderRadius: 99,
                     width: `${Math.min(s.pct * 100, 100)}%`,
+                    animationDelay: `${250 + i * 80}ms`,
                     background: GRAD,
                   }}
                 />

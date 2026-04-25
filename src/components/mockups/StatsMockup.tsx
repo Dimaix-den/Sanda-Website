@@ -161,7 +161,15 @@ function HomeBar() {
 
 // ─── Sparkline ─────────────────────────────────────────────────────
 
-function Spark({ points, color }: { points: number[]; color: string }) {
+function Spark({
+  points,
+  color,
+  delay = 0,
+}: {
+  points: number[]
+  color: string
+  delay?: number
+}) {
   const w = 56
   const h = 28
   const min = Math.min(...points)
@@ -175,8 +183,35 @@ function Spark({ points, color }: { points: number[]; color: string }) {
     .join(' ')
   return (
     <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ overflow: 'visible' }}>
-      <polygon points={`${pts} ${w},${h} 0,${h}`} fill={`${color}1a`} />
-      <polyline points={pts} fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      {/*
+       * Two-pass entrance:
+       *   1. The polyline "draws" itself by animating stroke-dashoffset
+       *      from 200 → 0 (.spark-draw class). 200 is comfortably more
+       *      than the longest path in this layout, so even sparklines
+       *      finish drawing inside the animation duration.
+       *   2. The filled polygon fades in after the line lands
+       *      (.spark-fade with built-in delay).
+       * Per-card stagger via animationDelay on the SVG group keeps
+       * the four stat charts from drawing at the exact same instant.
+       */}
+      <g style={{ animationDelay: `${delay}ms` }}>
+        <polygon
+          className="spark-fade"
+          points={`${pts} ${w},${h} 0,${h}`}
+          fill={`${color}1a`}
+          style={{ animationDelay: `${delay + 600}ms` }}
+        />
+        <polyline
+          className="spark-draw"
+          points={pts}
+          fill="none"
+          stroke={color}
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ animationDelay: `${delay + 120}ms` }}
+        />
+      </g>
     </svg>
   )
 }
@@ -264,11 +299,13 @@ export function StatsMockup() {
                     <span style={{ fontSize: 10.5, color: C.dim }}>{s.label}</span>
                   </div>
                   <span
+                    className="num-rise"
                     style={{
                       fontSize: 20,
                       fontWeight: 800,
                       letterSpacing: '-0.04em',
                       fontVariantNumeric: 'tabular-nums',
+                      animationDelay: `${i * 100 + 80}ms`,
                     }}
                   >
                     {s.value}
@@ -283,7 +320,7 @@ export function StatsMockup() {
                     {s.suf}
                   </span>
                 </div>
-                <Spark points={s.pts} color={s.color} />
+                <Spark points={s.pts} color={s.color} delay={i * 100} />
               </div>
             ))}
 
@@ -319,10 +356,12 @@ export function StatsMockup() {
                 }}
               >
                 <div
+                  className="bar-grow"
                   style={{
                     height: '100%',
                     borderRadius: 99,
                     width: '74%',
+                    animationDelay: '500ms',
                     background: GRAD,
                   }}
                 />

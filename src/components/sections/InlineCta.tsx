@@ -1,4 +1,5 @@
 import { ArrowRight } from 'lucide-react'
+import { Reveal } from '../Reveal'
 
 type Variant = 'compact' | 'split' | 'banner'
 
@@ -12,6 +13,10 @@ type Variant = 'compact' | 'split' | 'banner'
  *   - `compact`: single-line pill on desktop, stacked on mobile
  *   - `split`:  two-column with a faux app icon left, text + button right
  *   - `banner`: tall, centred, numeric badge — good as a hard stop
+ *
+ * The whole strip fades up via <Reveal> as it scrolls into view —
+ * a single subtle motion, not staggered, since the CTA is meant to
+ * grab attention as one block.
  */
 export function InlineCta({
   variant = 'compact',
@@ -27,6 +32,27 @@ export function InlineCta({
   subtitle?: string
   cta?: string
   href?: string
+}) {
+  // Single Reveal wrapper around whichever variant we render.
+  // Helper closures keep the JSX-per-variant clean.
+  const inner = renderInline({ variant, eyebrow, title, subtitle, cta, href })
+  return <Reveal>{inner}</Reveal>
+}
+
+function renderInline({
+  variant,
+  eyebrow,
+  title,
+  subtitle,
+  cta,
+  href,
+}: {
+  variant: Variant
+  eyebrow?: string
+  title: string
+  subtitle?: string
+  cta: string
+  href: string
 }) {
   if (variant === 'split') {
     return (
@@ -95,6 +121,9 @@ export function InlineCta({
             <div className="relative z-10 mt-5 flex flex-wrap items-center justify-center gap-3 md:mt-6">
               <a href={href} className="btn-primary">
                 {cta} <ArrowRight size={18} />
+              </a>
+              <a href="#try" className="btn-ghost">
+                Посчитать сначала
               </a>
             </div>
           </div>

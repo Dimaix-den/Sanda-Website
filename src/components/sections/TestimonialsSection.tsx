@@ -1,4 +1,5 @@
 import { Carousel } from './Carousel'
+import { Reveal } from '../Reveal'
 
 export function TestimonialsSection() {
   const people = [
@@ -34,17 +35,19 @@ export function TestimonialsSection() {
   return (
     <section id="people" className="border-b border-line py-16 md:py-24">
       <div className="mx-auto max-w-6xl px-5">
-        <div className="mb-8 max-w-2xl md:mb-12">
-          <div className="eyebrow">Истории</div>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
-            Люди, которые устали считать в уме
-          </h2>
-          <p className="mt-4 text-text-muted md:mt-5">
-            Разные города, разные профессии, разные доходы. Общее у всех —
-            желание контролировать деньги, не превращаясь в домашнего
-            бухгалтера.
-          </p>
-        </div>
+        <Reveal>
+          <div className="mb-8 max-w-2xl md:mb-12">
+            <div className="eyebrow">Истории</div>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
+              Люди, которые устали считать в уме
+            </h2>
+            <p className="mt-4 text-text-muted md:mt-5">
+              Разные города, разные профессии, разные доходы. Общее у всех —
+              желание контролировать деньги, не превращаясь в домашнего
+              бухгалтера.
+            </p>
+          </div>
+        </Reveal>
 
         {/*
          * Carousel sits inside the same content column as the heading —
@@ -52,7 +55,8 @@ export function TestimonialsSection() {
          * breakpoint. Arrows + mouse drag come from the Carousel
          * primitive; mobile uses native swipe.
          */}
-        <Carousel ariaLabel="Отзывы пользователей">
+        <Reveal delay={80}>
+          <Carousel ariaLabel="Отзывы пользователей">
           {people.map((p) => (
             <figure
               key={p.name}
@@ -78,7 +82,8 @@ export function TestimonialsSection() {
               </figcaption>
             </figure>
           ))}
-        </Carousel>
+          </Carousel>
+        </Reveal>
       </div>
     </section>
   )

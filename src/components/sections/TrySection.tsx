@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Reveal } from '../Reveal'
 
 function daysUntilPayday(paydayDay: number) {
   const today = new Date()
@@ -49,17 +50,19 @@ export function TrySection() {
       className="relative border-b border-line px-5 py-16 md:py-24"
     >
       <div className="mx-auto max-w-6xl">
-        <div className="mb-8 max-w-2xl md:mb-10">
-          <div className="eyebrow">Как работает · Попробуй</div>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
-            Вноси данные и смотри,{' '}
-            <span className="grad-text">свой бюджет на сегодня</span>
-          </h2>
-          <p className="mt-4 text-text-muted md:mt-5">
-            Sanda учитывает все твои расходы,
-            доходы, планы, обязательства и цели по сбережениям, больше не нужно держать все в голове
-          </p>
-        </div>
+        <Reveal>
+          <div className="mb-8 max-w-2xl md:mb-10">
+            <div className="eyebrow">Как работает · Попробуй</div>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
+              Вноси данные и смотри,{' '}
+              <span className="grad-text">твой бюджет на сегодня</span>
+            </h2>
+            <p className="mt-4 text-text-muted md:mt-5">
+              Заноси баланс, обязательства и цели. Sanda учитывает все твои расходы,
+              доходы, планы, обязательства к выплате и цели по сбережениям.
+            </p>
+          </div>
+        </Reveal>
 
         {/*
          * Live result card — big centre-piece, replaces the phone mockup.
@@ -68,7 +71,8 @@ export function TrySection() {
          * so the user *sees* what feeds into the result instead of
          * reading a static equation strip.
          */}
-        <div className="relative overflow-hidden rounded-3xl border border-line bg-gradient-to-br from-white/[0.04] via-white/[0.015] to-white/[0.04] p-5 md:p-8">
+        <Reveal delay={80}>
+          <div className="relative overflow-hidden rounded-3xl border border-line bg-gradient-to-br from-white/[0.04] via-white/[0.015] to-white/[0.04] p-5 md:p-8">
           <div
             className="pointer-events-none absolute -top-24 left-1/2 h-[320px] w-[320px] -translate-x-1/2 rounded-full opacity-40 blur-3xl"
             style={{
@@ -157,14 +161,16 @@ export function TrySection() {
               </div>
             </div>
           </div>
-        </div>
+          </div>
+        </Reveal>
 
         {/*
          * Sliders in a 2×2 grid sit *below* the result — the user tweaks,
          * the big number reacts. This layout doesn't repeat "column of
          * labelled inputs" that HeroSection already shows on its left.
          */}
-        <div className="mt-6 grid gap-3 sm:grid-cols-2 md:mt-8 md:gap-4">
+        <Reveal delay={140}>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2 md:mt-8 md:gap-4">
           <SliderCard
             label="Баланс"
             sub="деньги на всех счетах"
@@ -209,7 +215,8 @@ export function TrySection() {
             step={1}
             unit=""
           />
-        </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   )

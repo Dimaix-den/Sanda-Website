@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
+import { Reveal } from '../Reveal'
 
 type Day = {
   label: string
@@ -117,19 +118,22 @@ export function SimulatorSection() {
       />
 
       <div className="relative mx-auto max-w-6xl">
-        <div className="mb-8 max-w-2xl md:mb-10">
-          <div className="eyebrow">Самобалансирующийся бюджет</div>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
-            Потратил лишнего?{' '}
-            <span className="grad-text">Завтра твой лимит снизится</span>
-          </h2>
-          <p className="mt-4 text-text-muted md:mt-5">
-            Выбери день, добавь трату — и проследи, как перестраиваются лимиты
-            на ближайшую неделю
-          </p>
-        </div>
+        <Reveal>
+          <div className="mb-8 max-w-2xl md:mb-10">
+            <div className="eyebrow">Самобалансирующийся бюджет</div>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl md:mt-5 md:text-5xl">
+              Потратил лишнего?{' '}
+              <span className="grad-text">Завтра цифра сама уменьшится.</span>
+            </h2>
+            <p className="mt-4 text-text-muted md:mt-5">
+              Выбери день, добавь трату — и проследи, как перестраиваются лимиты
+              на ближайшую неделю.
+            </p>
+          </div>
+        </Reveal>
 
-        <div className="rounded-3xl border border-line-strong bg-ink-2/80 p-3 backdrop-blur-sm md:p-8">
+        <Reveal delay={80}>
+          <div className="rounded-3xl border border-line-strong bg-ink-2/80 p-3 backdrop-blur-sm md:p-8">
           {/* Days strip */}
           <div className="-mx-1 flex snap-x snap-mandatory gap-2 overflow-x-auto no-scrollbar px-1 pb-1 sm:mx-0 sm:grid sm:grid-cols-5 sm:gap-2 sm:overflow-visible sm:px-0 sm:pb-0">
             {computed.map((d, i) => {
@@ -305,7 +309,8 @@ export function SimulatorSection() {
               </button>
             </div>
           </div>
-        </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   )
