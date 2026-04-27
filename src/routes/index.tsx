@@ -20,21 +20,16 @@ function Home() {
       <main>
         <HeroSection />
         <TrySection />
-
-        {/* Inline CTA after the live calculator */}
+        <FeaturesSection />
         <InlineCta
           variant="split"
-          eyebrow="Посчитал лимит?"
-          title="Теперь доверь это Sanda на каждый день"
+          eyebrow="Готов попробовать?"
+          title="Доверь рассчеты Sanda на каждый день"
           subtitle="Устанавливается за минуту. Дает ценность сразу после внесения данных."
           cta="Скачать для iOS"
         />
-
-        <FeaturesSection />
         <SimulatorSection />
-
         <ComparisonSection />
-
         <TestimonialsSection />
         <CtaSection />
       </main>

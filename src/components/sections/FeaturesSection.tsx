@@ -20,7 +20,7 @@ const tabs: {
   {
     key: 'today',
     label: 'Сегодня',
-    title: 'Главный экран',
+    title: 'Экран "Сегодня"',
     text: 'Крупное число, стрик и кнопка добавления расхода. Больше ничего не нужно, чтобы принять решение.',
     bullets: [
       'Зелёный — в безопасной зоне',
@@ -82,16 +82,57 @@ export function FeaturesSection() {
   const current = tabs.find((t) => t.key === active)!
 
   return (
-    <section id="features" className="border-b border-line py-16 md:py-20">
+    <section id="features" className="border-b border-line py-16 md:py-1">
       {/*
        * Section header: eyebrow + tabs on one compact row on desktop,
        * stacked and sticky on mobile. No separate title row before the
        * stage — the per-tab title moves into the left column below.
        */}
       <div className="sticky top-16 z-20 mb-6 border-b border-line bg-ink/85 px-5 py-3 backdrop-blur-xl md:static md:mx-auto md:mb-8 md:max-w-6xl md:border-0 md:bg-transparent md:px-5 md:py-0 md:backdrop-blur-none">
-        <div className="mx-auto flex max-w-6xl items-center gap-4 md:justify-between">
+        {/*
+         * Carousel sits inside the content column (max-w-6xl). No bleed,
+         * no padInline — first card aligns with the site's left gutter,
+         * matching the rest of the page grid.
+         */}
+        <div className="mx-auto max-w-6xl mb-48 px-5">
+          <Carousel ariaLabel="Дополнительные плюшки">
+          <MiniFeature
+            icon="📅"
+            title="Планирование бюджета"
+            text="Бюджет задаётся заранее и раскладывается по дням до зарплаты."
+          />
+          <MiniFeature
+            icon="🔥"
+            title="Стрики дисциплины"
+            text="Счётчик дней подряд в лимите. Геймификация без упрёков."
+          />
+          <MiniFeature
+            icon="🌍"
+            title="Мультивалютность"
+            text="Тенге, рубли, доллары, евро. Кастомный период бюджета."
+          />
+          <MiniFeature
+            icon="📱"
+            title="Виджеты и Apple Watch"
+            text="Дневной лимит на экране блокировки и на запястье."
+          />
+          <MiniFeature
+            icon="🔒"
+            title="Приватность как принцип"
+            text="Apple ID, гостевой режим, полное удаление данных."
+          />
+          <MiniFeature
+            icon="🌙"
+            title="iOS-душа"
+            text="SF-шрифт, спокойные анимации, Dynamic Island."
+          />
+        </Carousel>
+        </div>
+
+        <div className="mx-auto flex mt-15 max-w-6xl items-center gap-4 md:justify-between">
+          
           <div className="hidden md:block">
-            <div className="eyebrow">Возможности</div>
+            <div className="eyebrow">Все,что нужно для роста</div>
           </div>
           <div className="overflow-x-auto no-scrollbar md:flex-shrink-0">
             <div className="flex min-w-max gap-2">
@@ -185,7 +226,6 @@ export function FeaturesSection() {
        */}
       <div className="mt-12 md:mt-14">
         <div className="mx-auto mb-3 flex max-w-6xl items-center justify-between px-5">
-          <p className="text-sm text-text-dim">Дополнительные плюшки</p>
           <span
             aria-hidden
             className="swipe-hint text-text-dim lg:hidden"
@@ -193,45 +233,7 @@ export function FeaturesSection() {
             <ChevronRight size={18} strokeWidth={2.5} />
           </span>
         </div>
-        {/*
-         * Carousel sits inside the content column (max-w-6xl). No bleed,
-         * no padInline — first card aligns with the site's left gutter,
-         * matching the rest of the page grid.
-         */}
-        <div className="mx-auto max-w-6xl px-5">
-          <Carousel ariaLabel="Дополнительные плюшки">
-          <MiniFeature
-            icon="📅"
-            title="Планирование бюджета"
-            text="Бюджет задаётся заранее и раскладывается по дням до зарплаты."
-          />
-          <MiniFeature
-            icon="🔥"
-            title="Стрики дисциплины"
-            text="Счётчик дней подряд в лимите. Геймификация без упрёков."
-          />
-          <MiniFeature
-            icon="🌍"
-            title="Мультивалютность"
-            text="Тенге, рубли, доллары, евро. Кастомный период бюджета."
-          />
-          <MiniFeature
-            icon="📱"
-            title="Виджеты и Apple Watch"
-            text="Дневной лимит на экране блокировки и на запястье."
-          />
-          <MiniFeature
-            icon="🔒"
-            title="Приватность как принцип"
-            text="Apple ID, гостевой режим, полное удаление данных."
-          />
-          <MiniFeature
-            icon="🌙"
-            title="iOS-душа"
-            text="SF-шрифт, спокойные анимации, Dynamic Island."
-          />
-        </Carousel>
-        </div>
+        
       </div>
     </section>
   )

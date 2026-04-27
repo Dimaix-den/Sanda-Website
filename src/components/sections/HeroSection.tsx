@@ -26,7 +26,7 @@ export function HeroSection() {
         aria-hidden
       />
 
-      <div className="mx-auto max-w-6xl px-5 pt-10 pb-14 md:pt-10 md:pb-24">
+      <div className="mx-auto max-w-6xl px-5 pt-10 pb-14 md:pt-24 md:pb-24">
         <div className="grid items-center gap-10 lg:grid-cols-[1fr_440px] lg:gap-12">
           <div>
             {/*
@@ -43,17 +43,16 @@ export function HeroSection() {
             </Reveal>
 
             <Reveal delay={60}>
-              <h1 className="mt-5 text-[38px] font-black leading-[1.05] tracking-tight sm:text-[44px] md:text-[72px] md:leading-[1.02]">
-                Финансовая грамотность
+              <h1 className="mt-5 text-[38px] font-black leading-[1.05] tracking-tight sm:text-[44px] md:text-[64px] md:leading-[1.02]">
+                Управляй бюджетом,
                 <br />
-                <span className="grad-text">без ограничений</span>
+                <span className="grad-text">а не категориями</span>
               </h1>
             </Reveal>
 
             <Reveal delay={120}>
               <p className="mt-5 max-w-xl text-base text-text-muted md:mt-6 md:text-xl">
-                Sanda не покажет, сколько ты потратил на кофе, она покажет сколько
-                кофе ты можешь себе позволить
+                Sanda учтет все твои планы и даст ответ на главный вопрос: "Сколько ты можешь потратить сегодня?".
               </p>
             </Reveal>
 
@@ -69,7 +68,7 @@ export function HeroSection() {
             </Reveal>
 
             <Reveal delay={200}>
-              <div className="mt-8 md:mt-10">
+              <div className="mt-8 md:mt-40">
                 <div className="silver-surface flex flex-wrap items-stretch divide-x divide-white/[0.06] overflow-hidden rounded-2xl">
                   <SpecItem value="2 сек" label="до решения" />
                   <SpecItem value="Одна цифра" label="вместо таблиц" />
