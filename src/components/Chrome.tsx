@@ -356,7 +356,7 @@ export function Footer() {
           title="Помощь"
           items={[
             { label: 'Вопросы', href: '/faq' },
-            { label: 'Связаться', href: 'mailto:hello@sanda.app' },
+            { label: 'Связаться', href: 'mailto:hello@sandawallet.com' },
             { label: 'Telegram-канал', href: '#' },
           ]}
         />

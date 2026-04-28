@@ -61,8 +61,8 @@ function FAQ() {
         </h1>
         <p className="mt-4 max-w-2xl text-text-muted">
           Если чего-то не нашёл — напиши на{' '}
-          <a className="text-mint hover:underline" href="mailto:hello@sanda.app">
-            hello@sanda.app
+          <a className="text-mint hover:underline" href="mailto:hello@sandawallet.com">
+            hello@sandawallet.com
           </a>
           .
         </p>

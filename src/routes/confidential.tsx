@@ -171,11 +171,11 @@ export function Confidential() {
             <Section id="contacts" num={9} title="Контакты">
               <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
                 <a
-                  href="mailto:support@sanda.app"
+                  href="mailto:support@sandawallet.com"
                   className="inline-flex items-center gap-2 rounded-full border border-mint/30 bg-mint/[0.08] px-4 py-2 text-sm font-semibold text-mint transition hover:bg-mint/[0.12]"
                 >
                   <span aria-hidden>✉</span>
-                  support@sanda.app
+                  support@sandawallet.com
                 </a>
                 <p className="text-sm text-text-muted">
                   Ответим в течение двух рабочих дней.
