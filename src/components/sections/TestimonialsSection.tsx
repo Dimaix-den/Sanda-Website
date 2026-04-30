@@ -1,13 +1,20 @@
 import { Carousel } from './Carousel'
 import { Reveal } from '../Reveal'
 
+// Real portrait photos from randomuser.me (stable seed URLs)
+const PHOTOS = [
+  'https://randomuser.me/api/portraits/women/44.jpg',  // Айдана
+  'https://randomuser.me/api/portraits/men/32.jpg',    // Данияр
+  'https://randomuser.me/api/portraits/women/68.jpg',  // Камила
+]
+
 export function TestimonialsSection() {
   const people = [
     {
       name: 'Айдана, 29',
       city: 'Алматы',
       role: 'Маркетолог в IT',
-      color: 'from-mint/40 to-sky/40',
+      photo: PHOTOS[0],
       quote:
         'Откладывала на ипотеку по остаточному принципу — и этот остаток всегда был ноль. В Sanda цель «Первоначальный взнос» резервируется автоматически, и я просто её не вижу в дневном лимите. За шесть месяцев накопила больше, чем за предыдущие два года.',
       tag: 'Цель: ипотека · 780 000 ₸ собрано',
@@ -16,7 +23,7 @@ export function TestimonialsSection() {
       name: 'Данияр, 34',
       city: 'Астана',
       role: 'Senior-разработчик',
-      color: 'from-sky/40 to-purple-500/30',
+      photo: PHOTOS[1],
       quote:
         'Две ипотеки и кредит на машину — в банке это просто «минус с баланса». В Sanda я сразу вижу, что из 680 тысяч на карте мои только 420, и знаю, сколько могу сегодня, чтобы не дёргать подушку.',
       tag: 'Обязательства в трёх банках',
@@ -25,7 +32,7 @@ export function TestimonialsSection() {
       name: 'Камила, 26',
       city: 'Бишкек',
       role: 'HR-специалист',
-      color: 'from-pink-500/30 to-mint/40',
+      photo: PHOTOS[2],
       quote:
         'Жила в тревоге: каждый месяц было страшно, хватит ли на платежи по рассрочкам. Sanda показывает это одной цифрой — и у меня стрик 43 дня. Маленькие победы каждый день.',
       tag: 'Стрик 43 дня · капитал растёт',
@@ -33,7 +40,7 @@ export function TestimonialsSection() {
   ]
 
   return (
-    <section id="people" className="border-b border-line py-16 md:py-24">
+    <section id="people" className="py-16 md:py-24">
       <div className="mx-auto max-w-6xl px-5">
         <Reveal>
           <div className="mb-8 max-w-2xl md:mb-12">
@@ -48,24 +55,24 @@ export function TestimonialsSection() {
             </p>
           </div>
         </Reveal>
+      </div>
 
-        {/*
-         * Carousel sits inside the same content column as the heading —
-         * first card aligns with the site's grid gutter on every
-         * breakpoint. Arrows + mouse drag come from the Carousel
-         * primitive; mobile uses native swipe.
-         */}
-        <Reveal delay={80}>
-          <Carousel ariaLabel="Отзывы пользователей">
+      {/* Carousel bleeds edge-to-edge */}
+      <Reveal delay={80}>
+        <Carousel ariaLabel="Отзывы пользователей" bleed padInline={20}>
           {people.map((p) => (
             <figure
               key={p.name}
               className="group relative flex w-[280px] flex-col overflow-hidden rounded-3xl border border-line bg-white/[0.02] p-5 transition hover:border-line-strong sm:w-[340px] md:w-[380px] md:p-6"
             >
               <div className="mb-4 flex items-center gap-3">
-                <div
-                  className={`h-11 w-11 rounded-full bg-gradient-to-br ${p.color}`}
-                  aria-hidden
+                <img
+                  src={p.photo}
+                  alt={p.name}
+                  width={44}
+                  height={44}
+                  loading="lazy"
+                  className="h-11 w-11 rounded-full object-cover"
                 />
                 <div>
                   <p className="font-semibold">{p.name}</p>
@@ -82,9 +89,8 @@ export function TestimonialsSection() {
               </figcaption>
             </figure>
           ))}
-          </Carousel>
-        </Reveal>
-      </div>
+        </Carousel>
+      </Reveal>
     </section>
   )
 }

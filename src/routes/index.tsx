@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Header, Footer } from '../components/Chrome'
+import { BetaModalProvider } from '../components/BetaModal'
 import { HeroSection } from '../components/sections/HeroSection'
-import { TrySection } from '../components/sections/TrySection'
 import { FeaturesSection } from '../components/sections/FeaturesSection'
 import { SimulatorSection } from '../components/sections/SimulatorSection'
 import { ComparisonSection } from '../components/sections/ComparisonSection'
@@ -15,25 +15,26 @@ export const Route = createFileRoute('/')({
 
 function Home() {
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main>
-        <HeroSection />
-        <TrySection />
-        <FeaturesSection />
-        <InlineCta
-          variant="split"
-          eyebrow="Готов попробовать?"
-          title="Доверь рассчеты Sanda на каждый день"
-          subtitle="Устанавливается за минуту. Дает ценность сразу после внесения данных."
-          cta="Скачать для iOS"
-        />
-        <SimulatorSection />
-        <ComparisonSection />
-        <TestimonialsSection />
-        <CtaSection />
-      </main>
-      <Footer />
-    </div>
+    <BetaModalProvider>
+      <div className="min-h-screen">
+        <Header />
+        <main>
+          <HeroSection />
+          <FeaturesSection />
+          <InlineCta
+            variant="split"
+            eyebrow="Попробуй бесплатно"
+            title="Доверь рассчеты Sanda на каждый день"
+            subtitle="Устанавливается за минуту. Дает ценноть сразу после внесения данных."
+            cta="Начать"
+          />
+          <SimulatorSection />
+          <ComparisonSection />
+          <TestimonialsSection />
+          <CtaSection />
+        </main>
+        <Footer />
+      </div>
+    </BetaModalProvider>
   )
 }

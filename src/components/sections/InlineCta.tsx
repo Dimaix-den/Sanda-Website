@@ -1,41 +1,22 @@
-import { ArrowRight } from 'lucide-react'
 import { Reveal } from '../Reveal'
+import { BetaButton } from '../BetaModal'
 
 type Variant = 'compact' | 'split' | 'banner'
 
-/**
- * Slim, horizontally-oriented CTA strip that sits *between* content
- * sections to break scroll-blindness and funnel the user toward the
- * download button without hijacking a full viewport like CtaSection.
- *
- * Variants give us different silhouettes so two inline CTAs on the same
- * page don't look like the same component twice.
- *   - `compact`: single-line pill on desktop, stacked on mobile
- *   - `split`:  two-column with a faux app icon left, text + button right
- *   - `banner`: tall, centred, numeric badge — good as a hard stop
- *
- * The whole strip fades up via <Reveal> as it scrolls into view —
- * a single subtle motion, not staggered, since the CTA is meant to
- * grab attention as one block.
- */
 export function InlineCta({
   variant = 'compact',
   eyebrow,
   title,
   subtitle,
-  cta = 'Скачать бесплатно',
-  href = '#cta',
+  cta = 'Скачать для IOS',
 }: {
   variant?: Variant
   eyebrow?: string
   title: string
   subtitle?: string
   cta?: string
-  href?: string
 }) {
-  // Single Reveal wrapper around whichever variant we render.
-  // Helper closures keep the JSX-per-variant clean.
-  const inner = renderInline({ variant, eyebrow, title, subtitle, cta, href })
+  const inner = renderInline({ variant, eyebrow, title, subtitle, cta })
   return <Reveal>{inner}</Reveal>
 }
 
@@ -45,25 +26,19 @@ function renderInline({
   title,
   subtitle,
   cta,
-  href,
 }: {
   variant: Variant
   eyebrow?: string
   title: string
   subtitle?: string
   cta: string
-  href: string
 }) {
   if (variant === 'split') {
     return (
-      <div className="border-b border-line px-5 py-10 md:py-14">
+      <div className="px-5 py-10 md:py-14">
         <div className="mx-auto max-w-6xl">
           <div className="cta-inline relative flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7 md:p-8">
             <div className="relative flex min-w-0 items-center gap-4">
-              {/*
-               * Faux app tile: gradient square, large sum, underline — reads
-               * as "daily limit at a glance" without another phone mockup.
-               */}
               <div
                 className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border border-mint/30 bg-ink-2 shadow-inner md:h-16 md:w-16"
                 style={{
@@ -90,12 +65,9 @@ function renderInline({
                 )}
               </div>
             </div>
-            <a
-              href={href}
-              className="btn-primary relative z-10 flex-shrink-0 self-stretch sm:self-auto"
-            >
-              {cta} <ArrowRight size={18} />
-            </a>
+            <BetaButton className="btn-primary relative z-10 flex-shrink-0 self-stretch sm:self-auto">
+              {cta}
+            </BetaButton>
           </div>
         </div>
       </div>
@@ -104,7 +76,7 @@ function renderInline({
 
   if (variant === 'banner') {
     return (
-      <div className="border-b border-line px-5 py-10 md:py-14">
+      <div className="px-5 py-10 md:py-14">
         <div className="mx-auto max-w-5xl">
           <div className="cta-inline relative overflow-hidden p-6 text-center md:p-10">
             {eyebrow && (
@@ -119,9 +91,7 @@ function renderInline({
               </p>
             )}
             <div className="relative z-10 mt-5 flex flex-wrap items-center justify-center gap-3 md:mt-6">
-              <a href={href} className="btn-primary">
-                {cta} <ArrowRight size={18} />
-              </a>
+              <BetaButton>{cta}</BetaButton>
               <a href="#try" className="btn-ghost">
                 Посчитать сначала
               </a>
@@ -134,7 +104,7 @@ function renderInline({
 
   // compact (default)
   return (
-    <div className="border-b border-line px-5 py-8 md:py-10">
+    <div className="px-5 py-8 md:py-10">
       <div className="mx-auto max-w-6xl">
         <div className="cta-inline relative flex flex-col items-start gap-4 p-5 sm:flex-row sm:items-center sm:justify-between md:p-6">
           <div className="relative">
@@ -150,12 +120,9 @@ function renderInline({
               <p className="mt-1 text-sm text-text-muted">{subtitle}</p>
             )}
           </div>
-          <a
-            href={href}
-            className="btn-primary relative z-10 flex-shrink-0 self-stretch sm:self-auto sm:!px-5 sm:!py-2.5 sm:text-sm"
-          >
-            {cta} <ArrowRight size={16} />
-          </a>
+          <BetaButton className="btn-primary relative z-10 flex-shrink-0 self-stretch sm:self-auto sm:!px-5 sm:!py-2.5 sm:text-sm">
+            {cta}
+          </BetaButton>
         </div>
       </div>
     </div>

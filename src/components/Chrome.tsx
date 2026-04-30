@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import { Menu, X } from 'lucide-react'
+import { BetaButton } from './BetaModal'
 
 export function Logo({ size = 28 }: { size?: number }) {
   return (
@@ -25,24 +26,15 @@ export function Logo({ size = 28 }: { size?: number }) {
 }
 
 const navItems = [
-  { label: 'Как работает', href: '#try' },
+  { label: 'Как работает', href: '#features' },
   { label: 'Возможности', href: '#features' },
   { label: 'Истории', href: '#people' },
   { label: 'Сравнение', href: '#compare' },
 ]
 
-/**
- * Header — on desktop a classic full-width bar, on mobile a floating
- * pill that hovers under the iOS status bar (safe-area aware). The
- * previous version left a dark band above and below on iPhone when
- * viewport-fit=cover painted under the notch/home-indicator; that was
- * caused by the sticky bar having opaque sides. A capsule with margin
- * lets the page background show through, so there are no stripes.
- */
 export function Header() {
   const [open, setOpen] = useState(false)
 
-  // Transient translation during swipe-to-close.
   const [dragX, setDragX] = useState<number | null>(null)
   const drawerRef = useRef<HTMLElement | null>(null)
   const swipe = useRef<{
@@ -61,13 +53,6 @@ export function Header() {
     pointerId: null,
   })
 
-  // Lock body scroll while the drawer is open.
-  // On iOS Safari simply toggling `overflow: hidden` on body creates
-  // a visible strip at the bottom when the URL bar re-expands. Using
-  // `position: fixed` with the preserved scroll offset (stored in a
-  // CSS var) pins the page to the visible viewport — no strips appear
-  // above or below the drawer. On close we restore the scroll
-  // position so the page doesn't jump to the top.
   useEffect(() => {
     if (!open) return
     const scrollY = window.scrollY
@@ -76,12 +61,10 @@ export function Header() {
     return () => {
       document.body.classList.remove('menu-open')
       document.body.style.removeProperty('--menu-scroll-y')
-      // Restore scroll without animation so the page stays where it was.
       window.scrollTo(0, scrollY)
     }
   }, [open])
 
-  // Close if the viewport crosses into desktop.
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 1024px)')
     const handler = (e: MediaQueryListEvent) => {
@@ -91,62 +74,38 @@ export function Header() {
     return () => mq.removeEventListener('change', handler)
   }, [])
 
-  // Escape closes the drawer.
-  useEffect(() => {
-    if (!open) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false)
+  function onPointerDown(e: React.PointerEvent) {
+    if (e.pointerType !== 'mouse') return
+    const drawer = drawerRef.current
+    if (!drawer) return
+    swipe.current = {
+      active: true,
+      startX: e.clientX,
+      startY: e.clientY,
+      locked: null,
+      width: drawer.offsetWidth,
+      pointerId: e.pointerId,
     }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [open])
-
-  useEffect(() => {
-    if (!open) setDragX(null)
-  }, [open])
-
-  const onPointerDown = (e: React.PointerEvent<HTMLElement>) => {
-    if (e.pointerType === 'mouse') return
-    const el = drawerRef.current
-    if (!el) return
-    swipe.current.active = true
-    swipe.current.startX = e.clientX
-    swipe.current.startY = e.clientY
-    swipe.current.locked = null
-    swipe.current.width = el.offsetWidth || 320
-    swipe.current.pointerId = e.pointerId
+    drawer.setPointerCapture(e.pointerId)
   }
 
-  const onPointerMove = (e: React.PointerEvent<HTMLElement>) => {
-    if (!swipe.current.active) return
+  function onPointerMove(e: React.PointerEvent) {
+    if (!swipe.current.active || e.pointerId !== swipe.current.pointerId) return
     const dx = e.clientX - swipe.current.startX
     const dy = e.clientY - swipe.current.startY
-
-    if (swipe.current.locked === null) {
-      const adx = Math.abs(dx)
-      const ady = Math.abs(dy)
-      if (adx < 6 && ady < 6) return
-      swipe.current.locked = adx > ady ? 'x' : 'y'
+    if (!swipe.current.locked) {
+      swipe.current.locked =
+        Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'
     }
-
-    if (swipe.current.locked === 'y') return
-
-    const clamped = Math.max(0, dx)
-    setDragX(clamped)
+    if (swipe.current.locked === 'x' && dx > 0) {
+      setDragX(dx)
+    }
   }
 
-  const endSwipe = () => {
-    if (!swipe.current.active) return
-    const dx = dragX ?? 0
+  function endSwipe(e: React.PointerEvent) {
+    if (!swipe.current.active || e.pointerId !== swipe.current.pointerId) return
+    const dx = e.clientX - swipe.current.startX
     swipe.current.active = false
-    swipe.current.pointerId = null
-    swipe.current.locked = null
-
-    // Clear drag translation first so the CSS transition to
-    // translate-x-full can run on the next paint. If we left dragX set
-    // while calling setOpen(false), inline style (transition: 'none')
-    // would lock the drawer in the half-swiped position until the
-    // cleanup useEffect cleared it — creating a one-frame jump.
     setDragX(null)
     if (dx > swipe.current.width * 0.4) {
       setOpen(false)
@@ -161,25 +120,14 @@ export function Header() {
   return (
     <>
       {/*
-       * MOBILE: floating capsule header
-       * - position: fixed so it scrolls-over the page
-       * - inset-x-3 + top via safe-area CSS var (see styles.css .mobile-header)
-       * - rounded-full for the capsule shape
-       * - background with backdrop-blur, no full-width edge lines
-       *
-       * DESKTOP (lg:): classic bar — the lg:* utilities override everything
-       * back to a full-width sticky surface.
+       * MOBILE: floating capsule header — taller (h-16) and closer to
+       * the top of the screen (4px gap instead of 8px).
        */}
       <header
         className="mobile-header fixed inset-x-3 z-50 rounded-full border border-line bg-ink/75 backdrop-blur-xl lg:static lg:inset-x-auto lg:rounded-none lg:border-x-0 lg:border-b lg:border-t-0 lg:bg-ink/70"
       >
-        {/*
-         * Desktop sticky wrapper — only kicks in at lg:. On mobile the
-         * parent <header> is already fixed-positioned so we don't need
-         * sticky here.
-         */}
         <div className="lg:sticky lg:top-0 lg:z-50">
-          <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-3 md:h-16 md:px-5">
+          <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-3 md:h-16 md:px-5">
             <Link
               to="/"
               className="flex items-center"
@@ -191,19 +139,19 @@ export function Header() {
             {/* Desktop nav */}
             <nav className="hidden items-center gap-8 text-sm text-text-muted lg:flex">
               {navItems.map((it) => (
-                <a key={it.href} href={it.href} className="hover:text-text">
+                <a key={it.label} href={it.href} className="hover:text-text">
                   {it.label}
                 </a>
               ))}
             </nav>
 
             <div className="flex items-center gap-2">
-              <a
-                href="#cta"
-                className="btn-primary !px-4 !py-2 text-sm"
-              >
-                Скачать
-              </a>
+              {/* Desktop CTA */}
+              <div className="hidden lg:block">
+                <BetaButton className="btn-primary !px-4 !py-2 text-sm">
+                  Бета-тест
+                </BetaButton>
+              </div>
 
               <button
                 type="button"
@@ -220,16 +168,12 @@ export function Header() {
         </div>
       </header>
 
-      {/*
-       * Spacer — because the mobile header is fixed, the first section
-       * would otherwise slide under it on initial paint. Reserve space
-       * equal to capsule height + top safe-area + a small gap. Only on
-       * mobile; desktop header participates in layout normally.
-       */}
       <div className="mobile-header-spacer lg:hidden" aria-hidden />
 
       {/*
-       * Backdrop — tap to close. Opacity fades with swipe.
+       * Backdrop — no backdrop-blur to avoid black safe-area lines in
+       * Safari when the drawer is open (the blur creates a composite
+       * layer that can leak outside the viewport).
        */}
       <div
         aria-hidden={!open}
@@ -239,22 +183,13 @@ export function Header() {
             ? { opacity: backdropOpacity, transition: 'none' }
             : undefined
         }
-        className={`fixed inset-0 z-40 bg-black/55 backdrop-blur-md transition-opacity duration-200 lg:hidden ${
+        className={`fixed inset-0 z-40 bg-black/60 transition-opacity duration-200 lg:hidden ${
           open
             ? 'pointer-events-auto opacity-100'
             : 'pointer-events-none opacity-0'
         }`}
       />
 
-      {/*
-       * Drawer. Full-height right-side sheet. safe-area handled in CSS via
-       * #mobile-nav rule so that:
-       *   - the top bar of the drawer clears the iOS status bar
-       *   - the bottom padding clears the home indicator
-       * Without these insets the user saw a black band appear at the
-       * bottom of the page when the drawer was open — the body
-       * scroll-lock revealed the layer below the viewport. Covered now.
-       */}
       <aside
         id="mobile-nav"
         role="dialog"
@@ -273,9 +208,10 @@ export function Header() {
               }
             : undefined
         }
-        className={`fixed inset-y-0 right-0 z-50 flex w-[88%] max-w-[360px] flex-col border-l border-line bg-ink/95 backdrop-blur-2xl shadow-2xl transition-transform duration-300 ease-out lg:hidden ${
+        className={`fixed inset-y-0 right-0 z-50 flex w-[88%] max-w-[360px] flex-col border-l border-line shadow-2xl transition-transform duration-300 ease-out lg:hidden ${
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
+        style2={{ backgroundColor: '#05070a' }}
       >
         {/* Grab handle hint */}
         <div
@@ -285,7 +221,8 @@ export function Header() {
           <div className="h-10 w-1 rounded-full bg-white/15" />
         </div>
 
-        <div className="flex h-16 flex-shrink-0 items-center justify-between border-b border-line px-5">
+        {/* Drawer header — taller (h-20) */}
+        <div className="flex h-20 flex-shrink-0 items-center justify-between border-b border-line px-5">
           <span className="text-sm font-semibold uppercase tracking-[0.2em] text-text-dim">
             Меню
           </span>
@@ -302,7 +239,7 @@ export function Header() {
         <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-5 py-5">
           {navItems.map((it) => (
             <a
-              key={it.href}
+              key={it.label}
               href={it.href}
               onClick={() => setOpen(false)}
               className="flex items-center justify-between rounded-2xl border border-line bg-white/[0.02] px-4 py-3 text-base font-medium text-text transition hover:border-line-strong"
@@ -316,13 +253,9 @@ export function Header() {
         </nav>
 
         <div className="flex-shrink-0 border-t border-line px-5 py-5">
-          <a
-            href="#cta"
-            onClick={() => setOpen(false)}
-            className="btn-primary w-full"
-          >
-            Скачать для iOS
-          </a>
+          <BetaButton className="btn-primary w-full" onClick={() => setOpen(false)}>
+            Скачать для IOS
+          </BetaButton>
           <p className="mt-3 text-center text-xs text-text-dim">
             Бесплатно · iOS · Android (скоро)
           </p>
@@ -339,7 +272,8 @@ export function Footer() {
         <div className="col-span-2 md:col-span-1">
           <Logo />
           <p className="mt-4 max-w-xs text-sm text-text-muted">
-            Одна цифра вместо таблиц. Спокойные деньги на каждый день.
+            Одна цифра вместо таблиц.{' '}
+            Спокойные деньги на каждый день.
           </p>
           <p className="mt-6 text-xs text-text-dim">© 2026 Sanda. Версия 3.0.0</p>
         </div>
@@ -348,7 +282,7 @@ export function Footer() {
           title="Продукт"
           items={[
             { label: 'Возможности', href: '#features' },
-            { label: 'Как работает', href: '#try' },
+            { label: 'Как работает', href: '#features' },
             { label: 'Сравнение', href: '#compare' },
           ]}
         />

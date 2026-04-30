@@ -8,21 +8,24 @@ import {
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 /**
- * Horizontal carousel primitive used for mini-features, testimonials,
- * and anywhere a row of cards needs to scroll horizontally.
+ * Horizontal carousel primitive.
  *
- * v7 change: `bleed` now defaults to FALSE. The track obeys its parent
- * container's max-width and left grid-gutter, so the first card lines
- * up with the rest of the content. Set `bleed` explicitly to true if
- * you want the desktop edge-to-edge effect.
+ * bleed=true  — track stretches to viewport edges, but the FIRST card
+ *               aligns with the site's max-w-6xl grid gutter (not the
+ *               physical screen edge). Achieved by computing the actual
+ *               gutter width on mount/resize and applying it as
+ *               padding-inline-start, while padding-inline-end stays
+ *               at a fixed padInline value.
  *
- * Behaviours:
- *   - Arrow buttons on desktop — previous / next by ~ one card-width.
- *     Auto-hide when there's nothing to scroll in that direction.
- *   - Mouse drag — click and hold anywhere on the track to pan. A drag
- *     > 5px suppresses the next click to avoid accidental navigation.
- *   - Mobile touch — native inertial swipe. Drag handlers only bind to
- *     pointerType === 'mouse'.
+ * bleed=false — track lives inside the parent container, first card
+ *               naturally aligns with the content column.
+ *
+ * Input devices:
+ *   - Mouse drag  — pointer capture, works on all desktop browsers.
+ *   - Trackpad    — onWheel with deltaX, preventDefault so the page
+ *                   doesn't scroll vertically at the same time.
+ *   - Touch swipe — native momentum scroll (touch-action: pan-x).
+ *   - Arrow keys  — CarouselArrow buttons scroll by ~one card width.
  */
 export function Carousel({
   children,
@@ -33,36 +36,39 @@ export function Carousel({
 }: {
   children: ReactNode
   ariaLabel?: string
-  /**
-   * When true, the track overflows its parent's max-width and reaches
-   * the physical viewport edge on desktop. When false (default), the
-   * track lives inside the content column — first card aligns with the
-   * site's left grid line.
-   */
   bleed?: boolean
-  /** Inner padding on both sides. 0 by default so the first card
-   * hugs the parent's gutter naturally. */
+  /** Padding on the END side (right). Start side is grid-aligned in bleed mode. */
   padInline?: number
   className?: string
 }) {
   const trackRef = useRef<HTMLDivElement>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
   const [canLeft, setCanLeft] = useState(false)
   const [canRight, setCanRight] = useState(false)
+  // Computed left gutter for bleed-mode grid alignment
+  const [gutterLeft, setGutterLeft] = useState(padInline)
 
-  const drag = useRef<{
-    active: boolean
-    startX: number
-    startScroll: number
-    moved: number
-    pointerId: number | null
-  }>({
-    active: false,
-    startX: 0,
-    startScroll: 0,
-    moved: 0,
-    pointerId: null,
-  })
+  // ── Gutter computation (bleed only) ────────────────────────────
+  // The site grid is max-w-6xl (1152px) centered. On any viewport
+  // wider than 6xl the gutter = (viewportWidth - 1152) / 2 + 20px
+  // (the px-5 content padding). On narrower viewports it's just 20px.
+  const computeGutter = useCallback(() => {
+    if (!bleed) return
+    const vw = window.innerWidth
+    const gridMax = 1152 // max-w-6xl
+    const contentPad = 20 // px-5
+    const gutter = vw > gridMax ? Math.floor((vw - gridMax) / 2) + contentPad : contentPad
+    setGutterLeft(gutter)
+  }, [bleed])
 
+  useEffect(() => {
+    if (!bleed) return
+    computeGutter()
+    window.addEventListener('resize', computeGutter, { passive: true })
+    return () => window.removeEventListener('resize', computeGutter)
+  }, [bleed, computeGutter])
+
+  // ── Scroll state for arrow buttons ────────────────────────────
   const updateButtons = useCallback(() => {
     const el = trackRef.current
     if (!el) return
@@ -84,27 +90,39 @@ export function Carousel({
     }
   }, [updateButtons])
 
-  const scrollBy = (dir: 1 | -1) => {
+  const scrollByCard = (dir: 1 | -1) => {
     const el = trackRef.current
     if (!el) return
     const first = el.firstElementChild as HTMLElement | null
     const cardW = first ? first.getBoundingClientRect().width : 280
-    const gap = 16
-    el.scrollBy({ left: dir * (cardW + gap), behavior: 'smooth' })
+    el.scrollBy({ left: dir * (cardW + 16), behavior: 'smooth' })
   }
+
+  // ── Mouse drag ─────────────────────────────────────────────────
+  const drag = useRef<{
+    active: boolean
+    startX: number
+    startScroll: number
+    moved: number
+    pointerId: number | null
+  }>({ active: false, startX: 0, startScroll: 0, moved: 0, pointerId: null })
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType !== 'mouse') return
     const el = trackRef.current
     if (!el) return
-    drag.current.active = true
-    drag.current.startX = e.clientX
-    drag.current.startScroll = el.scrollLeft
-    drag.current.moved = 0
-    drag.current.pointerId = e.pointerId
+    drag.current = {
+      active: true,
+      startX: e.clientX,
+      startScroll: el.scrollLeft,
+      moved: 0,
+      pointerId: e.pointerId,
+    }
     el.setPointerCapture(e.pointerId)
     el.style.cursor = 'grabbing'
     el.style.userSelect = 'none'
+    // Disable snap while dragging so it doesn't fight the gesture
+    el.style.scrollSnapType = 'none'
   }
 
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -116,47 +134,59 @@ export function Carousel({
     el.scrollLeft = drag.current.startScroll - dx
   }
 
-  const endDrag = () => {
+  const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!drag.current.active) return
     const el = trackRef.current
     drag.current.active = false
-    if (el && drag.current.pointerId !== null) {
-      try {
-        el.releasePointerCapture(drag.current.pointerId)
-      } catch {
-        // noop
-      }
+    if (el) {
+      try { el.releasePointerCapture(e.pointerId) } catch { /* noop */ }
       el.style.cursor = ''
       el.style.userSelect = ''
+      // Re-enable snap after drag ends
+      el.style.scrollSnapType = ''
     }
-    drag.current.pointerId = null
-
     if (drag.current.moved > 5) {
-      const block = (ev: Event) => {
-        ev.preventDefault()
-        ev.stopPropagation()
-      }
+      // Suppress the click that fires after a drag release
+      const block = (ev: Event) => { ev.preventDefault(); ev.stopPropagation() }
       window.addEventListener('click', block, { capture: true, once: true })
     }
     drag.current.moved = 0
+    drag.current.pointerId = null
   }
 
+  // ── Trackpad (two-finger horizontal swipe) ─────────────────────
+  // deltaX is non-zero for horizontal trackpad swipes. We scroll the
+  // track directly and call preventDefault so the page doesn't also
+  // scroll vertically. We only intercept when |deltaX| > |deltaY| so
+  // intentional vertical scrolling still works normally.
+  const onWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    const el = trackRef.current
+    if (!el) return
+    const isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY)
+    if (!isHorizontal) return
+    e.preventDefault()
+    el.scrollLeft += e.deltaX
+  }
+
+  // ── Bleed-mode track styles ────────────────────────────────────
+  const bleedStyle: React.CSSProperties = bleed
+    ? {
+        marginInline: 'calc((100vw - 100%) / -2)',
+        width: '100vw',
+        maxWidth: '100vw',
+        paddingInlineStart: gutterLeft,
+        paddingInlineEnd: padInline,
+        // scroll-padding so snap targets align with the grid gutter
+        scrollPaddingInlineStart: gutterLeft,
+      }
+    : { paddingInline: padInline }
+
   return (
-    <div className={`relative ${className}`}>
+    <div ref={wrapRef} className={`relative ${className}`}>
       <div
         ref={trackRef}
         className="hscroll-track"
-        style={{
-          paddingInline: padInline,
-          // Bleed mode only: break out of the parent's max-width.
-          ...(bleed
-            ? ({
-                marginInline: 'calc((100vw - 100%) / -2)',
-                width: '100vw',
-                maxWidth: '100vw',
-              } as React.CSSProperties)
-            : {}),
-        }}
+        style={bleedStyle}
         role="region"
         aria-label={ariaLabel}
         onPointerDown={onPointerDown}
@@ -164,20 +194,13 @@ export function Carousel({
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
         onPointerLeave={endDrag}
+        onWheel={onWheel}
       >
         {children}
       </div>
 
-      <CarouselArrow
-        direction="left"
-        disabled={!canLeft}
-        onClick={() => scrollBy(-1)}
-      />
-      <CarouselArrow
-        direction="right"
-        disabled={!canRight}
-        onClick={() => scrollBy(1)}
-      />
+      <CarouselArrow direction="left"  disabled={!canLeft}  onClick={() => scrollByCard(-1)} />
+      <CarouselArrow direction="right" disabled={!canRight} onClick={() => scrollByCard(1)}  />
     </div>
   )
 }
@@ -198,14 +221,11 @@ function CarouselArrow({
       type="button"
       onClick={onClick}
       aria-label={direction === 'left' ? 'Назад' : 'Вперёд'}
-      disabled={disabled}
-      className={`absolute top-1/2 ${side} z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-ink/80 text-text shadow-xl backdrop-blur-xl transition lg:flex ${
-        disabled
-          ? 'pointer-events-none opacity-0'
-          : 'opacity-100 hover:border-line-strong hover:bg-ink/95'
+      className={`absolute top-1/2 ${side} z-10 -translate-y-1/2 hidden items-center justify-center h-9 w-9 rounded-full border border-line bg-ink/80 text-text shadow-lg backdrop-blur-md transition hover:border-line-strong hover:bg-ink lg:flex ${
+        disabled ? 'pointer-events-none opacity-0' : 'opacity-100'
       }`}
     >
-      <Icon size={18} />
+      <Icon size={16} />
     </button>
   )
 }

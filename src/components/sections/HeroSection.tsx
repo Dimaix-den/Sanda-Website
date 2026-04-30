@@ -68,7 +68,7 @@ export function HeroSection() {
             </Reveal>
 
             <Reveal delay={200}>
-              <div className="mt-8 md:mt-40">
+              <div className="mt-8 md:mt-10">
                 <div className="silver-surface flex flex-wrap items-stretch divide-x divide-white/[0.06] overflow-hidden rounded-2xl">
                   <SpecItem value="2 сек" label="до решения" />
                   <SpecItem value="Одна цифра" label="вместо таблиц" />
