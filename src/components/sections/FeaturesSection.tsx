@@ -217,8 +217,12 @@ export function FeaturesSection() {
             </div>
           </div>
 
-          {/* Tabs BETWEEN phone and text */}
-          <div className="mb-5 mt-4">{tabStrip}</div>
+          {/* Tabs BETWEEN phone and text.
+              position: relative + z-index needed because phone-cut-half
+              uses margin-bottom: -64px which pulls the tab row up behind
+              the phone's layout box — clicks would land on the phone div
+              instead of the buttons without this stacking fix. */}
+          <div className="relative z-10 mb-5 mt-4">{tabStrip}</div>
 
           {/* Text */}
           <div>
