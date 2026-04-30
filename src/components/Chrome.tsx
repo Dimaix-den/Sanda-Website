@@ -10,17 +10,9 @@ export function Logo({ size = 28 }: { size?: number }) {
         className="relative flex items-center justify-center overflow-hidden rounded-xl"
         style={{ width: size, height: size, background: '#000' }}
       >
-        <img
-          src="/sanda-icon.png"
-          alt="Sanda"
-          width={size}
-          height={size}
-          className="object-cover"
-        />
+        <img src="/sanda-icon.png" alt="Sanda" width={size} height={size} className="object-cover" />
       </span>
-      <span className="text-[17px] font-semibold tracking-tight text-white">
-        Sanda
-      </span>
+      <span className="text-[17px] font-semibold tracking-tight text-white">Sanda</span>
     </div>
   )
 }
@@ -34,9 +26,9 @@ const navItems = [
 
 export function Header() {
   const [open, setOpen] = useState(false)
-
   const [dragX, setDragX] = useState<number | null>(null)
   const drawerRef = useRef<HTMLElement | null>(null)
+
   const swipe = useRef<{
     active: boolean
     startX: number
@@ -44,15 +36,9 @@ export function Header() {
     locked: 'x' | 'y' | null
     width: number
     pointerId: number | null
-  }>({
-    active: false,
-    startX: 0,
-    startY: 0,
-    locked: null,
-    width: 320,
-    pointerId: null,
-  })
+  }>({ active: false, startX: 0, startY: 0, locked: null, width: 320, pointerId: null })
 
+  // Freeze body scroll when drawer is open
   useEffect(() => {
     if (!open) return
     const scrollY = window.scrollY
@@ -65,17 +51,16 @@ export function Header() {
     }
   }, [open])
 
+  // Close at desktop breakpoint
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 1024px)')
-    const handler = (e: MediaQueryListEvent) => {
-      if (e.matches) setOpen(false)
-    }
+    const handler = (e: MediaQueryListEvent) => { if (e.matches) setOpen(false) }
     mq.addEventListener('change', handler)
     return () => mq.removeEventListener('change', handler)
   }, [])
 
+  // ── Swipe-to-close — works on BOTH touch and mouse ────────────
   function onPointerDown(e: React.PointerEvent) {
-    if (e.pointerType !== 'mouse') return
     const drawer = drawerRef.current
     if (!drawer) return
     swipe.current = {
@@ -86,7 +71,7 @@ export function Header() {
       width: drawer.offsetWidth,
       pointerId: e.pointerId,
     }
-    drawer.setPointerCapture(e.pointerId)
+    try { drawer.setPointerCapture(e.pointerId) } catch { /* noop */ }
   }
 
   function onPointerMove(e: React.PointerEvent) {
@@ -94,8 +79,7 @@ export function Header() {
     const dx = e.clientX - swipe.current.startX
     const dy = e.clientY - swipe.current.startY
     if (!swipe.current.locked) {
-      swipe.current.locked =
-        Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'
+      swipe.current.locked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'
     }
     if (swipe.current.locked === 'x' && dx > 0) {
       setDragX(dx)
@@ -107,61 +91,42 @@ export function Header() {
     const dx = e.clientX - swipe.current.startX
     swipe.current.active = false
     setDragX(null)
-    if (dx > swipe.current.width * 0.4) {
-      setOpen(false)
-    }
+    if (dx > swipe.current.width * 0.35) setOpen(false)
   }
 
   const isDragging = dragX !== null && dragX > 0
-  const backdropOpacity = isDragging
-    ? Math.max(0, 1 - dragX / swipe.current.width)
-    : undefined
+  const backdropOpacity = isDragging ? Math.max(0, 1 - dragX! / swipe.current.width) : undefined
 
   return (
     <>
-      {/*
-       * MOBILE: floating capsule header — taller (h-16) and closer to
-       * the top of the screen (4px gap instead of 8px).
-       */}
-      <header
-        className="mobile-header fixed inset-x-3 z-50 rounded-full border border-line bg-ink/75 backdrop-blur-xl lg:static lg:inset-x-auto lg:rounded-none lg:border-x-0 lg:border-b lg:border-t-0 lg:bg-ink/70"
-      >
+      {/* ── Header ────────────────────────────────────────────── */}
+      <header className="mobile-header fixed inset-x-3 z-50 rounded-full border border-line bg-ink/80 backdrop-blur-xl lg:static lg:inset-x-auto lg:rounded-none lg:border-x-0 lg:border-b lg:border-t-0 lg:bg-ink/70">
         <div className="lg:sticky lg:top-0 lg:z-50">
-          <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-3 md:h-16 md:px-5">
-            <Link
-              to="/"
-              className="flex items-center"
-              onClick={() => setOpen(false)}
-            >
+          <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-3 md:px-5">
+            <Link to="/" className="flex items-center" onClick={() => setOpen(false)}>
               <Logo />
             </Link>
 
-            {/* Desktop nav */}
             <nav className="hidden items-center gap-8 text-sm text-text-muted lg:flex">
               {navItems.map((it) => (
-                <a key={it.label} href={it.href} className="hover:text-text">
-                  {it.label}
-                </a>
+                <a key={it.label} href={it.href} className="hover:text-text">{it.label}</a>
               ))}
             </nav>
 
             <div className="flex items-center gap-2">
-              {/* Desktop CTA */}
               <div className="hidden lg:block">
-                <BetaButton className="btn-primary !px-4 !py-2 text-sm">
-                  Бета-тест
-                </BetaButton>
+                <BetaButton className="btn-primary !px-4 !py-2 text-sm">Бета-тест</BetaButton>
               </div>
-
+              {/* Hamburger — h-11 w-11 for easy tap on mobile */}
               <button
                 type="button"
                 aria-label={open ? 'Закрыть меню' : 'Открыть меню'}
                 aria-expanded={open}
                 aria-controls="mobile-nav"
                 onClick={() => setOpen((v) => !v)}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-line bg-white/[0.02] text-text transition hover:border-line-strong lg:hidden"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line bg-white/[0.04] text-text transition active:scale-95 lg:hidden"
               >
-                {open ? <X size={16} /> : <Menu size={16} />}
+                {open ? <X size={20} /> : <Menu size={20} />}
               </button>
             </div>
           </div>
@@ -170,26 +135,17 @@ export function Header() {
 
       <div className="mobile-header-spacer lg:hidden" aria-hidden />
 
-      {/*
-       * Backdrop — no backdrop-blur to avoid black safe-area lines in
-       * Safari when the drawer is open (the blur creates a composite
-       * layer that can leak outside the viewport).
-       */}
+      {/* ── Backdrop — no backdrop-blur (prevents Safari safe-area black strips) ── */}
       <div
         aria-hidden={!open}
         onClick={() => setOpen(false)}
-        style={
-          backdropOpacity !== undefined
-            ? { opacity: backdropOpacity, transition: 'none' }
-            : undefined
-        }
-        className={`fixed inset-0 z-40 bg-black/60 transition-opacity duration-200 lg:hidden ${
-          open
-            ? 'pointer-events-auto opacity-100'
-            : 'pointer-events-none opacity-0'
+        style={backdropOpacity !== undefined ? { opacity: backdropOpacity, transition: 'none' } : undefined}
+        className={`fixed inset-0 z-40 bg-black/70 transition-opacity duration-300 lg:hidden ${
+          open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
         }`}
       />
 
+      {/* ── Drawer ────────────────────────────────────────────── */}
       <aside
         id="mobile-nav"
         role="dialog"
@@ -200,61 +156,62 @@ export function Header() {
         onPointerMove={onPointerMove}
         onPointerUp={endSwipe}
         onPointerCancel={endSwipe}
-        style={
-          isDragging
-            ? {
-                transform: `translateX(${dragX}px)`,
-                transition: 'none',
-              }
-            : undefined
-        }
+        style={{
+          // MUST be inline style — solid opaque colour to cover
+          // iOS safe-area strips at top and bottom. A Tailwind
+          // bg- class compiles to the same hex but can be overridden
+          // or not applied in time; inline style is guaranteed.
+          backgroundColor: '#05070a',
+          ...(isDragging
+            ? { transform: `translateX(${dragX}px)`, transition: 'none' }
+            : {}),
+        }}
         className={`fixed inset-y-0 right-0 z-50 flex w-[88%] max-w-[360px] flex-col border-l border-line shadow-2xl transition-transform duration-300 ease-out lg:hidden ${
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
-        style2={{ backgroundColor: '#05070a' }}
       >
-        {/* Grab handle hint */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 left-0 flex w-4 items-center justify-center"
-        >
-          <div className="h-10 w-1 rounded-full bg-white/15" />
+        {/* Grab-handle hint */}
+        <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 flex w-5 items-center justify-center">
+          <div className="h-10 w-1 rounded-full bg-white/10" />
         </div>
 
-        {/* Drawer header — taller (h-20) */}
-        <div className="flex h-20 flex-shrink-0 items-center justify-between border-b border-line px-5">
-          <span className="text-sm font-semibold uppercase tracking-[0.2em] text-text-dim">
-            Меню
-          </span>
+        {/* Drawer header — respects iOS status bar */}
+        <div
+          className="flex flex-shrink-0 items-center justify-between border-b border-line px-5 pb-4"
+          style={{ paddingTop: 'max(env(safe-area-inset-top), 16px)', minHeight: 72 }}
+        >
+          <span className="text-sm font-semibold uppercase tracking-[0.2em] text-text-dim">Меню</span>
+          {/* Close button — h-11 w-11 for easy tap */}
           <button
             type="button"
             aria-label="Закрыть меню"
             onClick={() => setOpen(false)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-line bg-white/[0.02] text-text transition hover:border-line-strong"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line bg-white/[0.04] text-text transition active:scale-95"
           >
-            <X size={18} />
+            <X size={20} />
           </button>
         </div>
 
-        <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-5 py-5">
+        <nav className="flex flex-1 flex-col gap-1.5 overflow-y-auto px-5 py-5">
           {navItems.map((it) => (
             <a
               key={it.label}
               href={it.href}
               onClick={() => setOpen(false)}
-              className="flex items-center justify-between rounded-2xl border border-line bg-white/[0.02] px-4 py-3 text-base font-medium text-text transition hover:border-line-strong"
+              className="flex items-center justify-between rounded-2xl border border-line bg-white/[0.02] px-4 py-4 text-base font-medium text-text transition active:bg-white/[0.04]"
             >
               <span>{it.label}</span>
-              <span aria-hidden className="text-text-dim">
-                →
-              </span>
+              <span aria-hidden className="text-text-dim">→</span>
             </a>
           ))}
         </nav>
 
-        <div className="flex-shrink-0 border-t border-line px-5 py-5">
+        <div
+          className="flex-shrink-0 border-t border-line px-5 pt-5"
+          style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 20px)' }}
+        >
           <BetaButton className="btn-primary w-full" onClick={() => setOpen(false)}>
-            Скачать для IOS
+            Участвовать в бета-тесте
           </BetaButton>
           <p className="mt-3 text-center text-xs text-text-dim">
             Бесплатно · iOS · Android (скоро)
@@ -272,43 +229,29 @@ export function Footer() {
         <div className="col-span-2 md:col-span-1">
           <Logo />
           <p className="mt-4 max-w-xs text-sm text-text-muted">
-            Одна цифра вместо таблиц.{' '}
-            Спокойные деньги на каждый день.
+            Одна цифра вместо таблиц. Спокойные деньги на каждый день.
           </p>
           <p className="mt-6 text-xs text-text-dim">© 2026 Sanda. Версия 3.0.0</p>
         </div>
-
-        <FooterCol
-          title="Продукт"
-          items={[
-            { label: 'Возможности', href: '#features' },
-            { label: 'Как работает', href: '#features' },
-            { label: 'Сравнение', href: '#compare' },
-          ]}
-        />
-        <FooterCol
-          title="Помощь"
-          items={[
-            { label: 'Вопросы', href: '/faq' },
-            { label: 'Связаться', href: 'mailto:hello@sandawallet.com' },
-            { label: 'Telegram-канал', href: '#' },
-          ]}
-        />
-        <FooterCol
-          title="Правовая информация"
-          items={[
-            { label: 'Политика конфиденциальности', href: '/confidential' },
-            { label: 'Условия использования', href: '#' },
-            { label: 'Безопасность данных', href: '#' },
-          ]}
-        />
+        <FooterCol title="Продукт" items={[
+          { label: 'Возможности', href: '#features' },
+          { label: 'Как работает', href: '#features' },
+          { label: 'Сравнение', href: '#compare' },
+        ]} />
+        <FooterCol title="Помощь" items={[
+          { label: 'Вопросы', href: '/faq' },
+          { label: 'Связаться', href: 'mailto:hello@sandawallet.com' },
+          { label: 'Telegram-канал', href: '#' },
+        ]} />
+        <FooterCol title="Правовая информация" items={[
+          { label: 'Политика конфиденциальности', href: '/confidential' },
+          { label: 'Условия использования', href: '#' },
+          { label: 'Безопасность данных', href: '#' },
+        ]} />
       </div>
       <div className="border-t border-line py-5">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-5 text-xs text-text-dim md:flex-row">
-          <p>
-            Sanda — финансовый помощник, не банк. Решения о тратах остаются за
-            тобой.
-          </p>
+          <p>Sanda — финансовый помощник, не банк. Решения о тратах остаются за тобой.</p>
           <p>Сделано в СНГ · с уважением к деньгам и людям</p>
         </div>
       </div>
@@ -316,22 +259,14 @@ export function Footer() {
   )
 }
 
-function FooterCol({
-  title,
-  items,
-}: {
-  title: string
-  items: { label: string; href: string }[]
-}) {
+function FooterCol({ title, items }: { title: string; items: { label: string; href: string }[] }) {
   return (
     <div>
       <p className="text-sm font-semibold text-text">{title}</p>
       <ul className="mt-4 space-y-2.5 text-sm text-text-muted">
         {items.map((it) => (
           <li key={it.label}>
-            <a href={it.href} className="hover:text-text">
-              {it.label}
-            </a>
+            <a href={it.href} className="hover:text-text">{it.label}</a>
           </li>
         ))}
       </ul>

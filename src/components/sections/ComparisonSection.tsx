@@ -1,16 +1,27 @@
 export function ComparisonSection() {
-  const rows = [
+  const rows: {
+    q: string
+    sanda: string
+    apps: string
+    bank: string
+  }[] = [
     {
-      q: 'Отвечает на вопрос «сколько можно сегодня»',
-      sanda: 'С первого дня',
+      q: 'Помогает удержаться в бюджете',
+      sanda: 'Да, каждый день',
       apps: 'Нет',
       bank: 'Нет',
     },
     {
-      q: 'Когда появляется ценность',
-      sanda: 'Сразу',
-      apps: 'Через 3–6 месяцев',
-      bank: 'В конце месяца',
+      q: 'Позволяет планировать месяц вперёд',
+      sanda: 'Да',
+      apps: 'Частично',
+      bank: 'Нет',
+    },
+    {
+      q: 'Учитывает цели и сбережения',
+      sanda: 'Автоматически',
+      apps: 'Вручную',
+      bank: 'Нет',
     },
     {
       q: 'Требует разметки каждой покупки',
@@ -19,27 +30,21 @@ export function ComparisonSection() {
       bank: 'Частично',
     },
     {
-      q: 'Видит все ваши банки, кредиты и цели',
+      q: 'Показывает реальную картину капитала',
       sanda: 'Да',
       apps: 'Частично',
       bank: 'Только свой',
     },
     {
-      q: 'Учитывает обязательства и планы',
-      sanda: 'Да, автоматически',
-      apps: 'Вручную',
-      bank: 'Нет',
-    },
-    {
-      q: 'Куда смотрит',
-      sanda: 'В будущее',
-      apps: 'В прошлое',
-      bank: 'В прошлое',
+      q: 'Даёт ценность с первого дня',
+      sanda: 'Сразу',
+      apps: 'Через 3–6 месяцев',
+      bank: 'В конце месяца',
     },
   ]
 
   return (
-    <section id="compare" className="border-b border-line px-5 py-16 md:py-24">
+    <section id="compare" className="px-5 py-16 md:py-24">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 max-w-2xl md:mb-12">
           <div className="eyebrow">Сравнение</div>
@@ -48,51 +53,48 @@ export function ComparisonSection() {
             <span className="grad-text">не другой инструмент</span>
           </h2>
           <p className="mt-4 text-text-muted md:mt-5">
-            Приложения учёта финансов и банки показывают, куда ушли деньги.
-            Sanda показывает, сколько можно потратить прямо сейчас — с учётом
-            всех банков, обязательств и целей.
+            Приложения учёта и банки показывают, куда ушли деньги.
+            Sanda помогает управлять ими — с учётом всех обязательств, целей и планов.
           </p>
         </div>
 
-        {/*
-         * Horizontal scroll wrapper on narrow screens keeps the 4-col
-         * table readable without shrinking the question column.
-         */}
         <div className="-mx-5 overflow-x-auto px-5 md:mx-0 md:px-0">
           <div className="min-w-[620px] overflow-hidden rounded-3xl border border-line">
+            {/* Header row */}
             <div className="grid grid-cols-5 border-b border-line bg-white/[0.02] text-[10px] uppercase tracking-[0.14em] text-text-dim md:text-[11px]">
-              <div className="col-span-2 px-3 py-3 md:px-6">Что важно</div>
-              <div className="border-l border-line px-2 py-3 text-center text-mint md:px-4">
-                Sanda
+              <div className="col-span-2 px-4 py-3.5 md:px-6">Что важно</div>
+              <div className="border-l border-line px-2 py-3.5 text-center text-mint md:px-4">Sanda</div>
+              <div className="border-l border-line px-2 py-3.5 text-center leading-tight md:px-4">
+                Приложения учёта<br />финансов
               </div>
-              <div className="border-l border-line px-2 py-3 text-center leading-tight md:px-4">
-                Приложения учёта
-                <br />
-                финансов
-              </div>
-              <div className="border-l border-line px-2 py-3 text-center leading-tight md:px-4">
-                Банковские
-                <br />
-                приложения
+              <div className="border-l border-line px-2 py-3.5 text-center leading-tight md:px-4">
+                Банковские<br />приложения
               </div>
             </div>
+
+            {/* Data rows — fixed min-height so all rows are visually even */}
             {rows.map((r, i) => (
               <div
                 key={r.q}
                 className={`grid grid-cols-5 text-xs md:text-sm ${
                   i !== rows.length - 1 ? 'border-b border-line' : ''
                 }`}
+                style={{ minHeight: 56 }}
               >
-                <div className="col-span-2 px-3 py-3 md:px-6 md:py-4">
-                  {r.q}
+                {/* Question */}
+                <div className="col-span-2 flex items-center px-4 py-3 md:px-6">
+                  <span className="leading-snug text-text">{r.q}</span>
                 </div>
-                <div className="border-l border-line bg-mint/[0.03] px-2 py-3 text-center font-semibold text-mint md:px-4 md:py-4">
+                {/* Sanda */}
+                <div className="flex items-center justify-center border-l border-line bg-mint/[0.03] px-2 py-3 text-center font-semibold text-mint md:px-4">
                   {r.sanda}
                 </div>
-                <div className="border-l border-line px-2 py-3 text-center text-text-muted md:px-4 md:py-4">
+                {/* Apps */}
+                <div className="flex items-center justify-center border-l border-line px-2 py-3 text-center text-text-muted md:px-4">
                   {r.apps}
                 </div>
-                <div className="border-l border-line px-2 py-3 text-center text-text-muted md:px-4 md:py-4">
+                {/* Bank */}
+                <div className="flex items-center justify-center border-l border-line px-2 py-3 text-center text-text-muted md:px-4">
                   {r.bank}
                 </div>
               </div>
