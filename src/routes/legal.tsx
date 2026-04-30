@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Header, Footer } from '../components/Chrome'
 
-export const Route = createFileRoute('/confidential')({
+export const Route = createFileRoute('/legal')({
   component: Legal,
 })
 

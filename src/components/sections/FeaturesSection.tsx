@@ -1,10 +1,6 @@
 import { useState } from 'react'
 import { ChevronRight } from 'lucide-react'
-import {
-  CapitalMockup,
-  PlanMockup,
-  TodayMockup,
-} from '../mockups/AppMockups'
+import { CapitalMockup, PlanMockup, TodayMockup } from '../mockups/AppMockups'
 import { StatsMockup } from '../mockups/StatsMockup'
 import { Carousel } from './Carousel'
 import { Reveal } from '../Reveal'
@@ -33,7 +29,7 @@ const tabs: {
     key: 'plans',
     label: 'Планы',
     title: 'Календарь трат на месяц вперёд',
-    text: 'Можно запланировать расходы, доходы и выделить бюджет на месяц. Есть ежемесячные и ежегодные статьи — всё разложено по дням.',
+    text: 'Можно запланировать расходы, доходы и выделить бюджет на месяц. Всё разложено по дням.',
     bullets: [
       'Регулярные расходы и доходы — раз в месяц или год',
       'Плановые крупные покупки — бюджет подстроится',
@@ -44,7 +40,7 @@ const tabs: {
     key: 'capital',
     label: 'Капитал',
     title: 'Обязательства, сбережения, имущество и счета',
-    text: 'Всё, что у тебя есть и что ты должен. Активные счета, накопления, недвижимость, кредиты — единая картина чистого капитала.',
+    text: 'Всё, что у тебя есть и что ты должен. Активные счета, накопления, недвижимость, кредиты.',
     bullets: [
       'Все счета и сбережения в одном месте',
       'Имущество и обязательства — как в балансе',
@@ -55,7 +51,7 @@ const tabs: {
     key: 'stats',
     label: 'Статистика',
     title: 'Вся история твоих денег в одном разделе',
-    text: 'Капитал, денежный поток, динамика расходов и доходов, накоплений. За день, неделю, месяц или год.',
+    text: 'Капитал, денежный поток, динамика расходов и доходов, накоплений. За любой период.',
     bullets: [
       'Тратишь ли ты меньше, чем получаешь',
       'Динамика расходов и доходов за любой период',
@@ -72,7 +68,7 @@ export function FeaturesSection() {
   const [active, setActive] = useState<TabKey>('today')
   const current = tabs.find((t) => t.key === active)!
 
-  // TrySection formula data (fixed values)
+  // TrySection formula data
   const income = 600_000
   const obligations = 80_000
   const goals = 100_000
@@ -86,16 +82,33 @@ export function FeaturesSection() {
   const zoneColor =
     zone === 'safe' ? '#3be8b0' : zone === 'warn' ? '#f5a623' : '#ff5566'
   const zoneLabel =
-    zone === 'safe'
-      ? 'В безопасной зоне'
-      : zone === 'warn'
-      ? 'Близко к границе'
-      : 'Выше бюджета'
+    zone === 'safe' ? 'В безопасной зоне' : zone === 'warn' ? 'Близко к границе' : 'Выше бюджета'
+
+  // Tab strip — shared between mobile and desktop
+  const tabStrip = (
+    <div className="overflow-x-auto no-scrollbar">
+      <div className="flex min-w-max gap-2">
+        {tabs.map((t) => (
+          <button
+            key={t.key}
+            onClick={() => setActive(t.key)}
+            className={`whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium transition ${
+              active === t.key
+                ? 'border-mint/40 bg-mint/[0.1] text-mint'
+                : 'border-line bg-white/[0.02] text-text-muted hover:text-text'
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
 
   return (
     <section id="features" className="py-16 md:py-20">
 
-      {/* ── TrySection block (merged) ─────────────────────────────── */}
+      {/* ── TrySection block ──────────────────────────────────── */}
       <div className="mx-auto max-w-6xl px-5">
         <Reveal>
           <div className="mb-8 max-w-2xl md:mb-10">
@@ -115,14 +128,12 @@ export function FeaturesSection() {
           <div className="relative overflow-hidden rounded-3xl border border-line bg-gradient-to-br from-white/[0.04] via-white/[0.015] to-white/[0.04] p-5 md:p-8">
             <div
               className="pointer-events-none absolute -top-24 left-1/2 h-[320px] w-[320px] -translate-x-1/2 rounded-full opacity-40 blur-3xl"
-              style={{
-                background: `radial-gradient(circle, ${zoneColor}55 0%, transparent 70%)`,
-              }}
+              style={{ background: `radial-gradient(circle, ${zoneColor}55 0%, transparent 70%)` }}
               aria-hidden
             />
 
             <div className="relative grid gap-6 md:grid-cols-[1.1fr_1fr] md:gap-8">
-              {/* ЛЕВАЯ КОЛОНКА — большое число + зона */}
+              {/* LEFT — big number + zone badge */}
               <div className="flex items-center justify-center text-center">
                 <div>
                   <p className="text-xs uppercase tracking-[0.2em] text-text-dim">
@@ -145,67 +156,27 @@ export function FeaturesSection() {
                       color: zoneColor,
                     }}
                   >
-                    <span
-                      className="inline-block h-1.5 w-1.5 rounded-full"
-                      style={{ background: zoneColor }}
-                    />
+                    <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: zoneColor }} />
                     {zoneLabel}
                   </div>
                 </div>
               </div>
 
-              {/* ПРАВАЯ КОЛОНКА — формула построчно */}
+              {/* RIGHT — formula */}
               <div className="rounded-2xl border border-line bg-ink-2/60 p-4 md:p-5">
-                <p className="text-[10px] uppercase tracking-[0.2em] text-text-dim">
-                  Формула на сегодня
-                </p>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-text-dim">Формула на сегодня</p>
                 <div className="mt-3 space-y-2.5">
-                  <FormulaRow
-                    color="#3be8b0"
-                    label="Доход"
-                    value={`${formatN(income)} ₸`}
-                    op=""
-                  />
-                  <FormulaRow
-                    color="#ff5566"
-                    label="На обязательства"
-                    value={`−${formatN(obligations)} ₸`}
-                    op="−"
-                  />
-                  <FormulaRow
-                    color="#3be8b0"
-                    label="В сбережения"
-                    value={`−${formatN(goals)} ₸`}
-                    op="−"
-                  />
-                  <FormulaRow
-                    color="#f5a623"
-                    label="Бюджеты на месяц"
-                    value={`−${formatN(monthlyBudgets)} ₸`}
-                    op="−"
-                  />
-                  <FormulaRow
-                    color="#f5a623"
-                    label="Плановые расходы"
-                    value={`−${formatN(plannedExpenses)} ₸`}
-                    op="−"
-                  />
+                  <FormulaRow color="#3be8b0" label="Доход" value={`${formatN(income)} ₸`} op="" />
+                  <FormulaRow color="#ff5566" label="На обязательства" value={`−${formatN(obligations)} ₸`} op="−" />
+                  <FormulaRow color="#3be8b0" label="В сбережения" value={`−${formatN(goals)} ₸`} op="−" />
+                  <FormulaRow color="#f5a623" label="Бюджеты на месяц" value={`−${formatN(monthlyBudgets)} ₸`} op="−" />
+                  <FormulaRow color="#f5a623" label="Плановые расходы" value={`−${formatN(plannedExpenses)} ₸`} op="−" />
                   <div className="border-t border-line pt-2.5">
-                    <FormulaRow
-                      color="#3be8b0"
-                      label="Дни до зарплаты"
-                      value={`÷ ${daysLeft}`}
-                      op="÷"
-                    />
+                    <FormulaRow color="#3be8b0" label="Дни до зарплаты" value={`÷ ${daysLeft}`} op="÷" />
                   </div>
                   <div className="flex items-center justify-between rounded-xl bg-white/[0.04] px-3 py-2.5">
-                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-text-muted">
-                      Сегодня
-                    </span>
-                    <span
-                      className="num-display text-lg font-bold"
-                      style={{ color: zoneColor }}
-                    >
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-text-muted">Сегодня</span>
+                    <span className="num-display text-lg font-bold" style={{ color: zoneColor }}>
                       {formatN(dailyLimit)} ₸
                     </span>
                   </div>
@@ -216,86 +187,95 @@ export function FeaturesSection() {
         </Reveal>
       </div>
 
-      {/* ── Tabs + phone mockup ───────────────────────────────────── */}
+      {/* ── Tabs + phone mockup ───────────────────────────────── */}
       <div className="mx-auto mt-16 max-w-6xl px-5 md:mt-20">
-        {/* Tab row — NOT sticky on mobile */}
-        <div className="mb-6 md:mb-8">
-          <div className="flex items-center gap-4 md:justify-between">
-            <div className="hidden md:block">
-              <div className="eyebrow">Все, что нужно для роста</div>
-            </div>
-            <div className="overflow-x-auto no-scrollbar md:flex-shrink-0">
-              <div className="flex min-w-max gap-2">
-                {tabs.map((t) => (
-                  <button
-                    key={t.key}
-                    onClick={() => setActive(t.key)}
-                    className={`whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium transition ${
-                      active === t.key
-                        ? 'border-mint/40 bg-mint/[0.1] text-mint'
-                        : 'border-line bg-white/[0.02] text-text-muted hover:text-text'
-                    }`}
-                  >
-                    {t.label}
-                  </button>
-                ))}
-              </div>
-            </div>
+
+        {/* Desktop: eyebrow + tabs on one row */}
+        <div className="mb-8 hidden items-center justify-between md:flex">
+          <div className="eyebrow">Все, что нужно для роста</div>
+          {tabStrip}
+        </div>
+
+        {/*
+         * MOBILE LAYOUT (md:hidden wrapper):
+         *   1. Phone mockup
+         *   2. Tab strip
+         *   3. Title + bullets
+         *
+         * DESKTOP LAYOUT (md:grid):
+         *   Left text | Centre phone | Right companion card
+         */}
+
+        {/* ── Mobile ─────────────────────────────────────────── */}
+        <div className="md:hidden">
+          {/* Phone */}
+          <div className="relative mx-auto mb-5 w-full max-w-[280px]">
+            <div
+              className="pointer-events-none absolute -inset-12 -z-10 rounded-full opacity-50 blur-3xl"
+              style={{ background: 'radial-gradient(circle, rgba(59,158,255,0.35) 0%, transparent 70%)' }}
+              aria-hidden
+            />
+            {active === 'today' && <TodayMockup zone="safe" amount={12400} />}
+            {active === 'plans' && <PlanMockup />}
+            {active === 'capital' && <CapitalMockup />}
+            {active === 'stats' && <StatsMockup />}
+          </div>
+
+          {/* Tabs — BETWEEN phone and text */}
+          <div className="mb-5">{tabStrip}</div>
+
+          {/* Text */}
+          <div>
+            <h3 className="text-xl font-bold tracking-tight">{current.title}</h3>
+            <p className="mt-2 text-sm text-text-muted">{current.text}</p>
+            <ul className="mt-4 space-y-2">
+              {current.bullets.map((b) => (
+                <li key={b} className="flex items-start gap-3 rounded-xl border border-line bg-white/[0.02] px-3.5 py-2.5">
+                  <span className="mt-1.5 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-mint" aria-hidden />
+                  <span className="text-sm text-text">{b}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
-        {/* Three-column stage */}
-        <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_320px_minmax(0,1fr)] md:items-center md:gap-10">
-          {/* LEFT */}
-          <div className="order-2 md:order-1">
+        {/* ── Desktop ────────────────────────────────────────── */}
+        <div className="hidden md:grid md:grid-cols-[minmax(0,1fr)_320px_minmax(0,1fr)] md:items-center md:gap-10">
+          {/* Left — text */}
+          <div>
             <h3 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-[28px] md:leading-tight">
               {current.title}
             </h3>
-            <p className="mt-3 text-sm text-text-muted md:mt-3 md:text-[15px]">
-              {current.text}
-            </p>
-            <ul className="mt-5 space-y-2.5 md:mt-5">
+            <p className="mt-3 text-[15px] text-text-muted">{current.text}</p>
+            <ul className="mt-5 space-y-2.5">
               {current.bullets.map((b) => (
-                <li
-                  key={b}
-                  className="flex items-start gap-3 rounded-xl border border-line bg-white/[0.02] px-3.5 py-2.5 transition hover:border-line-strong"
-                >
-                  <span
-                    className="mt-1.5 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-mint"
-                    aria-hidden
-                  />
+                <li key={b} className="flex items-start gap-3 rounded-xl border border-line bg-white/[0.02] px-3.5 py-2.5 transition hover:border-line-strong">
+                  <span className="mt-1.5 inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-mint" aria-hidden />
                   <span className="text-sm text-text">{b}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* CENTER: phone */}
-          <div className="relative order-1 mx-auto w-full max-w-[300px] md:order-2 md:max-w-[320px]">
+          {/* Centre — phone */}
+          <div className="relative mx-auto w-full max-w-[320px]">
             <div
               className="pointer-events-none absolute -inset-12 -z-10 rounded-full opacity-50 blur-3xl"
-              style={{
-                background:
-                  'radial-gradient(circle, rgba(59,158,255,0.35) 0%, transparent 70%)',
-              }}
+              style={{ background: 'radial-gradient(circle, rgba(59,158,255,0.35) 0%, transparent 70%)' }}
               aria-hidden
             />
-            <div className="phone-cut-half md:phone-cut-none">
-              {active === 'today' && <TodayMockup zone="safe" amount={12400} />}
-              {active === 'plans' && <PlanMockup />}
-              {active === 'capital' && <CapitalMockup />}
-              {active === 'stats' && <StatsMockup />}
-            </div>
+            {active === 'today' && <TodayMockup zone="safe" amount={12400} />}
+            {active === 'plans' && <PlanMockup />}
+            {active === 'capital' && <CapitalMockup />}
+            {active === 'stats' && <StatsMockup />}
           </div>
 
-          {/* RIGHT */}
-          <div className="order-3 hidden md:order-3 md:block">
-            <CompanionCard tab={current.key} />
-          </div>
+          {/* Right — companion card */}
+          <CompanionCard tab={current.key} />
         </div>
       </div>
 
-      {/* ── Mini-features carousel (bleed) ───────────────────────── */}
+      {/* ── Mini-features carousel (bleed) ───────────────────── */}
       <div className="mt-8 md:mt-10">
         <div className="mx-auto mb-3 flex max-w-6xl items-center justify-end px-5">
           <span aria-hidden className="swipe-hint text-text-dim lg:hidden">
@@ -303,36 +283,12 @@ export function FeaturesSection() {
           </span>
         </div>
         <Carousel ariaLabel="Дополнительные плюшки" bleed padInline={20}>
-          <MiniFeature
-            icon="📅"
-            title="Планирование бюджета"
-            text="Бюджет задаётся заранее и раскладывается по дням до зарплаты."
-          />
-          <MiniFeature
-            icon="🔥"
-            title="Стрики дисциплины"
-            text="Счётчик дней подряд в лимите. Геймификация без упрёков."
-          />
-          <MiniFeature
-            icon="🌍"
-            title="Мультивалютность"
-            text="Тенге, рубли, доллары, евро. Кастомный период бюджета."
-          />
-          <MiniFeature
-            icon="📱"
-            title="Виджеты и Apple Watch"
-            text="Дневной лимит на экране блокировки и на запястье."
-          />
-          <MiniFeature
-            icon="🔒"
-            title="Приватность как принцип"
-            text="Apple ID, гостевой режим, полное удаление данных."
-          />
-          <MiniFeature
-            icon="🌙"
-            title="iOS-душа"
-            text="SF-шрифт, спокойные анимации, Dynamic Island."
-          />
+          <MiniFeature icon="📅" title="Планирование бюджета" text="Бюджет задаётся заранее и раскладывается по дням до зарплаты." />
+          <MiniFeature icon="🔥" title="Стрики дисциплины" text="Счётчик дней подряд в лимите. Геймификация без упрёков." />
+          <MiniFeature icon="🌍" title="Мультивалютность" text="Тенге, рубли, доллары, евро. Кастомный период бюджета." />
+          <MiniFeature icon="📱" title="Виджеты и Apple Watch" text="Дневной лимит на экране блокировки и на запястье." />
+          <MiniFeature icon="🔒" title="Приватность как принцип" text="Apple ID, гостевой режим, полное удаление данных." />
+          <MiniFeature icon="🌙" title="iOS-душа" text="SF-шрифт, спокойные анимации, Dynamic Island." />
         </Carousel>
       </div>
     </section>
@@ -341,53 +297,25 @@ export function FeaturesSection() {
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-function FormulaRow({
-  color,
-  label,
-  value,
-  op,
-}: {
-  color: string
-  label: string
-  value: string
-  op: string
-}) {
+function FormulaRow({ color, label, value, op }: { color: string; label: string; value: string; op: string }) {
   return (
     <div className="flex items-center justify-between text-sm">
       <div className="flex min-w-0 items-center gap-2">
-        <span
-          className="flex h-5 w-5 flex-shrink-0 items-center justify-center text-[11px] font-bold text-text-dim"
-          aria-hidden
-        >
-          {op}
-        </span>
-        <span
-          className="inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full"
-          style={{ background: color }}
-        />
+        <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center text-[11px] font-bold text-text-dim" aria-hidden>{op}</span>
+        <span className="inline-block h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ background: color }} />
         <span className="truncate text-text-muted">{label}</span>
       </div>
-      <span className="num-display whitespace-nowrap font-semibold text-text">
-        {value}
-      </span>
+      <span className="num-display whitespace-nowrap font-semibold text-text">{value}</span>
     </div>
   )
 }
 
-function MiniFeature({
-  icon,
-  title,
-  text,
-}: {
-  icon: string
-  title: string
-  text: string
-}) {
+function MiniFeature({ icon, title, text }: { icon: string; title: string; text: string }) {
   return (
     <div className="w-[220px] flex-shrink-0 rounded-2xl border border-line bg-white/[0.02] p-4">
       <div className="mb-2 text-2xl">{icon}</div>
       <p className="text-sm font-semibold leading-snug">{title}</p>
-      <p className="mt-1.5 text-xs text-text-muted leading-relaxed">{text}</p>
+      <p className="mt-1.5 text-xs leading-relaxed text-text-muted">{text}</p>
     </div>
   )
 }
@@ -396,9 +324,7 @@ function CompanionCard({ tab }: { tab: TabKey }) {
   if (tab === 'today') {
     return (
       <div className="rounded-3xl border border-line bg-white/[0.02] p-5">
-        <p className="text-[10px] uppercase tracking-[0.2em] text-text-dim">
-          Цветовые зоны
-        </p>
+        <p className="text-[10px] uppercase tracking-[0.2em] text-text-dim">Цветовые зоны</p>
         <div className="mt-3 space-y-2">
           <ZoneRow color="#3be8b0" label="Зелёный" hint="Можешь тратить свободно" />
           <ZoneRow color="#f5a623" label="Оранжевый" hint="Притормози — ещё хватит" />
@@ -410,9 +336,7 @@ function CompanionCard({ tab }: { tab: TabKey }) {
   if (tab === 'plans') {
     return (
       <div className="rounded-3xl border border-line bg-white/[0.02] p-5">
-        <p className="text-[10px] uppercase tracking-[0.2em] text-text-dim">
-          Типы событий
-        </p>
+        <p className="text-[10px] uppercase tracking-[0.2em] text-text-dim">Типы событий</p>
         <div className="mt-3 space-y-2">
           <PlanRow emoji="🔁" label="Каждый месяц" hint="Аренда, интернет, подписки" />
           <PlanRow emoji="📆" label="Раз в год" hint="ОСАГО, абонемент, налоги" />
@@ -425,9 +349,7 @@ function CompanionCard({ tab }: { tab: TabKey }) {
   if (tab === 'capital') {
     return (
       <div className="rounded-3xl border border-line bg-white/[0.02] p-5">
-        <p className="text-[10px] uppercase tracking-[0.2em] text-text-dim">
-          Чистый капитал
-        </p>
+        <p className="text-[10px] uppercase tracking-[0.2em] text-text-dim">Чистый капитал</p>
         <p className="num-display mt-2 text-3xl font-black">2 480 500 ₸</p>
         <p className="mt-1 text-xs text-mint">▲ 12,4% за 6 мес</p>
         <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
@@ -443,12 +365,9 @@ function CompanionCard({ tab }: { tab: TabKey }) {
       </div>
     )
   }
-  // stats
   return (
     <div className="rounded-3xl border border-line bg-white/[0.02] p-5">
-      <p className="text-[10px] uppercase tracking-[0.2em] text-text-dim">
-        За последние 30 дней
-      </p>
+      <p className="text-[10px] uppercase tracking-[0.2em] text-text-dim">За последние 30 дней</p>
       <div className="mt-3 space-y-2">
         <StatRow label="Доходы" value="680 000 ₸" up />
         <StatRow label="Расходы" value="412 000 ₸" />
@@ -459,21 +378,10 @@ function CompanionCard({ tab }: { tab: TabKey }) {
   )
 }
 
-function ZoneRow({
-  color,
-  label,
-  hint,
-}: {
-  color: string
-  label: string
-  hint: string
-}) {
+function ZoneRow({ color, label, hint }: { color: string; label: string; hint: string }) {
   return (
     <div className="flex items-center gap-3 rounded-xl border border-line bg-white/[0.02] px-3 py-2">
-      <span
-        className="h-2.5 w-2.5 flex-shrink-0 rounded-full"
-        style={{ background: color }}
-      />
+      <span className="h-2.5 w-2.5 flex-shrink-0 rounded-full" style={{ background: color }} />
       <div>
         <p className="text-xs font-medium">{label}</p>
         <p className="text-[11px] text-text-dim">{hint}</p>
@@ -482,15 +390,7 @@ function ZoneRow({
   )
 }
 
-function PlanRow({
-  emoji,
-  label,
-  hint,
-}: {
-  emoji: string
-  label: string
-  hint: string
-}) {
+function PlanRow({ emoji, label, hint }: { emoji: string; label: string; hint: string }) {
   return (
     <div className="flex items-center gap-3 rounded-xl border border-line bg-white/[0.02] px-3 py-2">
       <span>{emoji}</span>
@@ -502,21 +402,11 @@ function PlanRow({
   )
 }
 
-function StatRow({
-  label,
-  value,
-  up,
-}: {
-  label: string
-  value: string
-  up?: boolean
-}) {
+function StatRow({ label, value, up }: { label: string; value: string; up?: boolean }) {
   return (
     <div className="flex items-center justify-between rounded-xl border border-line bg-white/[0.02] px-3 py-2">
       <p className="text-xs text-text-muted">{label}</p>
-      <p className={`num-display text-xs font-semibold ${up ? 'text-mint' : 'text-text'}`}>
-        {value}
-      </p>
+      <p className={`num-display text-xs font-semibold ${up ? 'text-mint' : 'text-text'}`}>{value}</p>
     </div>
   )
 }

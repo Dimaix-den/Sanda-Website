@@ -31,7 +31,7 @@
      * iPhone with a notch would land with the section title hidden
      * behind the status bar after viewport-fit=cover took effect.
      */
-    scroll-padding-top: calc(72px + env(safe-area-inset-top));
+    scroll-padding-top: calc(20px + env(safe-area-inset-top));
   }
 
   @media (prefers-reduced-motion: reduce) {
