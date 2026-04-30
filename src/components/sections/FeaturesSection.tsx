@@ -68,7 +68,6 @@ export function FeaturesSection() {
   const [active, setActive] = useState<TabKey>('today')
   const current = tabs.find((t) => t.key === active)!
 
-  // TrySection formula data
   const income = 600_000
   const obligations = 80_000
   const goals = 100_000
@@ -84,7 +83,6 @@ export function FeaturesSection() {
   const zoneLabel =
     zone === 'safe' ? 'В безопасной зоне' : zone === 'warn' ? 'Близко к границе' : 'Выше бюджета'
 
-  // Tab strip — shared between mobile and desktop
   const tabStrip = (
     <div className="overflow-x-auto no-scrollbar">
       <div className="flex min-w-max gap-2">
@@ -105,10 +103,19 @@ export function FeaturesSection() {
     </div>
   )
 
+  const phoneMockup = (
+    <>
+      {active === 'today' && <TodayMockup zone="safe" amount={12400} />}
+      {active === 'plans' && <PlanMockup />}
+      {active === 'capital' && <CapitalMockup />}
+      {active === 'stats' && <StatsMockup />}
+    </>
+  )
+
   return (
     <section id="features" className="py-16 md:py-20">
 
-      {/* ── TrySection block ──────────────────────────────────── */}
+      {/* ── TrySection block ─────────────────────────────────── */}
       <div className="mx-auto max-w-6xl px-5">
         <Reveal>
           <div className="mb-8 max-w-2xl md:mb-10">
@@ -131,9 +138,8 @@ export function FeaturesSection() {
               style={{ background: `radial-gradient(circle, ${zoneColor}55 0%, transparent 70%)` }}
               aria-hidden
             />
-
             <div className="relative grid gap-6 md:grid-cols-[1.1fr_1fr] md:gap-8">
-              {/* LEFT — big number + zone badge */}
+              {/* LEFT — big number */}
               <div className="flex items-center justify-center text-center">
                 <div>
                   <p className="text-xs uppercase tracking-[0.2em] text-text-dim">
@@ -187,42 +193,32 @@ export function FeaturesSection() {
         </Reveal>
       </div>
 
-      {/* ── Tabs + phone mockup ───────────────────────────────── */}
+      {/* ── Tabs + phone mockup ──────────────────────────────── */}
       <div className="mx-auto mt-16 max-w-6xl px-5 md:mt-20">
 
-        {/* Desktop: eyebrow + tabs on one row */}
+        {/* Desktop: eyebrow + tabs row */}
         <div className="mb-8 hidden items-center justify-between md:flex">
           <div className="eyebrow">Все, что нужно для роста</div>
           {tabStrip}
         </div>
 
-        {/*
-         * MOBILE LAYOUT (md:hidden wrapper):
-         *   1. Phone mockup
-         *   2. Tab strip
-         *   3. Title + bullets
-         *
-         * DESKTOP LAYOUT (md:grid):
-         *   Left text | Centre phone | Right companion card
-         */}
-
-        {/* ── Mobile ─────────────────────────────────────────── */}
+        {/* ── MOBILE layout: phone (clipped) → tabs → text ─── */}
         <div className="md:hidden">
-          {/* Phone */}
-          <div className="relative mx-auto mb-5 w-full max-w-[280px]">
+          {/* Phone with top-clip fade — shows only upper portion */}
+          <div className="relative mx-auto w-full max-w-[300px]">
             <div
               className="pointer-events-none absolute -inset-12 -z-10 rounded-full opacity-50 blur-3xl"
               style={{ background: 'radial-gradient(circle, rgba(59,158,255,0.35) 0%, transparent 70%)' }}
               aria-hidden
             />
-            {active === 'today' && <TodayMockup zone="safe" amount={12400} />}
-            {active === 'plans' && <PlanMockup />}
-            {active === 'capital' && <CapitalMockup />}
-            {active === 'stats' && <StatsMockup />}
+            {/* phone-cut-half clips bottom and fades — original behaviour */}
+            <div className="phone-cut-half">
+              {phoneMockup}
+            </div>
           </div>
 
-          {/* Tabs — BETWEEN phone and text */}
-          <div className="mb-5">{tabStrip}</div>
+          {/* Tabs BETWEEN phone and text */}
+          <div className="mb-5 mt-4">{tabStrip}</div>
 
           {/* Text */}
           <div>
@@ -239,9 +235,9 @@ export function FeaturesSection() {
           </div>
         </div>
 
-        {/* ── Desktop ────────────────────────────────────────── */}
+        {/* ── DESKTOP layout: text | phone | companion ─────── */}
         <div className="hidden md:grid md:grid-cols-[minmax(0,1fr)_320px_minmax(0,1fr)] md:items-center md:gap-10">
-          {/* Left — text */}
+          {/* Left text */}
           <div>
             <h3 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-[28px] md:leading-tight">
               {current.title}
@@ -257,25 +253,24 @@ export function FeaturesSection() {
             </ul>
           </div>
 
-          {/* Centre — phone */}
+          {/* Centre phone — full on desktop */}
           <div className="relative mx-auto w-full max-w-[320px]">
             <div
               className="pointer-events-none absolute -inset-12 -z-10 rounded-full opacity-50 blur-3xl"
               style={{ background: 'radial-gradient(circle, rgba(59,158,255,0.35) 0%, transparent 70%)' }}
               aria-hidden
             />
-            {active === 'today' && <TodayMockup zone="safe" amount={12400} />}
-            {active === 'plans' && <PlanMockup />}
-            {active === 'capital' && <CapitalMockup />}
-            {active === 'stats' && <StatsMockup />}
+            <div className="phone-cut-none">
+              {phoneMockup}
+            </div>
           </div>
 
-          {/* Right — companion card */}
+          {/* Right companion */}
           <CompanionCard tab={current.key} />
         </div>
       </div>
 
-      {/* ── Mini-features carousel (bleed) ───────────────────── */}
+      {/* ── Mini-features carousel (bleed) ──────────────────── */}
       <div className="mt-8 md:mt-10">
         <div className="mx-auto mb-3 flex max-w-6xl items-center justify-end px-5">
           <span aria-hidden className="swipe-hint text-text-dim lg:hidden">

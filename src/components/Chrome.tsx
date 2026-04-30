@@ -28,6 +28,8 @@ export function Header() {
   const [open, setOpen] = useState(false)
   const [dragX, setDragX] = useState<number | null>(null)
   const drawerRef = useRef<HTMLElement | null>(null)
+  // Store scroll position at the moment the drawer opens
+  const savedScroll = useRef(0)
 
   const swipe = useRef<{
     active: boolean
@@ -38,16 +40,24 @@ export function Header() {
     pointerId: number | null
   }>({ active: false, startX: 0, startY: 0, locked: null, width: 320, pointerId: null })
 
-  // Freeze body scroll when drawer is open
+  // ── Body scroll lock ──────────────────────────────────────────
+  // When the drawer opens: save scrollY, freeze body with position:fixed.
+  // When the drawer closes: restore position WITHOUT scrollTo (avoids
+  // the visible scroll animation that was jumping the page).
   useEffect(() => {
-    if (!open) return
-    const scrollY = window.scrollY
-    document.body.style.setProperty('--menu-scroll-y', `${scrollY}px`)
-    document.body.classList.add('menu-open')
-    return () => {
-      document.body.classList.remove('menu-open')
-      document.body.style.removeProperty('--menu-scroll-y')
-      window.scrollTo(0, scrollY)
+    if (open) {
+      savedScroll.current = window.scrollY
+      document.body.style.setProperty('--menu-scroll-y', `${savedScroll.current}px`)
+      document.body.classList.add('menu-open')
+    } else {
+      if (document.body.classList.contains('menu-open')) {
+        // Remove the lock class first so position:fixed goes away
+        document.body.classList.remove('menu-open')
+        document.body.style.removeProperty('--menu-scroll-y')
+        // Then immediately jump to the saved scroll position.
+        // Use scrollTo with behavior:'instant' so there's NO animation.
+        window.scrollTo({ top: savedScroll.current, behavior: 'instant' as ScrollBehavior })
+      }
     }
   }, [open])
 
@@ -59,7 +69,7 @@ export function Header() {
     return () => mq.removeEventListener('change', handler)
   }, [])
 
-  // ── Swipe-to-close — works on BOTH touch and mouse ────────────
+  // ── Swipe-to-close (touch + mouse) ───────────────────────────
   function onPointerDown(e: React.PointerEvent) {
     const drawer = drawerRef.current
     if (!drawer) return
@@ -81,9 +91,7 @@ export function Header() {
     if (!swipe.current.locked) {
       swipe.current.locked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'
     }
-    if (swipe.current.locked === 'x' && dx > 0) {
-      setDragX(dx)
-    }
+    if (swipe.current.locked === 'x' && dx > 0) setDragX(dx)
   }
 
   function endSwipe(e: React.PointerEvent) {
@@ -115,9 +123,8 @@ export function Header() {
 
             <div className="flex items-center gap-2">
               <div className="hidden lg:block">
-                <BetaButton className="btn-primary !px-4 !py-2 text-sm">Попробовать</BetaButton>
+                <BetaButton className="btn-primary !px-4 !py-2 text-sm">Скачать</BetaButton>
               </div>
-              {/* Hamburger — h-11 w-11 for easy tap on mobile */}
               <button
                 type="button"
                 aria-label={open ? 'Закрыть меню' : 'Открыть меню'}
@@ -135,7 +142,7 @@ export function Header() {
 
       <div className="mobile-header-spacer lg:hidden" aria-hidden />
 
-      {/* ── Backdrop — no backdrop-blur (prevents Safari safe-area black strips) ── */}
+      {/* ── Backdrop (no blur — prevents Safari safe-area black strips) ── */}
       <div
         aria-hidden={!open}
         onClick={() => setOpen(false)}
@@ -157,31 +164,24 @@ export function Header() {
         onPointerUp={endSwipe}
         onPointerCancel={endSwipe}
         style={{
-          // MUST be inline style — solid opaque colour to cover
-          // iOS safe-area strips at top and bottom. A Tailwind
-          // bg- class compiles to the same hex but can be overridden
-          // or not applied in time; inline style is guaranteed.
           backgroundColor: '#05070a',
-          ...(isDragging
-            ? { transform: `translateX(${dragX}px)`, transition: 'none' }
-            : {}),
+          ...(isDragging ? { transform: `translateX(${dragX}px)`, transition: 'none' } : {}),
         }}
         className={`fixed inset-y-0 right-0 z-50 flex w-[88%] max-w-[360px] flex-col border-l border-line shadow-2xl transition-transform duration-300 ease-out lg:hidden ${
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        {/* Grab-handle hint */}
+        {/* Grab-handle */}
         <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 flex w-5 items-center justify-center">
           <div className="h-10 w-1 rounded-full bg-white/10" />
         </div>
 
-        {/* Drawer header — respects iOS status bar */}
+        {/* Drawer header */}
         <div
           className="flex flex-shrink-0 items-center justify-between border-b border-line px-5 pb-4"
           style={{ paddingTop: 'max(env(safe-area-inset-top), 16px)', minHeight: 72 }}
         >
           <span className="text-sm font-semibold uppercase tracking-[0.2em] text-text-dim">Меню</span>
-          {/* Close button — h-11 w-11 for easy tap */}
           <button
             type="button"
             aria-label="Закрыть меню"
@@ -211,7 +211,7 @@ export function Header() {
           style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 20px)' }}
         >
           <BetaButton className="btn-primary w-full" onClick={() => setOpen(false)}>
-            Участвовать в бета-тесте
+            Скачать в TestFlight
           </BetaButton>
           <p className="mt-3 text-center text-xs text-text-dim">
             Бесплатно · iOS · Android (скоро)
@@ -234,8 +234,9 @@ export function Footer() {
           <p className="mt-6 text-xs text-text-dim">© 2026 Sanda. Версия 3.0.0</p>
         </div>
         <FooterCol title="Продукт" items={[
-          { label: 'Возможности', href: '/#features' },
-          { label: 'Сравнение', href: '/#compare' },
+          { label: 'Возможности', href: '#features' },
+          { label: 'Как работает', href: '#features' },
+          { label: 'Сравнение', href: '#compare' },
         ]} />
         <FooterCol title="Помощь" items={[
           { label: 'Вопросы', href: '/faq' },
@@ -243,9 +244,9 @@ export function Footer() {
           { label: 'Telegram-канал', href: '#' },
         ]} />
         <FooterCol title="Правовая информация" items={[
-          { label: 'Политика конфиденциальности', href: '/confidential' },
-          { label: 'Условия использования', href: '#' },
-          { label: 'Безопасность данных', href: '#' },
+          { label: 'Политика конфиденциальности', href: '/legal#privacy' },
+          { label: 'Условия использования', href: '/legal#terms' },
+          { label: 'Безопасность данных', href: '/legal#privacy' },
         ]} />
       </div>
       <div className="border-t border-line py-5">
