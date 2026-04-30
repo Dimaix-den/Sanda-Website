@@ -26,7 +26,7 @@ export function HeroSection() {
         aria-hidden
       />
 
-      <div className="mx-auto max-w-6xl px-5 pt-10 pb-14 md:pt-24 md:pb-24">
+      <div className="mx-auto max-w-6xl px-5 pt-10 pb-14 md:pt-12 md:pb-24">
         <div className="grid items-center gap-10 lg:grid-cols-[1fr_440px] lg:gap-12">
           <div>
             {/*

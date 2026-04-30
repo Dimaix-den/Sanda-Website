@@ -85,7 +85,7 @@ function BetaModal({ onClose }: { onClose: () => void }) {
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose()
       }}
-      style={{ background: 'rgba(5,7,10,0.8)', backdropFilter: 'blur(8px)' }}
+      style={{ background: 'rgba(5,7,10,0.2)', backdropFilter: 'blur(3px)' }}
     >
       {/* Panel */}
       <div
@@ -100,7 +100,7 @@ function BetaModal({ onClose }: { onClose: () => void }) {
           className="pointer-events-none absolute -top-20 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full opacity-30 blur-3xl"
           style={{
             background:
-              'radial-gradient(circle, rgba(59,232,176,0.6) 0%, transparent 70%)',
+              'radial-gradient(circle, rgba(59,232,176,0.6) 0%, transparent 80%)',
           }}
           aria-hidden
         />
@@ -122,7 +122,7 @@ function BetaModal({ onClose }: { onClose: () => void }) {
               <CheckCircle size={48} className="text-mint" strokeWidth={1.5} />
               <h3 className="text-xl font-bold">Заявка принята!</h3>
               <p className="max-w-xs text-sm text-text-muted">
-                Мы свяжемся с тобой, когда откроем доступ к бета-версии Sanda.
+                Заявка отправлена! Отправим ссылку на указанную почту в ближайшее время!
               </p>
               <button
                 type="button"
@@ -135,12 +135,12 @@ function BetaModal({ onClose }: { onClose: () => void }) {
           ) : (
             /* Form */
             <>
-              <div className="eyebrow mb-4">Бета-тест</div>
+              <div className="eyebrow mb-4">Testflight</div>
               <h3 className="text-2xl font-black tracking-tight">
                 Получи ранний доступ
               </h3>
               <p className="mt-2 text-sm text-text-muted">
-                Оставь контакты — мы пришлём приглашение одним из первых.
+                Пришлем пригласительную ссылку на почту!
               </p>
 
               <form onSubmit={handleSubmit} className="mt-6 space-y-4">
