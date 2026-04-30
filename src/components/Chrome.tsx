@@ -115,7 +115,7 @@ export function Header() {
 
             <div className="flex items-center gap-2">
               <div className="hidden lg:block">
-                <BetaButton className="btn-primary !px-4 !py-2 text-sm">Бета-тест</BetaButton>
+                <BetaButton className="btn-primary !px-4 !py-2 text-sm">Попробовать</BetaButton>
               </div>
               {/* Hamburger — h-11 w-11 for easy tap on mobile */}
               <button
@@ -234,9 +234,8 @@ export function Footer() {
           <p className="mt-6 text-xs text-text-dim">© 2026 Sanda. Версия 3.0.0</p>
         </div>
         <FooterCol title="Продукт" items={[
-          { label: 'Возможности', href: '#features' },
-          { label: 'Как работает', href: '#features' },
-          { label: 'Сравнение', href: '#compare' },
+          { label: 'Возможности', href: '/#features' },
+          { label: 'Сравнение', href: '/#compare' },
         ]} />
         <FooterCol title="Помощь" items={[
           { label: 'Вопросы', href: '/faq' },
